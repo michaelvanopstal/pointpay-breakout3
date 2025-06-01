@@ -7,32 +7,13 @@ body {
   font-family: Arial, sans-serif;
 }
 
-#tvContainer {
-  position: absolute;
-  top: 55px;
-  left: 20px;
-  width: 960px;
-  height: 1133px;
-  overflow: hidden;
-}
-
 #gameCanvas {
-  position: absolute;
-  top: 110px; /* verticale centrering binnen 595px tv */
-  left: 0;
-  width: 960px;
-  height: 1133px;
+  display: block;
+  margin: auto;
+  margin-top: 100px;
+  width: 595px;
+  height: 375px;
   z-index: 1;
-}
-
-#tvOverlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 960px;
-  height: 1133px;
-  z-index: 2;
-  pointer-events: none;
 }
 
 #scoreDisplay {
