@@ -1,39 +1,27 @@
 
 body {
-  margin: 0;
-  background: url('wandljk_kl_png_V1.jpeg') no-repeat center center;
+  background-image: url('wandljk_kl_png_V1.jpeg');
   background-size: cover;
+  margin: 0;
   overflow: hidden;
-  height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+#tvContainer {
   position: relative;
+  width: 575px;
+  height: 375px;
+  margin: auto;
+  margin-top: 100px;
 }
 
 #gameCanvas {
   position: absolute;
-  top: 55px;
-  left: 20px;
+  top: 0;
+  left: 0;
   width: 575px;
   height: 375px;
-  background-color: transparent;
-  border: 3px solid #00aaff;
-}
-
-#scoreDisplay {
-  position: absolute;
-  top: 72px;
-  right: 110px;
-  color: white;
-  font-size: 20px;
-  font-family: Arial, sans-serif;
-}
-
-
-#overlayWrapper {
-  position: absolute;
-  top: 55px;
-  left: 20px;
-  width: 575px;
-  height: 375px;
+  z-index: 1;
 }
 
 #tvOverlay {
@@ -42,6 +30,14 @@ body {
   left: 0;
   width: 575px;
   height: 375px;
-  z-index: 5;
+  z-index: 2;
   pointer-events: none;
+}
+
+#scoreDisplay {
+  color: white;
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  font-size: 18px;
 }
