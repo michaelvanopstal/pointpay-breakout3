@@ -10,7 +10,7 @@ let ballLaunched = false;
 let x;
 let y;
 let paddleHeight = 10;
-let paddleWidth = 160;
+let paddleWidth = 140;
 let paddleX = 0;
 let rightPressed = false;
 let leftPressed = false;
