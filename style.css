@@ -18,10 +18,10 @@ body {
 
 #gameCanvas {
   position: absolute;
-  top: 0;
+  top: 110px; /* verticale centrering binnen 595px tv */
   left: 0;
   width: 595px;
-  height: 595px;
+  height: 375px;
   z-index: 1;
 }
 
