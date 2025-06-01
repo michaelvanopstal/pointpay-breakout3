@@ -15,7 +15,7 @@ body {
   width: 645px;
   height: 600px;
   background-color: transparent;
-  border: 3px solid #00aaff;
+  border: none
 }
 
 #scoreDisplay {
@@ -25,4 +25,22 @@ body {
   color: white;
   font-size: 20px;
   font-family: Arial, sans-serif;
+}
+
+#loginContainer {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  font-family: Arial, sans-serif;
+  color: white;
+}
+#playerName {
+  background-color: #007BFF;
+  color: white;
+  padding: 6px 10px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: none;
 }
