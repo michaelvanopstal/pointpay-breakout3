@@ -22,15 +22,6 @@
 
   <canvas id="gameCanvas" width="800" height="600"></canvas>
   <div id="scoreDisplay">Score: 0 pxp</div>
-  <script src="game.js">
-  const input = document.getElementById("playerName");
-  const nameDisplay = document.getElementById("playerNameDisplay");
-  input.addEventListener("keydown", function(e) {
-    if (e.key === "Enter" && input.value.trim() !== "") {
-      nameDisplay.textContent = "player " + input.value;
-      input.style.display = "none";
-    }
-  });
-</script>
+  <script src="game.js"></script>
 </body>
 </html>
