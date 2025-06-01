@@ -10,9 +10,9 @@ body {
 #gameCanvas {
   display: block;
   margin: auto;
-  margin-top: 160px;
-  width: 1204px;
-  height: 436px;
+  margin-top: 155px;
+  width: 1210px;
+  height: 461px;
   z-index: 1;
 }
 
