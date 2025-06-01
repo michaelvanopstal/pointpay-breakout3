@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>URL</key>
-	<string>https://github.com/michaelvanopstal/pointpay-breakout/blob/main/game.js</string>
-</dict>
-</plist>
+
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+ctx.fillStyle = "blue";
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+ctx.fillStyle = "white";
+ctx.font = "24px Arial";
+ctx.fillText("PointPay Breakout 3", 250, 300);
