@@ -1,25 +1,28 @@
 
 body {
-  background-image: url('wandljk_kl_png_V1.jpeg');
-  background-size: cover;
   margin: 0;
+  background: url('wandljk_kl_png_V1.jpeg') no-repeat center center;
+  background-size: cover;
   overflow: hidden;
-  font-family: Arial, sans-serif;
+  height: 100vh;
+  position: relative;
 }
 
 #gameCanvas {
-  display: block;
-  margin: auto;
-  margin-top: 155px;
-  width: 1210px;
-  height: 461px;
-  z-index: 1;
+  position: absolute;
+  top: 55px;
+  left: 20px;
+  width: 575px;
+  height: 375px;
+  background-color: transparent;
+  border: 3px solid #00aaff;
 }
 
 #scoreDisplay {
-  color: white;
   position: absolute;
-  top: 20px;
-  right: 40px;
-  font-size: 18px;
+  top: 72px;
+  right: 110px;
+  color: white;
+  font-size: 20px;
+  font-family: Arial, sans-serif;
 }
