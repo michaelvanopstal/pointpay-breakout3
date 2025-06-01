@@ -4,20 +4,21 @@ const ctx = canvas.getContext("2d");
 
 let score = 0;
 let ballRadius = 8;
-let x = canvas.width / 2;
-let y = canvas.height - 30;
-let dx = 2;
-let dy = -2;
+let dx = 4;
+let dy = -4;
+let ballLaunched = false;
+let x;
+let y;
 let paddleHeight = 10;
 let paddleWidth = 100;
-let paddleX = (canvas.width - paddleWidth) / 2;
+let paddleX = 0;
 let rightPressed = false;
 let leftPressed = false;
 
-const brickRowCount = 6;
-const brickColumnCount = 10;
-const brickWidth = 31;
-const brickHeight = 25;
+const brickRowCount = 5;
+const brickColumnCount = 9;
+const brickWidth = canvas.width / brickColumnCount;
+const brickHeight = 60;
 
 const bricks = [];
 for (let c = 0; c < brickColumnCount; c++) {
@@ -30,6 +31,12 @@ for (let c = 0; c < brickColumnCount; c++) {
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 document.addEventListener("mousemove", mouseMoveHandler, false);
+document.addEventListener("click", () => {
+  if (!ballLaunched) ballLaunched = true;
+});
+document.addEventListener("keydown", (e) => {
+  if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched) ballLaunched = true;
+});
 
 function keyDownHandler(e) {
   if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
@@ -52,7 +59,7 @@ function drawBricks() {
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
       if (bricks[c][r].status === 1) {
-        const brickX = c * (brickWidth + 2);
+        const brickX = c * brickWidth;
         const brickY = r * brickHeight;
         bricks[c][r].x = brickX;
         bricks[c][r].y = brickY;
@@ -88,7 +95,17 @@ function collisionDetection() {
     for (let r = 0; r < brickRowCount; r++) {
       const b = bricks[c][r];
       if (b.status === 1) {
-        if (x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
+        const ballLeft = x - ballRadius;
+        const ballRight = x + ballRadius;
+        const ballTop = y - ballRadius;
+        const ballBottom = y + ballRadius;
+
+        if (
+          ballRight > b.x &&
+          ballLeft < b.x + brickWidth &&
+          ballBottom > b.y &&
+          ballTop < b.y + brickHeight
+        ) {
           dy = -dy;
           b.status = 0;
           score += 10;
@@ -103,25 +120,43 @@ function draw() {
   drawBricks();
   drawBall();
   drawPaddle();
-  collisionDetection();
   drawScore();
 
-  if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) dx = -dx;
-  if (y + dy < ballRadius) dy = -dy;
-  else if (y + dy > canvas.height - ballRadius) {
-    if (x > paddleX && x < paddleX + paddleWidth) {
-      let hitPoint = x - (paddleX + paddleWidth / 2);
-      hitPoint = hitPoint / (paddleWidth / 2);  // tussen -1 (links) en 1 (rechts)
-      const angle = hitPoint * Math.PI / 3; // max 60 graden links/rechts
-      const speed = Math.sqrt(dx * dx + dy * dy);
-      dx = speed * Math.sin(angle);
-      dy = -speed * Math.cos(angle);
+  let steps = 4;
+  for (let i = 0; i < steps; i++) {
+    if (ballLaunched) {
+      x += dx / steps;
+      y += dy / steps;
+      collisionDetection();
+    } else {
+      x = paddleX + paddleWidth / 2;
+      y = canvas.height - paddleHeight - ballRadius - 2;
     }
-    else document.location.reload();
-  }
 
-  x += dx;
-  y += dy;
+    if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) dx = -dx;
+    if (y + dy < ballRadius) dy = -dy;
+    else if (y + dy > canvas.height - ballRadius) {
+      if (x > paddleX && x < paddleX + paddleWidth) {
+        let hitPoint = x - (paddleX + paddleWidth / 2);
+        dx = hitPoint * 0.3;
+        dx = Math.max(-6, Math.min(6, dx));
+        dy = -Math.abs(dy);
+      } else {
+        ballLaunched = false;
+        score = 0;
+        for (let c = 0; c < brickColumnCount; c++) {
+          for (let r = 0; r < brickRowCount; r++) {
+            bricks[c][r].status = 1;
+          }
+        }
+        x = paddleX + paddleWidth / 2;
+        y = canvas.height - paddleHeight - ballRadius - 2;
+      }
+    }
+
+    dx = Math.max(-6, Math.min(6, dx));
+    dy = Math.max(-6, Math.min(6, dy));
+  }
 
   if (rightPressed && paddleX < canvas.width - paddleWidth) paddleX += 7;
   else if (leftPressed && paddleX > 0) paddleX -= 7;
