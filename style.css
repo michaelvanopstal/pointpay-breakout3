@@ -11,7 +11,7 @@ body {
 #gameCanvas {
   position: absolute;
   top: 70px;
-  left: 12px;
+  left: 10px;
   width: 645px;
   height: 600px;
   background-color: transparent;
