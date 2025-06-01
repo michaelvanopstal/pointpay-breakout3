@@ -181,6 +181,6 @@ draw = function() {
   if (playerName) {
     ctx.font = "16px Arial";
     ctx.fillStyle = "#fff";
-    ctx.fillText("Player: " + playerName, canvas.width - -220, -180);
+    ctx.fillText("Player: " + playerName, 720, 25);
   }
 };
