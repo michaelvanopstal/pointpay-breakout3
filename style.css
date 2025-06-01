@@ -26,3 +26,22 @@ body {
   font-size: 20px;
   font-family: Arial, sans-serif;
 }
+
+
+#overlayWrapper {
+  position: absolute;
+  top: 55px;
+  left: 20px;
+  width: 575px;
+  height: 375px;
+}
+
+#tvOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 575px;
+  height: 375px;
+  z-index: 5;
+  pointer-events: none;
+}
