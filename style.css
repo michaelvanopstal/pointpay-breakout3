@@ -27,12 +27,29 @@ body {
   font-family: Arial, sans-serif;
 }
 
+#loginContainer {
+  position: absolute;
+  top: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  font-family: Arial, sans-serif;
+  color: white;
+}
+#playerName {
+  background-color: #007BFF;
+  color: white;
+  padding: 6px 10px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: none;
+}
 #playerNameDisplay {
   position: absolute;
-  top: 20px;
-  right: 160px;
+  top: 30px;
+  left: 1140px;
   color: white;
   font-family: Arial, sans-serif;
   font-size: 14px;
-  z-index: 1001;
+  z-index: 1000;
 }
