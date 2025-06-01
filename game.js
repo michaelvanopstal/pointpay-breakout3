@@ -165,22 +165,3 @@ function draw() {
 }
 
 draw();
-
-let playerName = "";
-const input = document.getElementById("playerName");
-input.addEventListener("keydown", function (e) {
-  if (e.key === "Enter") {
-    playerName = input.value;
-    input.style.display = "none";
-  }
-});
-
-const originalDraw = draw;
-draw = function() {
-  originalDraw();
-  if (playerName) {
-    ctx.font = "16px Arial";
-    ctx.fillStyle = "#fff";
-    ctx.fillText("Player: " + playerName, canvas.width - 250, 20);
-  }
-};
