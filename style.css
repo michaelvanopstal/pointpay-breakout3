@@ -28,28 +28,39 @@ body {
 }
 
 
-#login-block {
+#login-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+#login-box {
   background-color: #007BFF;
   color: white;
-  padding: 10px;
+  padding: 20px;
   border-radius: 10px;
-  width: 250px;
-  margin: 20px auto;
   text-align: center;
   font-family: Arial, sans-serif;
 }
 
-#login-block input {
-  width: 80%;
+#login-box input {
   padding: 5px;
-  margin-top: 5px;
+  margin-top: 10px;
   margin-bottom: 10px;
   border: none;
   border-radius: 5px;
+  width: 80%;
 }
 
-#login-block button {
-  padding: 5px 15px;
+#login-box button {
+  padding: 6px 15px;
   background-color: white;
   color: #007BFF;
   border: none;
@@ -59,9 +70,10 @@ body {
 
 #player-display {
   position: absolute;
-  top: 10px;
-  right: 20px;
-  color: #333;
+  top: 20px;
+  right: 30px;
+  color: white;
   font-size: 18px;
   font-family: Arial, sans-serif;
+  z-index: 101;
 }

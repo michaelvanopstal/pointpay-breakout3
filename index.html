@@ -2,22 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PointPay Breakout</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="login-block">
-    <label for="player-name">Inlog:</label>
-    <input type="text" id="player-name" placeholder="Voer je naam in" />
-    <button onclick="submitName()">Bevestig</button>
+  <div id="login-overlay">
+    <div id="login-box">
+      <label for="player-name">Inlog:</label><br />
+      <input type="text" id="player-name" placeholder="Voer je naam in" />
+      <button onclick="submitName()">Bevestig</button>
+    </div>
   </div>
-
   <div id="player-display"></div>
-
-  <canvas id="gameCanvas"></canvas>
-
-  <script src="login.js"></script>
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <div id="scoreDisplay">Score: 0 pxp</div>
   <script src="game.js"></script>
+  <script>
+    function submitName() {
+      const name = document.getElementById("player-name").value.trim();
+      if (name) {
+        document.getElementById("player-display").innerText = `Player: ${name}`;
+        document.getElementById("login-overlay").style.display = "none";
+      } else {
+        alert("Voer een geldige naam in.");
+      }
+    }
+  </script>
 </body>
 </html>
