@@ -115,7 +115,7 @@ body {
 }#playerName {
   position: absolute;
   top: 10px;
-  right: 70px;  /* Pas dit getal aan tot het precies goed staat */
+  right: 60px;  /* Pas dit getal aan tot het precies goed staat */
   color: white;
   font-size: 20px;
   font-family: Arial, sans-serif;
