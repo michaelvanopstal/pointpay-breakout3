@@ -7,6 +7,8 @@ let ballRadius = 8;
 let dx = 4;
 let dy = -4;
 let ballLaunched = false;
+        stopTimer();
+        timerStarted = false;
 let x;
 let y;
 let paddleHeight = 10;
@@ -116,6 +118,10 @@ function collisionDetection() {
 }
 
 function draw() {
+  if (!timerStarted && ballLaunched) {
+    startTimer();
+    timerStarted = true;
+  }
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBricks();
   drawBall();
@@ -143,6 +149,8 @@ function draw() {
         dy = -Math.abs(dy);
       } else {
         ballLaunched = false;
+        stopTimer();
+        timerStarted = false;
         score = 0;
         for (let c = 0; c < brickColumnCount; c++) {
           for (let r = 0; r < brickRowCount; r++) {
@@ -165,3 +173,22 @@ function draw() {
 }
 
 draw();
+
+
+// TIMER VARIABELEN
+let timerStarted = false;
+let timerInterval;
+let startTime;
+
+function startTimer() {
+  startTime = Date.now();
+  timerInterval = setInterval(() => {
+    const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+    const timerDiv = document.getElementById("timerDisplay");
+    if (timerDiv) timerDiv.textContent = elapsedTime;
+  }, 1000);
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+}
