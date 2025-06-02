@@ -112,10 +112,10 @@ body {
   display: inline-block;
 
   
-}#playerName {
+#playerName {
   position: absolute;
   top: 20px;
-  right: 60px;  /* Pas dit getal aan tot het precies goed staat */
+  right: 130px; /* Pas aan voor exacte afstand t.o.v. timer */
   color: white;
   font-size: 20px;
   font-family: Arial, sans-serif;
@@ -124,13 +124,11 @@ body {
 
 #timerDisplay {
   position: absolute;
-  top: 50px;
-  right: 20px;  /* Pas dit aan voor precieze positie */
+  top: 72px;
+  right: 20px; /* Houd ruimte vrij rechts */
   color: white;
   font-size: 20px;
   font-family: Arial, sans-serif;
   z-index: 999;
 }
-
-
 
