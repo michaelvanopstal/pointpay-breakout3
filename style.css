@@ -80,6 +80,7 @@ body {
 
 
 #highscore-overlay {
+  left: 675px;
   position: absolute;
   top: 60px;
   right: 10px;
@@ -93,6 +94,7 @@ body {
 }
 
 #highscore-overlay h2 {
+  left: 675px;
   text-align: center;
   margin-top: 10px;
   font-size: 20px;
