@@ -1,13 +1,11 @@
-
-document.addEventListener("DOMContentLoaded", () => {
-  const input = document.getElementById("playerName");
-  const display = document.getElementById("playerNameDisplay");
-
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && input.value.trim() !== "") {
-      const playerName = input.value.trim();
-      display.textContent = "Player: " + playerName;
-      document.getElementById("loginContainer").style.display = "none";
-    }
-  });
-});
+function submitName() {
+  const nameInput = document.getElementById("player-name");
+  const playerName = nameInput.value.trim();
+  if (playerName) {
+    document.getElementById("player-display").innerText = `Player: ${playerName}`;
+    document.getElementById("login-block").style.display = "none";
+    // Game kan hier starten indien nodig
+  } else {
+    alert("Voer een geldige naam in.");
+  }
+}
