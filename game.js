@@ -119,6 +119,7 @@ function collisionDetection() {
           dy = -dy;
           b.status = 0;
           score += 10;
+          spawnPXP(b.x, b.y);
         }
       }
     }
@@ -129,6 +130,7 @@ function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBricks();
   drawBall();
+  drawPXPcoins();
   drawPaddle();
   drawScore();
 
@@ -138,6 +140,7 @@ function draw() {
       x += dx / steps;
       y += dy / steps;
       collisionDetection();
+      updatePXPcoins();
     } else {
       x = paddleX + paddleWidth / 2;
       y = canvas.height - paddleHeight - ballRadius - 2;
@@ -232,4 +235,44 @@ function formatTime(seconds) {
   const minutes = String(Math.floor(seconds / 60)).padStart(2, '0');
   const secs = String(seconds % 60).padStart(2, '0');
   return `${minutes}:${secs}`;
+}
+
+
+const pxpCoins = []; // Actieve vallende munten
+const pxpImage = new Image();
+pxpImage.src = "pxp coin perfect_clipped_rev_1.png";
+
+function spawnPXP(x, y) {
+  pxpCoins.push({ x: x + brickWidth / 2 - 10, y: y, caught: false });
+}
+
+function drawPXPcoins() {
+  for (let coin of pxpCoins) {
+    if (!coin.caught) {
+      ctx.drawImage(pxpImage, coin.x, coin.y, 20, 20);
+    }
+  }
+}
+
+function updatePXPcoins() {
+  for (let coin of pxpCoins) {
+    if (!coin.caught) {
+      coin.y += 3;
+
+      // Check of muntje op paddle valt
+      if (
+        coin.y + 20 >= canvas.height - paddleHeight &&
+        coin.x + 10 >= paddleX &&
+        coin.x <= paddleX + paddleWidth
+      ) {
+        coin.caught = true;
+        score += 5;
+      }
+
+      // Verwijder muntje als het buiten beeld valt
+      if (coin.y > canvas.height) {
+        coin.caught = true;
+      }
+    }
+  }
 }
