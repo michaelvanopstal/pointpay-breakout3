@@ -99,7 +99,7 @@ body {
   margin-top: 60px;
 
 
-}#login-overlay {
+ #login-overlay {
   position: absolute;
   top: 20px;
   right: 30px;
@@ -110,7 +110,7 @@ body {
 
 #login-box {
   display: inline-block;
-
+}
   
 #playerName {
   position: absolute;
