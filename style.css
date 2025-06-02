@@ -128,3 +128,16 @@ body {
   z-index: 999;
 }
 
+#player-display {
+  margin-right: 15px;
+}
+
+#scoreDisplay {
+  margin-right: 15px;
+}
+
+#timeDisplay {
+  margin-left: 5px;
+}
+
+
