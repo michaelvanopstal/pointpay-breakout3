@@ -9,6 +9,8 @@ let dy = -4;
 let ballLaunched = false;
         stopTimer();
         timerStarted = false;
+        stopTimer();
+        timerStarted = false;
 let x;
 let y;
 let paddleHeight = 10;
@@ -128,6 +130,11 @@ function draw() {
   drawPaddle();
   drawScore();
 
+  if (!timerStarted && ballLaunched) {
+    startTimer();
+    timerStarted = true;
+  }
+
   let steps = 4;
   for (let i = 0; i < steps; i++) {
     if (ballLaunched) {
@@ -149,6 +156,8 @@ function draw() {
         dy = -Math.abs(dy);
       } else {
         ballLaunched = false;
+        stopTimer();
+        timerStarted = false;
         stopTimer();
         timerStarted = false;
         score = 0;
@@ -186,6 +195,27 @@ function startTimer() {
     const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
     const timerDiv = document.getElementById("timerDisplay");
     if (timerDiv) timerDiv.textContent = elapsedTime;
+  }, 1000);
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+}
+
+// TIMER VARIABELEN
+let timerStarted = false;
+let timerInterval;
+let startTime;
+
+function startTimer() {
+  startTime = Date.now();
+  timerInterval = setInterval(() => {
+    const elapsedTime = Date.now() - startTime;
+    const minutes = Math.floor(elapsedTime / 60000);
+    const seconds = Math.floor((elapsedTime % 60000) / 1000);
+    const formatted = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    const timerDiv = document.getElementById("timerDisplay");
+    if (timerDiv) timerDiv.textContent = formatted;
   }, 1000);
 }
 
