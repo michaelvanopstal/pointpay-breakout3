@@ -276,3 +276,6 @@ function updatePXPcoins() {
     }
   }
 }
+
+
+draw(); // Start de game-loop
