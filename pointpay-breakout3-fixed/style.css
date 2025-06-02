@@ -1,0 +1,70 @@
+
+body {
+  margin: 0;
+  background: url('wandljk_kl_png_V1.jpeg') no-repeat center center;
+  background-size: cover;
+  overflow: hidden;
+  height: 100vh;
+  position: relative;
+}
+
+#gameCanvas {
+  z-index: 1;
+  position: absolute;
+  top: 70px;
+  left: 10px;
+  width: 645px;
+  height: 600px;
+  background-color: transparent;
+  border: 3px solid "transparent"
+}
+
+#scoreDisplay {
+  position: absolute;
+  top: 72px;
+  right: 110px;
+  color: white;
+  font-size: 20px;
+  font-family: Arial, sans-serif;
+}
+
+
+#login-block {
+  position: relative;
+  z-index: 10;
+  background-color: #007BFF;
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  width: 250px;
+  margin: 20px auto;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+#login-block input {
+  width: 80%;
+  padding: 5px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 5px;
+}
+
+#login-block button {
+  padding: 5px 15px;
+  background-color: white;
+  color: #007BFF;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#player-display {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  color: #333;
+  font-size: 18px;
+  font-family: Arial, sans-serif;
+}
