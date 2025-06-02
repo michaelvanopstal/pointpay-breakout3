@@ -97,4 +97,18 @@ body {
 #game-container {
   position: relative;
   margin-top: 60px;
+
+
+}#login-overlay {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  left: auto;
+  text-align: right;
+  z-index: 999;
 }
+
+#login-box {
+  display: inline-block;
+}
+
