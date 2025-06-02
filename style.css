@@ -110,5 +110,16 @@ body {
 
 #login-box {
   display: inline-block;
+
+  
+}#playerName {
+  position: absolute;
+  top: 20px;
+  right: 90px;  /* Pas dit getal aan tot het precies goed staat */
+  color: white;
+  font-size: 20px;
+  font-family: Arial, sans-serif;
+  z-index: 999;
 }
+
 
