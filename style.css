@@ -4,7 +4,7 @@ body {
   background: url('wandljk_kl_png_V1.jpeg') no-repeat center center;
   background-size: cover;
   overflow: hidden;
-  height: 100vh;
+  
   position: relative;
 }
 
@@ -25,4 +25,77 @@ body {
   color: white;
   font-size: 20px;
   font-family: Arial, sans-serif;
+}
+
+
+body {
+  background-attachment: fixed;
+  background-size: cover;
+  font-family: Arial, sans-serif;
+}
+
+#highscore-overlay {
+  position: absolute;
+  top: 70px;
+  left: 675px;
+  width: 200px;
+  background: rgba(0,0,0,0.6);
+  border-radius: 10px;
+  padding: 10px;
+  color: white;
+  font-size: 16px;
+  z-index: 99;
+}
+#highscore-overlay h2 {
+  text-align: center;
+  margin: 5px 0;
+}
+#highscore-overlay ol {
+  padding-left: 20px;
+  margin: 0;
+}
+#trophy {
+  width: 60px;
+  display: block;
+  margin: 0 auto 10px auto;
+}
+#top-info {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 100;
+  position: absolute;
+  top: 10px;
+  width: 100%;
+  text-align: center;
+  font-size: 18px;
+  z-index: 200;
+}
+#game-container {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-left: 10px;
+  margin-top: 60px;
+}
+
+
+#top-info {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 18px;
+  color: white;
+  font-family: Arial, sans-serif;
+  z-index: 200;
+}
+
+#game-container {
+  position: relative;
+  margin-top: 60px;
 }

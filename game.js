@@ -7,8 +7,6 @@ let ballRadius = 8;
 let dx = 4;
 let dy = -4;
 let ballLaunched = false;
-        stopTimer();
-        timerStarted = false;
 let x;
 let y;
 let paddleHeight = 10;
@@ -124,11 +122,6 @@ function draw() {
   drawPaddle();
   drawScore();
 
-  if (!timerStarted && ballLaunched) {
-    startTimer();
-    timerStarted = true;
-  }
-
   let steps = 4;
   for (let i = 0; i < steps; i++) {
     if (ballLaunched) {
@@ -150,8 +143,6 @@ function draw() {
         dy = -Math.abs(dy);
       } else {
         ballLaunched = false;
-        stopTimer();
-        timerStarted = false;
         score = 0;
         for (let c = 0; c < brickColumnCount; c++) {
           for (let r = 0; r < brickRowCount; r++) {
@@ -174,22 +165,3 @@ function draw() {
 }
 
 draw();
-
-
-// TIMER VARIABELEN
-let timerStarted = false;
-let timerInterval;
-let startTime;
-
-function startTimer() {
-  startTime = Date.now();
-  timerInterval = setInterval(() => {
-    const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-    const timerDiv = document.getElementById("timerDisplay");
-    if (timerDiv) timerDiv.textContent = elapsedTime;
-  }, 1000);
-}
-
-function stopTimer() {
-  clearInterval(timerInterval);
-}
