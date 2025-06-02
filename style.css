@@ -114,3 +114,11 @@ body {
   margin: 0 auto;
   width: 80px;
 }
+
+
+#game-container {
+  position: relative;
+  width: 800px;
+  height: 600px;
+  margin-left: 10px;
+}
