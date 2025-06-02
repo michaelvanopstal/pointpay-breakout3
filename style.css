@@ -75,8 +75,7 @@ body {
 #top-info {
   position: absolute;
   top: 10px;
-  left: auto;
-  right: 60px; /* of 80px, net wat jij wil */
+  right: 60px;
   width: fit-content;
   text-align: right;
   font-size: 18px;
