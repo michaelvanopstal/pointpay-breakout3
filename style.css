@@ -124,7 +124,7 @@ body {
 
 #timerDisplay {
   position: absolute;
-  top: 72px;
+  top: 50px;
   right: 20px;  /* Pas dit aan voor precieze positie */
   color: white;
   font-size: 20px;
