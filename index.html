@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,45 +8,8 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="top-info">
-    <span id="player-display">Player michael</span>
-    <span id="scoreDisplay">score 0 pxp.</span>
-    <span id="timeDisplay">time 00:00</span>
-  </div>
-
-  <div id="game-container">
-    <canvas id="gameCanvas" width="645" height="600"></canvas>
-    <div id="login-overlay">
-      <div id="login-box">
-        <label for="player-name">Inlog:</label><br />
-        <input type="text" id="player-name" placeholder="Voer je naam in" />
-        <button onclick="submitName()">Bevestig</button>
-      </div>
-    </div>
-    <div id="highscore-overlay">
-      <img src="beker_clipped_rev_2.png" id="trophy" alt="Trophy" />
-      <h2>High score</h2>
-      <ol id="highscore-list">
-        <li></li><li></li><li></li><li></li><li></li>
-        <li></li><li></li><li></li><li></li><li></li>
-      </ol>
-    </div>
-  </div>
-
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <div id="scoreDisplay">Score: 0 pxp</div>
   <script src="game.js"></script>
-  <script>
-    function submitName() {
-      const name = document.getElementById("player-name").value.trim();
-      if (name) {
-        document.getElementById("player-display").innerText = `Player ${name}`;
-        document.getElementById("login-overlay").style.display = "none";
-        window.playerName = name;
-        startTime = Date.now();
-        renderHighscores();
-      } else {
-        alert("Voer een geldige naam in.");
-      }
-    }
-  </script>
 </body>
 </html>

@@ -4,7 +4,7 @@ body {
   background: url('wandljk_kl_png_V1.jpeg') no-repeat center center;
   background-size: cover;
   overflow: hidden;
-  height: 100vh;
+  
   position: relative;
 }
 
@@ -18,6 +18,7 @@ body {
   border: 3px solid "transparent"
 }
 
+#scoreDisplay {
   position: absolute;
   top: 72px;
   right: 110px;
@@ -27,126 +28,45 @@ body {
 }
 
 
-#login-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-}
-
-#login-box {
-  background-color: #007BFF;
-  color: white;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
+body {
+  background-attachment: fixed;
+  background-size: cover;
   font-family: Arial, sans-serif;
 }
-
-#login-box input {
-  padding: 5px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  border: none;
-  border-radius: 5px;
-  width: 80%;
-}
-
-#login-box button {
-  padding: 6px 15px;
-  background-color: white;
-  color: #007BFF;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-  position: absolute;
-  top: 20px;
-  right: 30px;
-  color: white;
-  font-size: 18px;
-  font-family: Arial, sans-serif;
-  z-index: 101;
-}
-
 
 #highscore-overlay {
-  left: 675px;
   position: absolute;
-  top: 60px;
-  left: 660px;
-  width: 230px;
+  top: 70px;
+  left: 675px;
+  width: 200px;
   background: rgba(0,0,0,0.6);
   border-radius: 10px;
   padding: 10px;
   color: white;
-  font-family: Arial, sans-serif;
+  font-size: 16px;
   z-index: 99;
 }
-
 #highscore-overlay h2 {
-  left: 675px;
   text-align: center;
-  margin-top: 10px;
-  font-size: 20px;
+  margin: 5px 0;
 }
-
-#highscore-list {
-  list-style: decimal inside;
-  padding-left: 0;
+#highscore-overlay ol {
+  padding-left: 20px;
   margin: 0;
-  font-size: 14px;
 }
-
-#highscore-list li {
-  margin-bottom: 5px;
-}
-
 #trophy {
+  width: 60px;
   display: block;
-  margin: 0 auto;
-  width: 80px;
+  margin: 0 auto 10px auto;
 }
-
-
-#game-container {
-  position: relative;
-  width: 800px;
-  height: 600px;
-  margin-left: 10px;
-}
-
-#topbar {
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  display: flex;
-  gap: 20px;
-  color: white;
-  font-size: 18px;
-  font-family: Arial, sans-serif;
-  z-index: 101;
-}
-
-
 #top-info {
   position: absolute;
   top: 10px;
   width: 100%;
   text-align: center;
-  font-family: Arial, sans-serif;
-  color: white;
   font-size: 18px;
   z-index: 200;
 }
-
 #game-container {
   position: relative;
   display: flex;
@@ -155,28 +75,4 @@ body {
   align-items: flex-start;
   margin-left: 10px;
   margin-top: 60px;
-}
-
-#highscore-overlay {
-  margin-left: 20px;
-  color: white;
-  font-family: Arial, sans-serif;
-  font-size: 16px;
-  line-height: 1.6;
-}
-
-#highscore-overlay h2 {
-  margin: 5px 0;
-  text-align: left;
-}
-
-#highscore-overlay ol {
-  padding-left: 20px;
-  margin: 0;
-}
-
-#trophy {
-  width: 40px;
-  display: block;
-  margin-bottom: 5px;
 }
