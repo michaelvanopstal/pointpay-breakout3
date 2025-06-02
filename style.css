@@ -94,11 +94,6 @@ body {
   z-index: 200;
 }
 
-#game-container {
-  position: relative;
-  margin-top: 60px;
-}
-
 
  #login-overlay {
   position: absolute;
