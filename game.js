@@ -86,7 +86,7 @@ function drawPaddle() {
 function drawScore() {
   const scoreDiv = document.getElementById("scoreDisplay");
   if (scoreDiv) {
-    scoreDiv.innerHTML = "Score: " + score + " pxp";
+    scoreDiv.innerHTML = "Score;
   }
 }
 
