@@ -35,14 +35,14 @@ document.addEventListener("keyup", keyUpHandler, false);
 document.addEventListener("mousemove", mouseMoveHandler, false);
 
 document.addEventListener("click", () => {
-  if (!ballLaunched) {
+  if (!ballLaunched && window.playerName) {
     ballLaunched = true;
     if (!timerRunning) startTimer();
   }
 });
 
 document.addEventListener("keydown", (e) => {
-  if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched) {
+  if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched && window.playerName) {
     ballLaunched = true;
     if (!timerRunning) startTimer();
   }
