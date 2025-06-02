@@ -134,3 +134,49 @@ body {
   font-family: Arial, sans-serif;
   z-index: 101;
 }
+
+
+#top-info {
+  position: absolute;
+  top: 10px;
+  width: 100%;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  color: white;
+  font-size: 18px;
+  z-index: 200;
+}
+
+#game-container {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-left: 10px;
+  margin-top: 60px;
+}
+
+#highscore-overlay {
+  margin-left: 20px;
+  color: white;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+#highscore-overlay h2 {
+  margin: 5px 0;
+  text-align: left;
+}
+
+#highscore-overlay ol {
+  padding-left: 20px;
+  margin: 0;
+}
+
+#trophy {
+  width: 40px;
+  display: block;
+  margin-bottom: 5px;
+}
