@@ -77,3 +77,40 @@ body {
   font-family: Arial, sans-serif;
   z-index: 101;
 }
+
+
+#highscore-overlay {
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  width: 230px;
+  background: rgba(0,0,0,0.6);
+  border-radius: 10px;
+  padding: 10px;
+  color: white;
+  font-family: Arial, sans-serif;
+  z-index: 99;
+}
+
+#highscore-overlay h2 {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 20px;
+}
+
+#highscore-list {
+  list-style: decimal inside;
+  padding-left: 0;
+  margin: 0;
+  font-size: 14px;
+}
+
+#highscore-list li {
+  margin-bottom: 5px;
+}
+
+#trophy {
+  display: block;
+  margin: 0 auto;
+  width: 80px;
+}
