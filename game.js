@@ -196,3 +196,41 @@ function updateTimerDisplay() {
   const seconds = String(elapsedTime % 60).padStart(2, '0');
   document.getElementById("timeDisplay").textContent = `${minutes}:${seconds}`;
 }
+
+
+function saveHighscore(name, points, time) {
+  const highscoreList = JSON.parse(localStorage.getItem("highscores")) || [];
+  highscoreList.push({ name, points, time });
+
+  highscoreList.sort((a, b) => {
+    if (b.points !== a.points) return b.points - a.points;
+    return a.time - b.time;
+  });
+
+  highscoreList.splice(10);
+  localStorage.setItem("highscores", JSON.stringify(highscoreList));
+  renderHighscores();
+}
+
+function renderHighscores() {
+  const highscoreList = JSON.parse(localStorage.getItem("highscores")) || [];
+  const listElement = document.getElementById("highscore-list");
+  listElement.innerHTML = "";
+
+  for (let i = 0; i < 10; i++) {
+    const entry = highscoreList[i];
+    const li = listElement.children[i];
+    if (entry) {
+      const timeStr = formatTime(entry.time);
+      li.textContent = `${entry.name} - ${entry.points} pxp - ${timeStr}`;
+    } else {
+      li.textContent = "";
+    }
+  }
+}
+
+function formatTime(seconds) {
+  const minutes = String(Math.floor(seconds / 60)).padStart(2, '0');
+  const secs = String(seconds % 60).padStart(2, '0');
+  return `${minutes}:${secs}`;
+}
