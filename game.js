@@ -153,6 +153,7 @@ function draw() {
         dy = -Math.abs(dy);
       } else {
         stopTimer();
+        saveHighscore(window.playerName, score, elapsedTime);
         ballLaunched = false;
         score = 0;
         for (let c = 0; c < brickColumnCount; c++) {
@@ -214,18 +215,15 @@ function saveHighscore(name, points, time) {
 
 function renderHighscores() {
   const highscoreList = JSON.parse(localStorage.getItem("highscores")) || [];
-  const listElement = document.getElementById("highscore-list");
-  listElement.innerHTML = "";
+  const listItems = document.querySelectorAll("#highscore-list li");
 
-  for (let i = 0; i < 10; i++) {
-    const entry = highscoreList[i];
-    const li = listElement.children[i];
-    if (entry) {
-      const timeStr = formatTime(entry.time);
-      li.textContent = `${entry.name} - ${entry.points} pxp - ${timeStr}`;
-    } else {
-      li.textContent = "";
-    }
+  highscoreList.forEach((entry, index) => {
+    const timeStr = formatTime(entry.time);
+    listItems[index].textContent = `${index + 1}. ${entry.name} - ${entry.points} pxp - ${timeStr}`;
+  });
+
+  for (let i = highscoreList.length; i < 10; i++) {
+    listItems[i].textContent = `${i + 1}.`;
   }
 }
 
