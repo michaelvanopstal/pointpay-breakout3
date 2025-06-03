@@ -1,52 +1,4 @@
 
-const coinImg = new Image();
-coinImg.src = "pxp coin perfect_clipped_rev_1.png";
-let coins = [];
-
-function spawnCoin(x, y) {
-  coins.push({ x: x + brickWidth / 2 - 12, y: y, radius: 12, active: true });
-}
-
-function drawCoins() {
-  coins.forEach(coin => {
-    if (coin.active) {
-      ctx.drawImage(coinImg, coin.x, coin.y, 24, 24);
-      coin.y += 2;
-    }
-  });
-}
-
-function checkCoinCollision() {
-  coins.forEach(coin => {
-    if (
-      coin.active &&
-      coin.y + coin.radius * 2 >= canvas.height - paddleHeight &&
-      coin.x + coin.radius > paddleX &&
-      coin.x < paddleX + paddleWidth
-    ) {
-      coin.active = false;
-      score += 5;
-      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-    }
-  });
-}
-
-document.addEventListener("click", () => {
-  if (!ballLaunched && window.readyToLaunch) {
-    ballLaunched = true;
-    if (!timerRunning) startTimer();
-  }
-});
-
-document.addEventListener("keydown", (e) => {
-  if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched && window.readyToLaunch) {
-    ballLaunched = true;
-    if (!timerRunning) startTimer();
-  }
-});
-
-
-
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -87,6 +39,20 @@ ballImg.src = "ball_logo.png";
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 document.addEventListener("mousemove", mouseMoveHandler, false);
+
+document.addEventListener("click", () => {
+  if (!ballLaunched && window.readyToLaunch) {
+    ballLaunched = true;
+    if (!timerRunning) startTimer();
+  }
+});
+
+document.addEventListener("keydown", (e) => {
+  if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched && window.readyToLaunch) {
+    ballLaunched = true;
+    if (!timerRunning) startTimer();
+  }
+});
 
 function keyDownHandler(e) {
   if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
@@ -139,30 +105,97 @@ function startTimer() {
   }, 1000);
 }
 
+
 function collisionDetection() {
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
       let b = bricks[c][r];
       if (b.status === 1) {
-        if (x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
+        if (
+          x > b.x &&
+          x < b.x + brickWidth &&
+          y > b.y &&
+          y < b.y + brickHeight
+        ) {
           dy = -dy;
           b.status = 0;
           score += 10;
-          document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
           spawnCoin(b.x, b.y);
+          document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
         }
       }
     }
   }
 }
 
+
+
+function saveHighscore() {
+  const timeText = document.getElementById("timeDisplay").textContent.replace("time ", "");
+  const highscore = {
+    name: window.currentPlayer || "Unknown",
+    score: score,
+    time: timeText
+  };
+
+  let highscores = JSON.parse(localStorage.getItem("highscores")) || [];
+  highscores.push(highscore);
+  highscores.sort((a, b) => b.score - a.score || a.time.localeCompare(b.time));
+  highscores = highscores.slice(0, 10);
+  localStorage.setItem("highscores", JSON.stringify(highscores));
+
+  const list = document.getElementById("highscore-list");
+  list.innerHTML = "";
+  highscores.forEach(entry => {
+    const li = document.createElement("li");
+    li.textContent = `${entry.name} — ${entry.score} pxp — ${entry.time}`;
+    list.appendChild(li);
+  });
+}
+
+
+
+const coinImg = new Image();
+coinImg.src = "pxp coin perfect_clipped_rev_1.png";
+let coins = [];
+
+function spawnCoin(x, y) {
+  coins.push({ x: x + brickWidth / 2 - 12, y: y, radius: 12, active: true });
+}
+
+function drawCoins() {
+  coins.forEach(coin => {
+    if (coin.active) {
+      ctx.drawImage(coinImg, coin.x, coin.y, 24, 24);
+      coin.y += 2; // valt naar beneden
+    }
+  });
+}
+
+function checkCoinCollision() {
+  coins.forEach(coin => {
+    if (
+      coin.active &&
+      coin.y + coin.radius * 2 >= canvas.height - paddleHeight &&
+      coin.x + coin.radius > paddleX &&
+      coin.x < paddleX + paddleWidth
+    ) {
+      coin.active = false;
+      score += 5;
+      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+    }
+  });
+}
+
+
 function draw() {
+  collisionDetection();
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawCoins();
+  checkCoinCollision();
   drawBricks();
   drawBall();
   drawPaddle();
-  drawCoins();
-  checkCoinCollision();
 
   if (rightPressed && paddleX < canvas.width - paddleWidth) paddleX += 7;
   else if (leftPressed && paddleX > 0) paddleX -= 7;
@@ -171,9 +204,11 @@ function draw() {
     x += dx;
     y += dy;
 
+    // botsing met muren
     if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) dx = -dx;
     if (y + dy < ballRadius) dy = -dy;
 
+    // botsing met paddle
     if (
       y + dy > canvas.height - paddleHeight - ballRadius &&
       x > paddleX &&
@@ -182,16 +217,13 @@ function draw() {
       dy = -dy;
     }
 
+    // beneden uit
     if (y + dy > canvas.height - ballRadius) {
-      location.reload();
-    }
-      location.reload();
+      saveHighscore();
+      document.location.reload();
     }
   } else {
-    // Zorg dat bal altijd gecentreerd op paddle blijft voor lancering
-    x = paddleX + paddleWidth / 2 - ballRadius;
-    y = canvas.height - paddleHeight - ballRadius * 2;
-    }
+    // bal volgt paddle voor lancering
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
   }
@@ -203,11 +235,11 @@ let imagesLoaded = 0;
 function onImageLoad() {
   imagesLoaded++;
   if (imagesLoaded === 2) {
+    // Startpositie instellen
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
     draw();
   }
 }
-
 blockImg.onload = onImageLoad;
 ballImg.onload = onImageLoad;
