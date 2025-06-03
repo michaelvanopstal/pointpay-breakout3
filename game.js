@@ -183,7 +183,9 @@ function draw() {
     // beneden uit
     if (y + dy > canvas.height - ballRadius) {
       saveHighscore();
-      document.location.reload();
+      ballLaunched = false;
+      window.readyToLaunch = false;
+      setTimeout(() => { document.location.reload(); }, 2000);
     }
   } else {
     // bal volgt paddle voor lancering
