@@ -1,1 +1,1 @@
-// hier komt je game.js code
+// Vervang dit met jouw volledige game.js code.
