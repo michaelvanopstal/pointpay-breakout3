@@ -105,7 +105,31 @@ function startTimer() {
   }, 1000);
 }
 
+
+function collisionDetection() {
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      let b = bricks[c][r];
+      if (b.status === 1) {
+        if (
+          x > b.x &&
+          x < b.x + brickWidth &&
+          y > b.y &&
+          y < b.y + brickHeight
+        ) {
+          dy = -dy;
+          b.status = 0;
+          score += 10;
+          document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+        }
+      }
+    }
+  }
+}
+
+
 function draw() {
+  collisionDetection();
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBricks();
   drawBall();
