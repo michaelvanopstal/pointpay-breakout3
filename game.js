@@ -1,4 +1,12 @@
 
+function resetGameState() {
+  score = 0;
+  document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
+  // Optioneel: timer, coins, of andere zaken resetten
+}
+
+
+
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -225,6 +233,7 @@ let imagesLoaded = 0;
 function onImageLoad() {
   imagesLoaded++;
   if (imagesLoaded === 2) {
+    resetGameState();
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
     draw();
