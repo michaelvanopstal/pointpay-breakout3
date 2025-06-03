@@ -252,12 +252,7 @@ function draw() {
 let imagesLoaded = 0;
 function onImageLoad() {
   imagesLoaded++;
-  console.log("Image loaded. Total:", imagesLoaded);
-  if (imagesLoaded >= 1) {
-    console.log("Force draw start - loaded images:", imagesLoaded);
-    if (typeof resetGameState === 'function') resetGameState();
-    draw();
-}
+  if (imagesLoaded === 2) {
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
     draw();
