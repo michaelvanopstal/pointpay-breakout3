@@ -37,7 +37,7 @@
   <script src="login.js"></script>
   <script src="game.js"></script>
 
-  <!-- Restart knop -->
+  <!-- Permanente Restart-knop -->
   <div id="restart-container">
     <img src="restart_button_P.png" alt="Restart Button" id="restart-image" />
     <div id="restart-text">Restart</div>
@@ -46,32 +46,35 @@
   <style>
     #restart-container {
       position: absolute;
-      top: 290px;
-      left: 185px;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
       text-align: center;
       cursor: pointer;
       z-index: 1000;
     }
 
     #restart-image {
-      width: 85px;
-      height: 85px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
-      box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
 
     #restart-text {
       color: white;
       font-weight: bold;
-      font-size: 16px;
+      font-size: 14px;
       margin-top: 4px;
       text-shadow: 0 0 5px #000;
     }
   </style>
 
   <script>
-    document.getElementById("restart-container").addEventListener("click", () => {
-      location.reload();
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("restart-container").addEventListener("click", () => {
+        location.reload();
+      });
     });
   </script>
 
