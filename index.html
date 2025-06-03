@@ -1,40 +1,78 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PointPay Breakout</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Login/Logout Component</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: white;
+    }
+    .control-panel {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    #logoutBtn {
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      display: none;
+    }
+    #loginBtn {
+      background-color: green;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+    }
+    #playerName {
+      font-weight: bold;
+    }
+    input[type="text"] {
+      padding: 5px;
+    }
+  </style>
 </head>
 <body>
-  <div id="top-info">
-    <span id="player-display">Player</span>
-    <span id="scoreDisplay">score 0 pxp.</span>
-    <span id="timeDisplay">time 00:00</span>
+
+  <div id="playerContainer">
+    Player: <span id="playerName"></span>
   </div>
 
-  <div id="game-container">
-    <canvas id="gameCanvas" width="645" height="600"></canvas>
-
-    <div id="login-overlay">
-      <div id="login-box">
-        <label for="player-name">Inlog:</label><br />
-        <input type="text" id="player-name" placeholder="Voer je naam in" />
-        <button onclick="submitName()">Bevestig</button>
-      </div>
-    </div>
-
-    <div id="highscore-overlay">
-      <img src="beker_clipped_rev_2.png" id="trophy" alt="Trophy" />
-      <h2>High score</h2>
-      <ol id="highscore-list">
-        <li></li><li></li><li></li><li></li><li></li>
-        <li></li><li></li><li></li><li></li><li></li>
-      </ol>
-    </div>
+  <div class="control-panel" id="loginPanel">
+    <input type="text" id="nameInput" placeholder="Voer je naam in">
+    <button id="loginBtn">Login</button>
   </div>
 
-  <script src="login.js"></script>
-  <script src="game.js"></script>
+  <button id="logoutBtn">Logout</button>
+
+  <script>
+    const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const nameInput = document.getElementById("nameInput");
+    const playerName = document.getElementById("playerName");
+    const loginPanel = document.getElementById("loginPanel");
+
+    loginBtn.addEventListener("click", () => {
+      const name = nameInput.value.trim();
+      if (name !== "") {
+        playerName.textContent = name;
+        loginPanel.style.display = "none";
+        logoutBtn.style.display = "inline-block";
+      }
+    });
+
+    logoutBtn.addEventListener("click", () => {
+      playerName.textContent = "";
+      nameInput.value = "";
+      loginPanel.style.display = "flex";
+      logoutBtn.style.display = "none";
+    });
+  </script>
+
 </body>
 </html>
