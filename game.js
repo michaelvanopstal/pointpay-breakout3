@@ -128,6 +128,31 @@ function collisionDetection() {
 }
 
 
+
+function saveHighscore() {
+  const timeText = document.getElementById("timeDisplay").textContent.replace("time ", "");
+  const highscore = {
+    name: window.currentPlayer || "Unknown",
+    score: score,
+    time: timeText
+  };
+
+  let highscores = JSON.parse(localStorage.getItem("highscores")) || [];
+  highscores.push(highscore);
+  highscores.sort((a, b) => b.score - a.score || a.time.localeCompare(b.time));
+  highscores = highscores.slice(0, 10);
+  localStorage.setItem("highscores", JSON.stringify(highscores));
+
+  const list = document.getElementById("highscore-list");
+  list.innerHTML = "";
+  highscores.forEach(entry => {
+    const li = document.createElement("li");
+    li.textContent = `${entry.name} — ${entry.score} pxp — ${entry.time}`;
+    list.appendChild(li);
+  });
+}
+
+
 function draw() {
   collisionDetection();
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -157,6 +182,7 @@ function draw() {
 
     // beneden uit
     if (y + dy > canvas.height - ballRadius) {
+      saveHighscore();
       document.location.reload();
     }
   } else {
