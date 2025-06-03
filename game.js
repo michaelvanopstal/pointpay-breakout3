@@ -1,3 +1,4 @@
+
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -203,7 +204,12 @@ function draw() {
 
     if (y + dy > canvas.height - ballRadius) {
       saveHighscore();
-      document.location.reload();
+      ballLaunched = false;
+      dx = 4;
+      dy = -4;
+      elapsedTime = 0;
+      timerRunning = false;
+      clearInterval(timerInterval);
     }
   } else {
     x = paddleX + paddleWidth / 2 - ballRadius;
@@ -224,3 +230,20 @@ function onImageLoad() {
 }
 blockImg.onload = onImageLoad;
 ballImg.onload = onImageLoad;
+document.addEventListener("keydown", function (e) {
+  if (!ballMoving && (e.code === "ArrowUp" || e.code === "Space")) {
+    if (lives <= 0) {
+      lives = 3;
+      score = 0;
+      level = 1;
+      resetBricks();
+      resetBall();
+      resetPaddle();
+      startTime = new Date();
+      gameOver = false;
+      updateScoreDisplay();
+      updateTimeDisplay();
+    }
+    ballMoving = true;
+  }
+});
