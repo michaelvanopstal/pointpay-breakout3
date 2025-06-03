@@ -1,8 +1,10 @@
 
 function resetGameState() {
   score = 0;
+  elapsedTime = 0;
   document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
-  // Optioneel: timer, coins, of andere zaken resetten
+  document.getElementById("timeDisplay").textContent = "time 00:00";
+  coins = [];
 }
 
 
@@ -128,6 +130,7 @@ function collisionDetection() {
   }
 }
 
+
 function saveHighscore() {
   const timeText = document.getElementById("timeDisplay").textContent.replace("time ", "");
   const highscore = {
@@ -137,15 +140,32 @@ function saveHighscore() {
   };
 
   let highscores = JSON.parse(localStorage.getItem("highscores")) || [];
-  if (!highscores.some(h => h.name === highscore.name && h.score === highscore.score && h.time === highscore.time)) {
+
+  // Alleen toevoegen als score beter is dan een van de bestaande of lijst kleiner is dan 10
+  let isWorthy = highscores.length < 10 || highscores.some(h =>
+    highscore.score > h.score || (highscore.score === h.score && highscore.time < h.time)
+  );
+
+  // Uniek én waardig
+  if (isWorthy && !highscores.some(h => h.name === highscore.name && h.score === highscore.score && h.time === highscore.time)) {
     highscores.push(highscore);
   }
+
+  // Sorteer en beperk tot top 10
   highscores.sort((a, b) => b.score - a.score || a.time.localeCompare(b.time));
   highscores = highscores.slice(0, 10);
+
   localStorage.setItem("highscores", JSON.stringify(highscores));
 
   const list = document.getElementById("highscore-list");
   list.innerHTML = "";
+  highscores.forEach(entry => {
+    const li = document.createElement("li");
+    li.textContent = `${entry.name} — ${entry.score} pxp — ${entry.time}`;
+    list.appendChild(li);
+  });
+}
+
   highscores.forEach(entry => {
     const li = document.createElement("li");
     li.textContent = `${entry.name} — ${entry.score} pxp — ${entry.time}`;
@@ -233,7 +253,6 @@ let imagesLoaded = 0;
 function onImageLoad() {
   imagesLoaded++;
   if (imagesLoaded === 2) {
-    resetGameState();
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
     draw();
@@ -258,3 +277,14 @@ document.addEventListener("keydown", function (e) {
     ballMoving = true;
   }
 });
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+}
+
+
+function showRestartOverlay() {
+  alert("Game over! Click or press ↑ to try again.");
+  // Hier kan visuele overlay of herstartknop worden gebouwd
+}
