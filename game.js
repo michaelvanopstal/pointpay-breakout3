@@ -185,7 +185,13 @@ function draw() {
     if (y + dy > canvas.height - ballRadius) {
       location.reload();
     }
+      location.reload();
+    }
   } else {
+    // Zorg dat bal altijd gecentreerd op paddle blijft voor lancering
+    x = paddleX + paddleWidth / 2 - ballRadius;
+    y = canvas.height - paddleHeight - ballRadius * 2;
+    }
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
   }
