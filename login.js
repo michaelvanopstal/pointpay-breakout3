@@ -1,14 +1,11 @@
 
 function submitName() {
-  const nameInput = document.getElementById("player-name");
-  const playerName = nameInput.value.trim();
-  if (playerName) {
-    document.getElementById("player-display").innerText = `Player ${playerName}`;
+  const playerName = document.getElementById("player-name").value.trim();
+  if (playerName !== "") {
+    document.getElementById("player-display").textContent = "Player: " + playerName;
     document.getElementById("login-overlay").style.display = "none";
-    window.playerName = playerName;
-    window.readyToLaunch = true; // ✅ pas na naam mag de bal worden gelanceerd
-    if (typeof renderHighscores === 'function') renderHighscores();
+    window.readyToLaunch = true; // Nu mag de speler starten
   } else {
-    alert("Voer een geldige naam in.");
+    alert("Vul je naam in om te starten.");
   }
 }

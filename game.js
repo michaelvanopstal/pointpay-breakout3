@@ -14,7 +14,7 @@ let x;
 let y;
 let paddleHeight = 10;
 let paddleWidth = 100;
-let paddleX = 0;
+let paddleX = (canvas.width - paddleWidth) / 2;
 let rightPressed = false;
 let leftPressed = false;
 
@@ -31,7 +31,6 @@ for (let c = 0; c < brickColumnCount; c++) {
   }
 }
 
-// Afbeeldingen vooraf laden
 const blockImg = new Image();
 blockImg.src = "block_logo.png";
 const ballImg = new Image();
@@ -96,23 +95,62 @@ function drawPaddle() {
   ctx.closePath();
 }
 
-// Placeholder voor game loop om te zien of het werkt
+function startTimer() {
+  timerRunning = true;
+  timerInterval = setInterval(() => {
+    elapsedTime++;
+    const minutes = String(Math.floor(elapsedTime / 60)).padStart(2, '0');
+    const seconds = String(elapsedTime % 60).padStart(2, '0');
+    document.getElementById("timeDisplay").textContent = "time " + minutes + ":" + seconds;
+  }, 1000);
+}
+
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBricks();
   drawBall();
   drawPaddle();
+
+  if (rightPressed && paddleX < canvas.width - paddleWidth) paddleX += 7;
+  else if (leftPressed && paddleX > 0) paddleX -= 7;
+
+  if (ballLaunched) {
+    x += dx;
+    y += dy;
+
+    // botsing met muren
+    if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) dx = -dx;
+    if (y + dy < ballRadius) dy = -dy;
+
+    // botsing met paddle
+    if (
+      y + dy > canvas.height - paddleHeight - ballRadius &&
+      x > paddleX &&
+      x < paddleX + paddleWidth
+    ) {
+      dy = -dy;
+    }
+
+    // beneden uit
+    if (y + dy > canvas.height - ballRadius) {
+      document.location.reload();
+    }
+  } else {
+    // bal volgt paddle voor lancering
+    x = paddleX + paddleWidth / 2 - ballRadius;
+    y = canvas.height - paddleHeight - ballRadius * 2;
+  }
+
   requestAnimationFrame(draw);
 }
 
-// Start pas met tekenen als de afbeeldingen geladen zijn
 let imagesLoaded = 0;
 function onImageLoad() {
   imagesLoaded++;
   if (imagesLoaded === 2) {
-    // Initialiseer balpositie
-    x = canvas.width / 2;
-    y = canvas.height - 30;
+    // Startpositie instellen
+    x = paddleX + paddleWidth / 2 - ballRadius;
+    y = canvas.height - paddleHeight - ballRadius * 2;
     draw();
   }
 }
