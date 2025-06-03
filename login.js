@@ -1,4 +1,3 @@
-
 function submitName() {
   const playerName = document.getElementById("player-name").value.trim();
   if (playerName !== "") {

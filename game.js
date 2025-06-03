@@ -1,4 +1,3 @@
-
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -39,13 +38,6 @@ ballImg.src = "ball_logo.png";
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 document.addEventListener("mousemove", mouseMoveHandler, false);
-
-document.addEventListener("click", () => {
-  if (!ballLaunched && window.readyToLaunch) {
-    ballLaunched = true;
-    if (!timerRunning) startTimer();
-  }
-});
 
 document.addEventListener("keydown", (e) => {
   if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched && window.readyToLaunch) {
@@ -105,7 +97,6 @@ function startTimer() {
   }, 1000);
 }
 
-
 function collisionDetection() {
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
@@ -127,8 +118,6 @@ function collisionDetection() {
     }
   }
 }
-
-
 
 function saveHighscore() {
   const timeText = document.getElementById("timeDisplay").textContent.replace("time ", "");
@@ -153,8 +142,6 @@ function saveHighscore() {
   });
 }
 
-
-
 const coinImg = new Image();
 coinImg.src = "pxp coin perfect_clipped_rev_1.png";
 let coins = [];
@@ -167,7 +154,7 @@ function drawCoins() {
   coins.forEach(coin => {
     if (coin.active) {
       ctx.drawImage(coinImg, coin.x, coin.y, 24, 24);
-      coin.y += 2; // valt naar beneden
+      coin.y += 2;
     }
   });
 }
@@ -187,7 +174,6 @@ function checkCoinCollision() {
   });
 }
 
-
 function draw() {
   collisionDetection();
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -204,11 +190,9 @@ function draw() {
     x += dx;
     y += dy;
 
-    // botsing met muren
     if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) dx = -dx;
     if (y + dy < ballRadius) dy = -dy;
 
-    // botsing met paddle
     if (
       y + dy > canvas.height - paddleHeight - ballRadius &&
       x > paddleX &&
@@ -217,13 +201,11 @@ function draw() {
       dy = -dy;
     }
 
-    // beneden uit
     if (y + dy > canvas.height - ballRadius) {
       saveHighscore();
       document.location.reload();
     }
   } else {
-    // bal volgt paddle voor lancering
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
   }
@@ -235,7 +217,6 @@ let imagesLoaded = 0;
 function onImageLoad() {
   imagesLoaded++;
   if (imagesLoaded === 2) {
-    // Startpositie instellen
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
     draw();
