@@ -4,6 +4,19 @@
   <meta charset="UTF-8">
   <title>Scrolling Banner - PXP Info</title>
   <style>
+#pxp-overlay-toggle {
+  position: fixed;
+  bottom: 70px;
+  right: 30px;
+  background: #333;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  z-index: 10000;
+}
+
     body {
       margin: 0;
       padding: 0;
@@ -46,6 +59,7 @@
   </style>
 </head>
 <body>
+<button id="pxp-overlay-toggle">Toon Banner</button>
 
 <div id="scroll-banner">
   <div class="scroll-content">
