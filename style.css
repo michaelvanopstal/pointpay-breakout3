@@ -129,3 +129,9 @@ body {
 }
 
 
+
+
+#highscore-overlay ol li {
+  margin-bottom: 10px;
+  white-space: nowrap;
+}
