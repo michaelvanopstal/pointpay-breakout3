@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scrolling Banner - PXP Info</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      height: 100vh;
+    }
+    #scroll-banner {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 380px;
+      height: 40px;
+      overflow: hidden;
+      background: transparent;
+      color: white;
+      font-size: 14px;
+      border-radius: 8px;
+      padding: 10px;
+      font-family: Arial, sans-serif;
+    }
+    .scroll-content {
+      display: inline-block;
+      white-space: nowrap;
+      animation: scrollBanner 25s linear infinite;
+    }
+    @keyframes scrollBanner {
+      from {
+        transform: translateX(100%);
+      }
+      to {
+        transform: translateX(-100%);
+      }
+    }
+    .positive {
+      color: #00ff77;
+    }
+    .negative {
+      color: #ff4444;
+    }
+  </style>
+</head>
+<body>
+
+<div id="scroll-banner">
+  <div class="scroll-content">
+    $0.01726 &nbsp; 
+    <span class="positive">+1.22%</span> (1d) &nbsp; 
+    Market cap $517.92K 
+    <span class="positive">+1.22%</span> &nbsp; 
+    Volume (24h) $145.52K 
+    <span class="negative">-8.99%</span> &nbsp; 
+    FDV $1.72M &nbsp; 
+    Vol/Mkt Cap (24h): 28.06% &nbsp; 
+    Total supply: 100M PXP &nbsp; 
+    Max. supply: 100M PXP &nbsp; 
+    Circulating: 30M PXP
+  </div>
+</div>
+
+</body>
+</html>
