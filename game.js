@@ -170,7 +170,7 @@ function saveHighscore() {
     li.textContent = `${entry.name} — ${entry.score} pxp — ${entry.time}`;
     list.appendChild(li);
   });
-}
+
 
 const coinImg = new Image();
 coinImg.src = "pxp coin perfect_clipped_rev_1.png";
