@@ -38,7 +38,71 @@
   </div>
 
   <script src="login.js"></script>
+
+<script>
+  async function fetchPXPData() {
+    try {
+      const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=pointpay');
+      const data = await response.json();
+      if (data && data[0]) {
+        const coin = data[0];
+        const price = `$${coin.current_price.toFixed(5)}`;
+        const change = coin.price_change_percentage_24h.toFixed(2);
+        const changeClass = change >= 0 ? 'positive' : 'negative';
+        const marketCap = `$${(coin.market_cap / 1000).toFixed(2)}K`;
+        const volume = `$${(coin.total_volume / 1000).toFixed(2)}K`;
+
+        document.querySelector('#scroll-banner .scroll-content').innerHTML = `
+          ${price} &nbsp; 
+          <span class="\${changeClass}">\${change}%</span> (24h) &nbsp; 
+          Market cap \${marketCap} &nbsp; 
+          <span class="\${changeClass}">\${change}%</span> &nbsp; 
+          Volume (24h) \${volume}
+        `;
+      }
+    } catch (error) {
+      console.error('Fout bij ophalen CoinGecko data:', error);
+    }
+  }
+
+  // Data meteen ophalen en daarna elke 60 sec verversen
+  fetchPXPData();
+  setInterval(fetchPXPData, 60000);
+</script>
+
   <script src="game.js"></script>
+
+<script>
+  async function fetchPXPData() {
+    try {
+      const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=pointpay');
+      const data = await response.json();
+      if (data && data[0]) {
+        const coin = data[0];
+        const price = `$${coin.current_price.toFixed(5)}`;
+        const change = coin.price_change_percentage_24h.toFixed(2);
+        const changeClass = change >= 0 ? 'positive' : 'negative';
+        const marketCap = `$${(coin.market_cap / 1000).toFixed(2)}K`;
+        const volume = `$${(coin.total_volume / 1000).toFixed(2)}K`;
+
+        document.querySelector('#scroll-banner .scroll-content').innerHTML = `
+          ${price} &nbsp; 
+          <span class="\${changeClass}">\${change}%</span> (24h) &nbsp; 
+          Market cap \${marketCap} &nbsp; 
+          <span class="\${changeClass}">\${change}%</span> &nbsp; 
+          Volume (24h) \${volume}
+        `;
+      }
+    } catch (error) {
+      console.error('Fout bij ophalen CoinGecko data:', error);
+    }
+  }
+
+  // Data meteen ophalen en daarna elke 60 sec verversen
+  fetchPXPData();
+  setInterval(fetchPXPData, 60000);
+</script>
+
 
 <script>
   let highscores = JSON.parse(localStorage.getItem("highscores")) || [
@@ -85,6 +149,38 @@
 
 </script>
 
+<script>
+  async function fetchPXPData() {
+    try {
+      const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=pointpay');
+      const data = await response.json();
+      if (data && data[0]) {
+        const coin = data[0];
+        const price = `$${coin.current_price.toFixed(5)}`;
+        const change = coin.price_change_percentage_24h.toFixed(2);
+        const changeClass = change >= 0 ? 'positive' : 'negative';
+        const marketCap = `$${(coin.market_cap / 1000).toFixed(2)}K`;
+        const volume = `$${(coin.total_volume / 1000).toFixed(2)}K`;
+
+        document.querySelector('#scroll-banner .scroll-content').innerHTML = `
+          ${price} &nbsp; 
+          <span class="\${changeClass}">\${change}%</span> (24h) &nbsp; 
+          Market cap \${marketCap} &nbsp; 
+          <span class="\${changeClass}">\${change}%</span> &nbsp; 
+          Volume (24h) \${volume}
+        `;
+      }
+    } catch (error) {
+      console.error('Fout bij ophalen CoinGecko data:', error);
+    }
+  }
+
+  // Data meteen ophalen en daarna elke 60 sec verversen
+  fetchPXPData();
+  setInterval(fetchPXPData, 60000);
+</script>
+
+
 
 <button id="pxp-overlay-toggle">Toon Banner</button>
 
@@ -116,6 +212,38 @@
     toggleBtn.textContent = isVisible ? 'Toon Banner' : 'Verberg Banner';
   });
 </script>
+
+<script>
+  async function fetchPXPData() {
+    try {
+      const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=pointpay');
+      const data = await response.json();
+      if (data && data[0]) {
+        const coin = data[0];
+        const price = `$${coin.current_price.toFixed(5)}`;
+        const change = coin.price_change_percentage_24h.toFixed(2);
+        const changeClass = change >= 0 ? 'positive' : 'negative';
+        const marketCap = `$${(coin.market_cap / 1000).toFixed(2)}K`;
+        const volume = `$${(coin.total_volume / 1000).toFixed(2)}K`;
+
+        document.querySelector('#scroll-banner .scroll-content').innerHTML = `
+          ${price} &nbsp; 
+          <span class="\${changeClass}">\${change}%</span> (24h) &nbsp; 
+          Market cap \${marketCap} &nbsp; 
+          <span class="\${changeClass}">\${change}%</span> &nbsp; 
+          Volume (24h) \${volume}
+        `;
+      }
+    } catch (error) {
+      console.error('Fout bij ophalen CoinGecko data:', error);
+    }
+  }
+
+  // Data meteen ophalen en daarna elke 60 sec verversen
+  fetchPXPData();
+  setInterval(fetchPXPData, 60000);
+</script>
+
 
 </body>
 </html>
