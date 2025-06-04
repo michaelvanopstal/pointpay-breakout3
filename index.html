@@ -4,19 +4,23 @@
   <meta charset="UTF-8">
   <title>PointPay Live Banner</title>
   <style>
+    body {
+      background: transparent;
+    }
+
     #pxp-banner {
       position: fixed;
       bottom: 30px;
       right: 30px;
-      width: 600px;         /* pas aan zoals je wilt */
-      height: 30px;         /* pas aan zoals je wilt */
-      background: transparent; /* verander naar 'black' of 'rgba(0,0,0,0.5)' als je achtergrond wilt */
+      width: 600px;
+      height: 30px;
+      background: transparent;
       color: white;
       font-size: 13px;
       font-family: Arial, sans-serif;
       white-space: nowrap;
       overflow: hidden;
-      z-index: 9999; /* pas aan voor layer positie */
+      z-index: 9999;
     }
 
     .scroll-text {
@@ -65,8 +69,8 @@
       document.getElementById("pxp-7d").textContent = (m.price_change_percentage_7d_in_currency.usd || 0).toFixed(1) + "%";
       document.getElementById("pxp-supply").textContent = m.circulating_supply.toLocaleString();
 
-      // duplicatie voor naadloze scroll
-      document.getElementById("pxp-data-dup").innerHTML = document.getElementById("pxp-data").innerHTML;
+      document.getElementById("pxp-data-dup").innerHTML =
+        document.getElementById("pxp-data").innerHTML;
     } catch (e) {
       console.error("Fout bij ophalen PXP-data:", e);
     }
