@@ -21,8 +21,8 @@ body {
 #scoreDisplay {
   position: fixed;
   top: 40px;
-  left: 140px;
-  z-index: 1003;
+  left: 180px;
+  z-index: 1010;
   font-size: 20px;
   font-family: Arial, sans-serif;
   color: white;
