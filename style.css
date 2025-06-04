@@ -93,7 +93,7 @@ body {
   right: 30px;
   left: auto;
   text-align: right;
-  z-index: 999;
+  z-index: 1001;
 }
 
 #login-box {
