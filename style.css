@@ -18,19 +18,14 @@ body {
   border: 3px solid "transparent"
 }
 
-  #scoreDisplay {
-  position: fixed; 
-  top: 12px;
-  left: 20px; 
-  z-index: 1003;
+#scoreDisplay {
+  position: absolute;
+  top: 72px;
+  right: 110px;
+  margin-right: 15px;
+  color: white;
   font-size: 20px;
   font-family: Arial, sans-serif;
-  color: white;
-  background: rgba(0, 0, 0, 0.5); 
-  padding: 4px 8px; 
-  border-radius: 5px; 
-  }
-
 }
 
 
