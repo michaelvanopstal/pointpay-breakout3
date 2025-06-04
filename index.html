@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -77,7 +78,6 @@
   });
 </script>
 
-
 <!-- Scrollende PXP-banner rechtsonderin -->
 <div id="pxp-banner">
   <div class="scroll-text">
@@ -107,10 +107,6 @@
     padding: 4px 10px;
     border-radius: 6px;
     z-index: 9999;
-    setTimeout(() => 
-   document.getElementById("pxp-banner").style.display = "none";
-}, 10000); // 10 seconden
-
   }
 
   #pxp-banner .scroll-text {
@@ -127,6 +123,13 @@
   .positive { color: #00ff77; }
   .negative { color: #ff4444; }
 </style>
+
+<script>
+  setTimeout(() => {
+    const banner = document.getElementById("pxp-banner");
+    if (banner) banner.style.display = "none";
+  }, 10000); // Banner verdwijnt na 10 seconden
+</script>
 
 </body>
 </html>
