@@ -142,7 +142,7 @@ function saveHighscore() {
   list.innerHTML = "";
   highscores.forEach((entry, index) => {
     const li = document.createElement("li");
-    li.textContent = `${index + 1} ${entry.name} - ${entry.score} - ${entry.time}`;
+    li.textContent = `${index + 1} ${entry.name} - ${entry.score} pxp - ${entry.time}`;
     list.appendChild(li);
   });
 }
