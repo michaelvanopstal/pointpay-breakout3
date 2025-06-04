@@ -37,6 +37,7 @@ body {
 }
 
 #highscore-overlay {
+  z-index: 9999 !important;
   position: absolute;
   top: 70px;
   left: 675px;
