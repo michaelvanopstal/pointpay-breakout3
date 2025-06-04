@@ -245,6 +245,9 @@ document.addEventListener("keydown", function (e) {
       gameOver = false;
       updateScoreDisplay();
       updateTimeDisplay();
+      score = 0;
+document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
+
     }
     ballMoving = true;
   }
