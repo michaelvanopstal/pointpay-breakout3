@@ -80,6 +80,19 @@ function drawBricks() {
         const brickY = r * brickHeight;
         bricks[c][r].x = brickX;
         bricks[c][r].y = brickY;
+        ctx.fillStyle = "#00ccff";
+        ctx.fillRect(brickX, brickY, brickWidth - 2, brickHeight - 2);
+      }
+    }
+  }
+}
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      if (bricks[c][r].status === 1) {
+        const brickX = c * brickWidth;
+        const brickY = r * brickHeight;
+        bricks[c][r].x = brickX;
+        bricks[c][r].y = brickY;
         ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
       }
     }
@@ -87,6 +100,12 @@ function drawBricks() {
 }
 
 function drawBall() {
+  ctx.beginPath();
+  ctx.arc(x + ballRadius, y + ballRadius, ballRadius, 0, Math.PI * 2);
+  ctx.fillStyle = "#ff4444";
+  ctx.fill();
+  ctx.closePath();
+}
   ctx.drawImage(ballImg, x, y, ballRadius * 2, ballRadius * 2);
 }
 
