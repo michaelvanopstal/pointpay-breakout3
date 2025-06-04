@@ -1,82 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PointPay Breakout</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banner Test</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+    }
+
+    #pxp-banner {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: transparent;
+      color: white;
+      font-size: 13px;
+      font-family: Arial, sans-serif;
+      white-space: nowrap;
+      overflow: hidden;
+      z-index: 9999;
+    }
+
+    .scroll-text {
+      display: flex;
+      animation: scrollBanner 30s linear infinite;
+    }
+
+    @keyframes scrollBanner {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .positive { color: #00ff77; }
+    .negative { color: #ff4444; }
+  </style>
 </head>
 <body>
-  <div id="top-info">
-    <span id="player-display">Player</span>
-    <span id="scoreDisplay">score 0 pxp.</span>
-    <span id="timeDisplay">time 00:00</span>
+
+<div id="pxp-banner">
+  <div class="scroll-text">
+    <span id="pxp-data">
+      <strong>PointPay (PXP)</strong> — 
+      Koers: <span id="pxp-price">$0.00000</span> — 
+      Marketcap: <span id="pxp-marketcap">$0</span> — 
+      Volume: <span id="pxp-volume">$0</span> — 
+      1h: <span id="pxp-1h">0%</span>, 
+      24h: <span id="pxp-24h">0%</span>, 
+      7d: <span id="pxp-7d">0%</span> — 
+      Supply: <span id="pxp-supply">0</span>
+    </span>
+    <span id="pxp-data-dup" aria-hidden="true"></span>
   </div>
-
-  <div id="game-container">
-    <canvas id="gameCanvas" width="645" height="600"></canvas>
-
-    <div id="login-overlay">
-      
-<div id="login-box">
-  <label for="player-name">Inlog:</label><br />
-  <input type="text" id="player-name" placeholder="Voer je naam in" />
-  <button id="login-btn">Login</button>
-  <button id="logout-btn" style="display: none;">Logout</button>
 </div>
 
-    </div>
-
-    <div id="highscore-overlay">
-      <img src="beker_clipped_rev_2.png" id="trophy" alt="Trophy" />
-      <h2>High score</h2>
-      <ol id="highscore-list">
-        <li></li><li></li><li></li><li></li><li></li>
-        <li></li><li></li><li></li><li></li><li></li>
-      </ol>
-    </div>
-  </div>
-
-  <script src="login.js"></script>
-  <script src="game.js"></script>
-
 <script>
-  let highscores = JSON.parse(localStorage.getItem("highscores")) || [
-    { name: "—", score: 0, time: "00:00" },
-    { name: "—", score: 0, time: "00:00" },
-    { name: "—", score: 0, time: "00:00" },
-    { name: "—", score: 0, time: "00:00" },
-    { name: "—", score: 0, time: "00:00" },
-    { name: "—", score: 0, time: "00:00" },
-    { name: "—", score: 0, time: "00:00" },
-    { name: "—", score: 0, time: "00:00" },
-    { name: "—", score: 0, time: "00:00" },
-    { name: "—", score: 0, time: "00:00" }
-  ];
+  async function updatePXP() {
+    try {
+      const res = await fetch('https://api.coingecko.com/api/v3/coins/pointpay');
+      const data = await res.json();
+      const m = data.market_data;
+      document.getElementById("pxp-price").textContent = "$" + m.current_price.usd.toFixed(5);
+      document.getElementById("pxp-marketcap").textContent = "$" + m.market_cap.usd.toLocaleString();
+      document.getElementById("pxp-volume").textContent = "$" + m.total_volume.usd.toLocaleString();
+      document.getElementById("pxp-1h").textContent = (m.price_change_percentage_1h_in_currency.usd || 0).toFixed(1) + "%";
+      document.getElementById("pxp-24h").textContent = (m.price_change_percentage_24h_in_currency.usd || 0).toFixed(1) + "%";
+      document.getElementById("pxp-7d").textContent = (m.price_change_percentage_7d_in_currency.usd || 0).toFixed(1) + "%";
+      document.getElementById("pxp-supply").textContent = m.circulating_supply.toLocaleString();
 
-  function updateHighscoreBoard() {
-    const highscoreList = document.getElementById("highscore-list");
-    if (!highscoreList) return;
-    highscoreList.innerHTML = "";
-    highscores.forEach((entry, index) => {
-      const li = document.createElement("li");
-      li.textContent = `${index + 1}. ${entry.name} — ${entry.score} PXP — ${entry.time}`;
-      highscoreList.appendChild(li);
-    });
+      // Dupliceer voor vloeiend scrollen
+      document.getElementById("pxp-data-dup").innerHTML = document.getElementById("pxp-data").innerHTML;
+    } catch (e) {
+      console.error("Fout bij ophalen PXP-data:", e);
+    }
   }
 
-  function checkAndUpdateHighscores(name, score, time) {
-    const newEntry = { name, score, time };
-    highscores.push(newEntry);
-    highscores.sort((a, b) => b.score - a.score || a.time.localeCompare(b.time));
-    highscores = highscores.slice(0, 10);
-    localStorage.setItem("highscores", JSON.stringify(highscores));
-    updateHighscoreBoard();
-  }
-
-  window.addEventListener("load", () => {
-    updateHighscoreBoard();
-  });
+  updatePXP();
+  setInterval(updatePXP, 60000);
 </script>
 
 </body>
