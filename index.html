@@ -80,7 +80,7 @@
 
 <!-- Scrollende PXP-banner rechtsonderin -->
 <div id="pxp-banner">
-  <div class="scroll-text">PXP -
+  <div class="scroll-text">
     $0.01726 &nbsp;
     <span class='positive'>+1.22%</span> (1d) &nbsp;
     Market cap $517.92K <span class='positive'>+1.22%</span> &nbsp;
@@ -98,7 +98,7 @@
     position: fixed;
     bottom: 30px;
     right: 30px;
-    max-width: 725px;
+    max-width: 700px;
     overflow: hidden;
     background: rgba(0, 0, 0, 0.6);
     color: white;
@@ -112,7 +112,7 @@
   #pxp-banner .scroll-text {
     display: inline-block;
     white-space: nowrap;
-    animation: scrollBanner 25s linear infinite;
+    
   }
 
   @keyframes scrollBanner {
@@ -129,6 +129,20 @@
     const banner = document.getElementById("pxp-banner");
     if (banner) banner.style.display = "none";
   }, 10000); // Banner verdwijnt na 10 seconden
+</script>
+
+
+<script>
+  const scrollText = document.querySelector('.scroll-text');
+  function startScroll() {
+    scrollText.style.animation = 'scrollBanner 25s linear';
+    setTimeout(() => {
+      scrollText.style.animation = 'none';
+      void scrollText.offsetWidth;
+      setTimeout(startScroll, 2000); // 2 seconden tussenpauze
+    }, 25000); // Scrolltijd
+  }
+  startScroll();
 </script>
 
 </body>
