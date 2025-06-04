@@ -288,3 +288,4 @@ function stopTimer() {
 function showRestartOverlay() {
   alert("Game over! Click or press ↑ to try again.");
   // Hier kan visuele overlay of herstartknop worden gebouwd
+}
