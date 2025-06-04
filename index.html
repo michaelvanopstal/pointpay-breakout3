@@ -81,7 +81,7 @@
 <!-- Scrollende PXP-banner rechtsonderin -->
 <div id="pxp-banner">
   <div class="scroll-text">
-    $0.01726 &nbsp;
+    <span id="pxp-price">$0.00000</span> &nbsp;
     <span class='positive'>+1.22%</span> (1d) &nbsp;
     Market cap $517.92K <span class='positive'>+1.22%</span> &nbsp;
     Volume (24h) $145.52K <span class='negative'>-8.99%</span> &nbsp;
@@ -143,6 +143,23 @@
     }, 25000); // Scrolltijd
   }
   startScroll();
+</script>
+
+
+<script>
+  async function updatePXPPrice() {
+    try {
+      const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=pointpay&vs_currencies=usd');
+      const data = await response.json();
+      const price = data.pointpay.usd;
+      document.getElementById('pxp-price').textContent = `$${price.toFixed(5)}`;
+    } catch (error) {
+      console.error('Fout bij het ophalen van de PXP-prijs:', error);
+    }
+  }
+
+  updatePXPPrice(); // bij laden
+  setInterval(updatePXPPrice, 60000); // elke 60 sec
 </script>
 
 </body>
