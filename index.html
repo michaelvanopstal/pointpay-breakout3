@@ -17,14 +17,12 @@
     <canvas id="gameCanvas" width="645" height="600"></canvas>
 
     <div id="login-overlay">
-      
-<div id="login-box">
-  <label for="player-name">Inlog:</label><br />
-  <input type="text" id="player-name" placeholder="Voer je naam in" />
-  <button id="login-btn">Login</button>
-  <button id="logout-btn" style="display: none;">Logout</button>
-</div>
-
+      <div id="login-box">
+        <label for="player-name">Inlog:</label><br />
+        <input type="text" id="player-name" placeholder="Voer je naam in" />
+        <button id="login-btn">Login</button>
+        <button id="logout-btn" style="display: none;">Logout</button>
+      </div>
     </div>
 
     <div id="highscore-overlay">
@@ -78,6 +76,53 @@
     updateHighscoreBoard();
   });
 </script>
+
+
+<!-- Scrollende PXP-banner rechtsonderin -->
+<div id="pxp-banner">
+  <div class="scroll-text">
+    $0.01726 &nbsp;
+    <span class='positive'>+1.22%</span> (1d) &nbsp;
+    Market cap $517.92K <span class='positive'>+1.22%</span> &nbsp;
+    Volume (24h) $145.52K <span class='negative'>-8.99%</span> &nbsp;
+    FDV $1.72M &nbsp;
+    Vol/Mkt Cap (24h): 28.06% &nbsp;
+    Total supply: 100M PXP &nbsp;
+    Max. supply: 100M PXP &nbsp;
+    Circulating supply: 30M PXP
+  </div>
+</div>
+
+<style>
+  #pxp-banner {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    max-width: 400px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    padding: 4px 10px;
+    border-radius: 6px;
+    z-index: 9999;
+  }
+
+  #pxp-banner .scroll-text {
+    display: inline-block;
+    white-space: nowrap;
+    animation: scrollBanner 25s linear infinite;
+  }
+
+  @keyframes scrollBanner {
+    from { transform: translateX(100%); }
+    to { transform: translateX(-100%); }
+  }
+
+  .positive { color: #00ff77; }
+  .negative { color: #ff4444; }
+</style>
 
 </body>
 </html>
