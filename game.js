@@ -179,6 +179,14 @@ function checkCoinCollision() {
   });
 }
 
+function resetBricks() {
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      bricks[c][r].status = 1;
+    }
+  }
+}
+
 function draw() {
   collisionDetection();
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -217,6 +225,7 @@ function draw() {
     }
   } else {
     x = paddleX + paddleWidth / 2 - ballRadius;
+    resetBricks();
     y = canvas.height - paddleHeight - ballRadius * 2;
   }
 
