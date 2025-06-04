@@ -14,12 +14,6 @@
   </div>
 
   <div id="game-container">
-  <div id="highscore-overlay">
-  <img id="trophy" src="beker_clipped_rev_2.png" alt="Trophy">
-  <h2>High Score</h2>
-  <ol id="highscore-list"></ol>
-</div>
-
     <canvas id="gameCanvas" width="645" height="600"></canvas>
 
     <div id="login-overlay">
@@ -45,7 +39,8 @@
 
   <script src="login.js"></script>
   <script src="game.js"></script>
-</body><script>
+
+<script>
   let highscores = JSON.parse(localStorage.getItem("highscores")) || [
     { name: "—", score: 0, time: "00:00" },
     { name: "—", score: 0, time: "00:00" },
@@ -84,4 +79,5 @@
   });
 </script>
 
+</body>
 </html>
