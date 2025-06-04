@@ -85,5 +85,37 @@
 
 </script>
 
+
+<button id="pxp-overlay-toggle">Toon Banner</button>
+
+<div id="scroll-overlay">
+  <div id="scroll-banner">
+    <div class="scroll-content">
+      $0.01726 &nbsp; 
+      <span class="positive">+1.22%</span> (1d) &nbsp; 
+      Market cap $517.92K 
+      <span class="positive">+1.22%</span> &nbsp; 
+      Volume (24h) $145.52K 
+      <span class="negative">-8.99%</span> &nbsp; 
+      FDV $1.72M &nbsp; 
+      Vol/Mkt Cap (24h): 28.06% &nbsp; 
+      Total supply: 100M PXP &nbsp; 
+      Max. supply: 100M PXP &nbsp; 
+      Circulating: 30M PXP
+    </div>
+  </div>
+</div>
+
+<script>
+  const toggleBtn = document.getElementById('pxp-overlay-toggle');
+  const overlay = document.getElementById('scroll-overlay');
+
+  toggleBtn.addEventListener('click', () => {
+    const isVisible = overlay.style.display === 'block';
+    overlay.style.display = isVisible ? 'none' : 'block';
+    toggleBtn.textContent = isVisible ? 'Toon Banner' : 'Verberg Banner';
+  });
+</script>
+
 </body>
 </html>
