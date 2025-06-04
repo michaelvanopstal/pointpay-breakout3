@@ -37,7 +37,6 @@ body {
 }
 
 #highscore-overlay {
-  z-index: 9999 !important;
   position: absolute;
   top: 70px;
   left: 675px;
@@ -93,7 +92,7 @@ body {
   right: 30px;
   left: auto;
   text-align: right;
-  z-index: 1001;
+  z-index: 999;
 }
 
 #login-box {
