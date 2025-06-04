@@ -81,10 +81,12 @@ body {
   display: flex;
   gap: 30px;
   justify-content: flex-end;
+  align-items: center;
   font-size: 18px;
   color: white;
   font-family: Arial, sans-serif;
   z-index: 200;
+}
 }
 
 
