@@ -99,13 +99,22 @@ body {
   text-align: right;
   z-index: 999;
 }
+}
 
 #login-box {
   display: inline-block;
 }
+}
   
 #playerName {
   position: absolute;
+  top: 20px;
+  right: 100px;
+  color: white;
+  font-size: 20px;
+  font-family: Arial, sans-serif;
+  z-index: 999;
+}
   top: 20px;
   right: 100px; 
   color: white;
