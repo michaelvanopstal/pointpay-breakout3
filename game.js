@@ -205,6 +205,7 @@ function checkCoinCollision() {
 }
 
 function draw() {
+  console.log('✅ draw() started');
   collisionDetection();
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawCoins();
@@ -250,6 +251,7 @@ function draw() {
 
 let imagesLoaded = 0;
 function onImageLoad() {
+  console.log('🖼️ image loaded');
   imagesLoaded++;
   if (imagesLoaded === 2) {
     x = paddleX + paddleWidth / 2 - ballRadius;
