@@ -140,9 +140,9 @@ function saveHighscore() {
 
   const list = document.getElementById("highscore-list");
   list.innerHTML = "";
-  highscores.forEach(entry => {
+  highscores.forEach((entry, index) => {
     const li = document.createElement("li");
-    li.textContent = `${entry.name} — ${entry.score} pxp — ${entry.time}`;
+    li.textContent = `${index + 1} ${entry.name} - ${entry.score} - ${entry.time}`;
     list.appendChild(li);
   });
 }
