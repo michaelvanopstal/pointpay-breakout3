@@ -19,16 +19,16 @@ body {
 }
 
   #scoreDisplay {
-  position: fixed; /* of absolute, afhankelijk van je layout */
+  position: fixed; 
   top: 12px;
-  left: 20px; /* pas aan naar wens */
+  left: 20px; 
   z-index: 1100;
   font-size: 20px;
   font-family: Arial, sans-serif;
   color: white;
-  background: rgba(0, 0, 0, 0.5); /* optioneel */
-  padding: 4px 8px; /* optioneel */
-  border-radius: 5px; /* optioneel */
+  background: rgba(0, 0, 0, 0.5); 
+  padding: 4px 8px; 
+  border-radius: 5px; 
   }
 
 }
