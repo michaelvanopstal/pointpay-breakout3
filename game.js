@@ -1,4 +1,3 @@
-
 function resetGameState() {
   score = 0;
   elapsedTime = 0;
@@ -287,4 +286,3 @@ function stopTimer() {
 function showRestartOverlay() {
   alert("Game over! Click or press ↑ to try again.");
   // Hier kan visuele overlay of herstartknop worden gebouwd
-}
