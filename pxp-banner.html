@@ -27,15 +27,18 @@
 
     /* Overlay container */
     #scroll-overlay {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 600px;
-      background-color: rgba(0, 0, 0, 0.8);
-      z-index: 1020;
-      display: none; /* Start hidden */
-      padding: 10px 20px;
-    }
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 700px;        /* breder maken naar links */
+  max-width: 90vw;     /* responsief op kleinere schermen */
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 1020;
+  display: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+}
+
 
     /* Actual banner */
     #scroll-banner {
