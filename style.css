@@ -22,7 +22,7 @@ body {
   position: fixed; /* of absolute, afhankelijk van je layout */
   top: 12px;
   left: 20px; /* pas aan naar wens */
-  z-index: 9999;
+  z-index: 1100;
   font-size: 20px;
   font-family: Arial, sans-serif;
   color: white;
