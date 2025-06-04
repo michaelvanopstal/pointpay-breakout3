@@ -131,16 +131,6 @@
   }, 10000); // Banner verdwijnt na 10 seconden
 </script>
 
-
-<script>
-  const scrollText = document.querySelector('.scroll-text');
-  function startScroll() {
-    scrollText.style.animation = 'scrollBanner 25s linear';
-    setTimeout(() => {
-      scrollText.style.animation = 'none';
-      void scrollText.offsetWidth;
-      setTimeout(startScroll, 2000); // 2 seconden tussenpauze
-    }, 25000); // Scrolltijd
   }
   startScroll();
 </script>
