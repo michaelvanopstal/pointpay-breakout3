@@ -43,7 +43,9 @@ document.addEventListener("mousemove", mouseMoveHandler, false);
 document.addEventListener("keydown", (e) => {
   if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched && window.readyToLaunch) {
     ballLaunched = true;
-    if (!timerRunning) startTimer();
+    if (!timerRunning) startTimer();score = 0;
+    document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
+  
   }
 });
 
