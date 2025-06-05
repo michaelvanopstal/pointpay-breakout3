@@ -154,7 +154,7 @@ body {
   white-space: nowrap;
   overflow: hidden;
   border-radius: 6px;
-  z-index: 9999;
+  z-index: 1020;
 }
 
 #pxp-scroll-text {
