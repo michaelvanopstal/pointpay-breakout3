@@ -343,50 +343,44 @@ function checkBonusCoinCollision() {
 }
 
 const originalCollision = collisionDetection;
-collisionDetection = function () {
+
+
+
+
+
+function collisionDetection() {
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
       let b = bricks[c][r];
       if (b.status === 1) {
-        if (x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
+        if (
+          x > b.x &&
+          x < b.x + brickWidth &&
+          y > b.y &&
+          y < b.y + brickHeight
+        ) {
           dy = -dy;
           b.status = 0;
           score += 10;
           spawnCoin(b.x, b.y);
           document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-
-          if (activeSpecialBlock && activeSpecialBlock.c === c && activeSpecialBlock.r === r) {
-            spawnFlags(b.x);
-          }
         }
       }
     }
   }
-};
+}
 
-draw = function () {
+function draw() {
   collisionDetection();
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawCoins();
-  drawBonusCoins();
   checkCoinCollision();
-  checkBonusCoinCollision();
   drawBricks();
   drawBall();
   drawPaddle();
-  drawFlags();
-  drawBullets();
-  checkBulletCollision();
 
   if (rightPressed && paddleX < canvas.width - paddleWidth) paddleX += 7;
   else if (leftPressed && paddleX > 0) paddleX -= 7;
-
-  if (flagActive && !flagCollected) {
-    const flagX = paddleX + flagXOffset;
-    if (flagX >= paddleX && flagX <= paddleX + paddleWidth) {
-      collectFlag();
-    }
-  }
 
   if (ballLaunched) {
     x += dx;
@@ -395,7 +389,8 @@ draw = function () {
     if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) dx = -dx;
     if (y + dy < ballRadius) dy = -dy;
 
-    if (y + dy > canvas.height - paddleHeight - ballRadius && x > paddleX && x < paddleX + paddleWidth) {
+    if (y + dy > canvas.height - paddleHeight - ballRadius &&
+        x > paddleX && x < paddleX + paddleWidth) {
       const hitPos = (x - paddleX) / paddleWidth;
       const angle = (hitPos - 0.5) * Math.PI / 2;
       const speed = Math.sqrt(dx * dx + dy * dy);
@@ -419,4 +414,4 @@ draw = function () {
   }
 
   requestAnimationFrame(draw);
-};
+}
