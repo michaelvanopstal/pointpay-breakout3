@@ -141,8 +141,8 @@ body {
 #pxp-banner-overlay {
   position: fixed;
   bottom: 10px;
-  right: 5px;
-  left: 500px;
+  right: 0px;
+  left: 600px;
   width: 870px;
   height: 36px;
   background-color: rgba(0, 0, 0, 0.9);
