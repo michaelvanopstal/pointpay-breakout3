@@ -75,6 +75,15 @@ function drawBricks() {
         bricks[c][r].x = brickX;
         bricks[c][r].y = brickY;
         ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
+
+        // Knipperend effect op geselecteerd blokje
+        if (activeSpecialBlock && activeSpecialBlock.c === c && activeSpecialBlock.r === r) {
+          if (Math.floor(Date.now() / 400) % 2 === 0) {
+            ctx.strokeStyle = 'red';
+            ctx.lineWidth = 4;
+            ctx.strokeRect(brickX + 2, brickY + 2, brickWidth - 4, brickHeight - 4);
+          }
+        }
       }
     }
   }
