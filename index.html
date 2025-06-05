@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,121 +6,109 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PointPay Breakout</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    #pxp-banner-overlay {
+      position: fixed;
+      bottom: 10px;
+      right: 5px;
+      width: 870px;
+      height: 36px;
+      background-color: rgba(0, 0, 0, 0.9);
+      color: white;
+      font-size: 14px;
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      border-radius: 6px;
+      z-index: 9999;
+    }
+
+    .scroll-wrapper {
+      display: flex;
+      width: fit-content;
+      animation: scrollLoop 30s linear infinite;
+    }
+
+    .scroll-content {
+      white-space: nowrap;
+      padding-right: 100px;
+    }
+
+    @keyframes scrollLoop {
+      from { transform: translateX(0%); }
+      to { transform: translateX(-50%); }
+    }
+
+    .positive { color: #00ff77; }
+    .negative { color: #ff4444; }
+  </style>
 </head>
 <body>
-  <div id="top-info">
-    <span id="player-display">Player</span>
-    <span id="scoreDisplay">score 0 pxp.</span>
-    <span id="timeDisplay">time 00:00</span>
-  </div>
-
   <div id="game-container">
-    <canvas id="gameCanvas" width="645" height="600"></canvas>
-
-    <div id="login-overlay">
-      
-<div id="login-box">
-  <label for="player-name">Inlog:</label><br />
-  <input type="text" id="player-name" placeholder="Voer je naam in" />
-  <button id="login-btn">Login</button>
-  <button id="logout-btn" style="display: none;">Logout</button>
-</div>
-
-    </div>
-
-    <div id="highscore-overlay">
-      <img src="beker_clipped_rev_2.png" id="trophy" alt="Trophy" />
-      <h2>High score</h2>
-      <ol id="highscore-list">
-        <li></li><li></li><li></li><li></li><li></li>
-        <li></li><li></li><li></li><li></li><li></li>
-      </ol>
-    </div>
-  </div>
+      </div>
 
   <script src="login.js"></script>
   <script src="game.js"></script>
 
-<script>
-  let highscores = JSON.parse(localStorage.getItem("highscores")) || [
-    { name: "—", score: 0, time: "00:00" },
-    { name: "—", score: 0, time: "00:00" },
-    { name: "—", score: 0, time: "00:00" },
-    { name: "—", score: 0, time: "00:00" },
-    { name: "—", score: 0, time: "00:00" },
-    { name: "—", score: 0, time: "00:00" },
-    { name: "—", score: 0, time: "00:00" },
-    { name: "—", score: 0, time: "00:00" },
-    { name: "—", score: 0, time: "00:00" },
-    { name: "—", score: 0, time: "00:00" }
-  ];
+  <script>
+    let highscores = JSON.parse(localStorage.getItem("highscores")) || [
+      { name: "—", score: 0, time: "00:00" },
+      { name: "—", score: 0, time: "00:00" },
+      { name: "—", score: 0, time: "00:00" },
+      { name: "—", score: 0, time: "00:00" },
+      { name: "—", score: 0, time: "00:00" },
+      { name: "—", score: 0, time: "00:00" },
+      { name: "—", score: 0, time: "00:00" },
+      { name: "—", score: 0, time: "00:00" },
+      { name: "—", score: 0, time: "00:00" },
+      { name: "—", score: 0, time: "00:00" }
+    ];
 
-  function updateHighscoreBoard() {
-    const highscoreList = document.getElementById("highscore-list");
-    if (!highscoreList) return;
-    highscoreList.innerHTML = "";
-    highscores.forEach((entry, index) => {
-      const li = document.createElement("li");
-      li.textContent = `${index + 1}. ${entry.name} — ${entry.score} PXP — ${entry.time}`;
-      highscoreList.appendChild(li);
-    });
-  }
-
-  function checkAndUpdateHighscores(name, score, time) {
-    const newEntry = { name, score, time };
-    highscores.push(newEntry);
-    highscores.sort((a, b) => b.score - a.score || a.time.localeCompare(b.time));
-    highscores = highscores.slice(0, 10);
-    localStorage.setItem("highscores", JSON.stringify(highscores));
-    updateHighscoreBoard();
-  }
-
-  window.addEventListener("load", () => {
-    updateHighscoreBoard();
-  });
-</script>
-
-
-<!-- PXP Coin Banner -->
-<div id="pxp-banner-overlay">
-  <div id="pxp-scroll-text"></div>
-</div>
-<script>
-  async function loadPXPBanner() {
-    try {
-      
-        document.getElementById("pxp-scroll-text").innerHTML = scrollHTML;
-      }
-    } catch (e) {
-      console.error("Failed to load PXP banner:", e);
+    function updateHighscoreBoard() {
+      const highscoreList = document.getElementById("highscore-list");
+      if (!highscoreList) return;
+      highscoreList.innerHTML = "";
+      highscores.forEach((entry, index) => {
+        const li = document.createElement("li");
+        li.textContent = `${index + 1}. ${entry.name} — ${entry.score} PXP — ${entry.time}`;
+        highscoreList.appendChild(li);
+      });
     }
-  }
-  loadPXPBanner();
-  setInterval(loadPXPBanner, 60000);
-</script>
 
-</body><div id="pxp-banner-overlay">
-  <div id="pxp-scroll-text">
-    <div class="scroll-content">
-  <span>
-    <strong>PXP:</strong> $0.01731 <span class="positive">+2.91%</span> &nbsp;
-    Market Cap: $517.92K &nbsp;
-    Volume: $145.52K &nbsp;
-    Total Supply: 100M PXP &nbsp;
-    Circulating: 30M PXP &nbsp;
-  </span>
-  <span>
-    <strong>PXP:</strong> $0.01731 <span class="positive">+2.91%</span> &nbsp;
-    Market Cap: $517.92K &nbsp;
-    Volume: $145.52K &nbsp;
-    Total Supply: 100M PXP &nbsp;
-    Circulating: 30M PXP &nbsp;
-  </span>
-</div>
+    function checkAndUpdateHighscores(name, score, time) {
+      const newEntry = { name, score, time };
+      highscores.push(newEntry);
+      highscores.sort((a, b) => b.score - a.score || a.time.localeCompare(b.time));
+      highscores = highscores.slice(0, 10);
+      localStorage.setItem("highscores", JSON.stringify(highscores));
+      updateHighscoreBoard();
+    }
 
+    window.addEventListener("load", () => {
+      updateHighscoreBoard();
+    });
+  </script>
+
+  <!-- PXP Banner -->
+  <div id="pxp-banner-overlay">
+    <div class="scroll-wrapper">
+      <div class="scroll-content">
+        <strong>PXP:</strong> $0.01731 <span class="positive">+2.91%</span> &nbsp;
+        Market Cap: $517.92K &nbsp;
+        Volume: $145.52K &nbsp;
+        Total Supply: 100M PXP &nbsp;
+        Circulating: 30M PXP &nbsp;
+      </div>
+      <div class="scroll-content">
+        <strong>PXP:</strong> $0.01731 <span class="positive">+2.91%</span> &nbsp;
+        Market Cap: $517.92K &nbsp;
+        Volume: $145.52K &nbsp;
+        Total Supply: 100M PXP &nbsp;
+        Circulating: 30M PXP &nbsp;
+      </div>
+    </div>
   </div>
-</div>
 
-</div>
-
+</body>
 </html>
