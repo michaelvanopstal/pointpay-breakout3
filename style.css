@@ -158,15 +158,16 @@ body {
   z-index: 1020;
 }
 
+
 #pxp-scroll-text {
   display: inline-block;
   white-space: nowrap;
-  animation: scrollBanner 25s linear infinite;
+  animation: scrollText 30s linear infinite;
 }
 
-@keyframes scrollBanner {
+@keyframes scrollText {
   from { transform: translateX(100%); }
-  to { transform: translateX(-100%); }
+  to   { transform: translateX(-100%); }
 }
 
 .positive { color: #00ff77; }
