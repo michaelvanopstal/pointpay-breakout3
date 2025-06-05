@@ -162,7 +162,7 @@ body {
 #pxp-scroll-text {
   display: inline-block;
   white-space: nowrap;
-  animation: scrollText 10s linear infinite;
+  animation: scrollText 30s linear infinite;
 }
 
 @keyframes scrollText {
