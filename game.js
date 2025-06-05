@@ -255,6 +255,14 @@ function collectFlag() {
   flagStartTime = Date.now();
 }
 
+
+// Nieuwe vlag afbeeldingen
+const flagLeftImg = new Image();
+flagLeftImg.src = "vlaggetje .png";
+const flagRightImg = new Image();
+flagRightImg.src = "vlaggetje 2.png";
+
+// Pas drawFlags aan met aparte vlaggen links en rechts
 function drawFlags() {
   if (!flagActive) return;
 
@@ -266,6 +274,14 @@ function drawFlags() {
     bullets = [];
     return;
   }
+
+  const flagY = canvas.height - paddleHeight - 50;
+
+  if (flagCollected || (!flagCollected && Math.floor(now / 300) % 2 === 0)) {
+    ctx.drawImage(flagLeftImg, paddleX, flagY, 30, 50); // links
+    ctx.drawImage(flagRightImg, paddleX + paddleWidth - 30, flagY, 30, 50); // rechts
+  }
+}
 
   const flagX = paddleX + flagXOffset;
   const flagY = canvas.height - paddleHeight - 50;
