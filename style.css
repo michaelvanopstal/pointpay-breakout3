@@ -137,13 +137,11 @@ body {
   white-space: nowrap;
 }
 
-/* PXP Banner Overlay */
 #pxp-banner-overlay {
   position: fixed;
   bottom: 10px;
-  right: 0px;
-  left: 685px;
-  width: 770px;
+  right: 5px;
+  width: 870px;
   height: 36px;
   background-color: rgba(0, 0, 0, 0.9);
   color: white;
@@ -151,23 +149,31 @@ body {
   font-family: Arial, sans-serif;
   display: flex;
   align-items: center;
-  padding: 0 15px;
-  white-space: nowrap;
   overflow: hidden;
   border-radius: 6px;
-  z-index: 1020;
+  z-index: 9999;
+  padding-left: 10px;
 }
 
-#pxp-scroll-text {
-  display: inline-block;
+.scroll-wrapper {
+  display: flex;
+  width: fit-content;
+  animation: scrollLoop 30s linear infinite;
+}
+
+.scroll-content {
   white-space: nowrap;
-  animation: scrollBanner 25s linear infinite;
+  padding-right: 100px;
 }
 
-@keyframes scrollBanner {
-  from { transform: translateX(100%); }
-  to { transform: translateX(-100%); }
+@keyframes scrollLoop {
+  from { transform: translateX(0%); }
+  to { transform: translateX(-50%); }
 }
 
-.positive { color: #00ff77; }
-.negative { color: #ff4444; }
+.positive {
+  color: #00ff77;
+}
+.negative {
+  color: #ff4444;
+}
