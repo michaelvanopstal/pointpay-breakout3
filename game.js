@@ -30,6 +30,7 @@ for (let c = 0; c < brickColumnCount; c++) {
   }
 }
 let activeSpecialBlock = null;
+let specialBlockStartTime = 0;
 
 function chooseSpecialBlock() {
   const candidates = [];
@@ -43,6 +44,7 @@ function chooseSpecialBlock() {
   if (candidates.length > 0) {
     const chosen = candidates[Math.floor(Math.random() * candidates.length)];
     activeSpecialBlock = chosen;
+specialBlockStartTime = Date.now();
   }
 }
 
@@ -97,7 +99,7 @@ function drawBricks() {
 
         // Knipperend effect op geselecteerd blokje
         if (activeSpecialBlock && activeSpecialBlock.c === c && activeSpecialBlock.r === r) {
-          if (Math.floor(Date.now() / 400) % 2 === 0) {
+          if (Date.now() - specialBlockStartTime <= 10000 && Math.floor(Date.now() / 400) % 2 === 0) {
             ctx.strokeStyle = 'red';
             ctx.lineWidth = 4;
             ctx.strokeRect(brickX + 2, brickY + 2, brickWidth - 4, brickHeight - 4);
