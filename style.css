@@ -151,7 +151,7 @@ body {
   align-items: center;
   overflow: hidden;
   border-radius: 6px;
-  z-index: 9999;
+  z-index: 1020;
   padding-left: 10px;
 }
 
