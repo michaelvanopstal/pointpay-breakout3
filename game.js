@@ -2,6 +2,9 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
+// voorkom herstart video
+window.rocketPlayed = false;
+
 let elapsedTime = 0;
 let timerInterval = null;
 let timerRunning = false;
@@ -189,13 +192,6 @@ function resetBricks() {
 
 function draw() {
   collisionDetection();
-  if (bricks.flat().every(b => b.status === 0)) {
-    const rocket = document.getElementById("rocket-animation");
-    const video = document.getElementById("rocket-video");
-    video.src = "assets/Professional_Mode__A_3D_animation_of_a_blue_rocket.mp4";
-    rocket.style.display = "block";
-  }
-
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawCoins();
   checkCoinCollision();
