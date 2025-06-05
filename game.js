@@ -88,6 +88,7 @@ function mouseMoveHandler(e) {
 }
 
 function drawBricks() {
+  if (!activeSpecialBlock) console.warn("activeSpecialBlock is null");
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
       if (bricks[c][r].status === 1) {
@@ -98,7 +99,7 @@ function drawBricks() {
         ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
 
         // Knipperend effect op geselecteerd blokje
-        if (activeSpecialBlock && activeSpecialBlock.c === c && activeSpecialBlock.r === r) {
+        if (activeSpecialBlock && activeSpecialBlock.c === c && activeSpecialBlock.r === r && !fallingFlag) {
           if (Date.now() - specialBlockStartTime <= 10000 && Math.floor(Date.now() / 400) % 2 === 0) {
             ctx.strokeStyle = 'red';
             ctx.lineWidth = 4;
@@ -463,7 +464,7 @@ collisionDetection = function () {
           document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
 
           // Start vlag
-          if (activeSpecialBlock && activeSpecialBlock.c === c && activeSpecialBlock.r === r) {
+          if (activeSpecialBlock && activeSpecialBlock.c === c && activeSpecialBlock.r === r && !fallingFlag) {
             fallingFlag = {
               x: b.x + brickWidth / 2 - 15,
               y: b.y
