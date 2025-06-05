@@ -172,3 +172,21 @@ body {
 
 .positive { color: #00ff77; }
 .negative { color: #ff4444; }
+#login-btn,
+#logout-btn {
+
+{
+  background-color: #007bff;   /* helder blauw */
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 5px;
+}
+
+#login-btn:hover,
+#logout-btn:hover {
+  background-color: #0056b3;  /* donkerder blauw bij hover */
+}
