@@ -130,27 +130,7 @@ function startTimer() {
   }, 1000);
 }
 
-function collisionDetection() {
-  for (let c = 0; c < brickColumnCount; c++) {
-    for (let r = 0; r < brickRowCount; r++) {
-      let b = bricks[c][r];
-      if (b.status === 1) {
-        if (
-          x > b.x &&
-          x < b.x + brickWidth &&
-          y > b.y &&
-          y < b.y + brickHeight
-        ) {
-          dy = -dy;
-          b.status = 0;
-          score += 10;
-          spawnCoin(b.x, b.y);
-          document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-        }
-      }
-    }
-  }
-}
+
 
 function saveHighscore() {
   const timeText = document.getElementById("timeDisplay").textContent.replace("time ", "");
@@ -217,50 +197,7 @@ function resetBricks() {
   }
 }
 
-function draw() {
-  collisionDetection();
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawCoins();
-  checkCoinCollision();
-  drawBricks();
-  drawBall();
-  drawPaddle();
 
-  if (rightPressed && paddleX < canvas.width - paddleWidth) paddleX += 7;
-  else if (leftPressed && paddleX > 0) paddleX -= 7;
-
-  if (ballLaunched) {
-    x += dx;
-    y += dy;
-
-    if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) dx = -dx;
-    if (y + dy < ballRadius) dy = -dy;
-
-    if (y + dy > canvas.height - paddleHeight - ballRadius && x > paddleX && x < paddleX + paddleWidth) {
-      const hitPos = (x - paddleX) / paddleWidth; // 0 = links, 1 = rechts
-      const angle = (hitPos - 0.5) * Math.PI / 2; // van -45° tot 45°
-      const speed = Math.sqrt(dx * dx + dy * dy);
-      dx = speed * Math.sin(angle);
-      dy = -Math.abs(speed * Math.cos(angle)); // omhoog
-}
-
-    if (y + dy > canvas.height - ballRadius) {
-      saveHighscore();
-      ballLaunched = false;
-      dx = 4;
-      dy = -4;
-      elapsedTime = 0;
-      timerRunning = false;
-      clearInterval(timerInterval);
-    }
-  } else {
-    x = paddleX + paddleWidth / 2 - ballRadius;
-    resetBricks();
-    y = canvas.height - paddleHeight - ballRadius * 2;
-  }
-
-  requestAnimationFrame(draw);
-}
 
 let imagesLoaded = 0;
 function onImageLoad() {
@@ -292,3 +229,194 @@ document.addEventListener("keydown", function (e) {
     ballMoving = true;
   }
 });
+
+// --- Vlaggetjes & Schietfunctie na knipperblokje ---
+let flagActive = false;
+let flagCollected = false;
+let flagStartTime = 0;
+let flagXOffset = 0;
+let bullets = [];
+let bonusCoins = [];
+const flagImg = new Image();
+flagImg.src = "vlaggetjes.png";
+
+function spawnFlags(x) {
+  flagActive = true;
+  flagCollected = false;
+  flagXOffset = x - paddleX;
+  flagStartTime = Date.now();
+}
+
+function collectFlag() {
+  flagCollected = true;
+  flagStartTime = Date.now();
+}
+
+function drawFlags() {
+  if (!flagActive) return;
+
+  const now = Date.now();
+  const elapsed = now - flagStartTime;
+  if (elapsed > 15000) {
+    flagActive = false;
+    flagCollected = false;
+    bullets = [];
+    return;
+  }
+
+  const flagX = paddleX + flagXOffset;
+  const flagY = canvas.height - paddleHeight - 50;
+
+  if (flagCollected || (!flagCollected && Math.floor(now / 300) % 2 === 0)) {
+    ctx.drawImage(flagImg, flagX, flagY, 30, 50);
+    ctx.drawImage(flagImg, flagX + paddleWidth - 40, flagY, 30, 50);
+  }
+}
+
+document.addEventListener("keydown", (e) => {
+  if (flagCollected && (e.key === "ArrowUp" || e.key === " ")) {
+    shootBullets();
+  }
+});
+
+document.addEventListener("click", () => {
+  if (flagCollected) {
+    shootBullets();
+  }
+});
+
+function shootBullets() {
+  const bulletY = canvas.height - paddleHeight - 50;
+  bullets.push({ x: paddleX + 10, y: bulletY });
+  bullets.push({ x: paddleX + paddleWidth - 20, y: bulletY });
+}
+
+function drawBullets() {
+  ctx.fillStyle = "gold";
+  bullets.forEach(b => {
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.closePath();
+    b.y -= 5;
+  });
+  bullets = bullets.filter(b => b.y > 0);
+}
+
+function checkBulletCollision() {
+  bullets.forEach(bullet => {
+    for (let c = 0; c < brickColumnCount; c++) {
+      for (let r = 0; r < brickRowCount; r++) {
+        const b = bricks[c][r];
+        if (b.status === 1) {
+          const bx = c * brickWidth;
+          const by = r * brickHeight;
+          if (bullet.x > bx && bullet.x < bx + brickWidth && bullet.y > by && bullet.y < by + brickHeight) {
+            b.status = 0;
+            score += 10;
+            spawnCoin(bx, by);
+            bonusCoins.push({ x: bx + brickWidth / 2 - 12, y: by, radius: 12, active: true });
+          }
+        }
+      }
+    }
+  });
+}
+
+function drawBonusCoins() {
+  bonusCoins.forEach(coin => {
+    if (coin.active) {
+      ctx.drawImage(coinImg, coin.x, coin.y, 24, 24);
+      coin.y += 2;
+    }
+  });
+}
+
+function checkBonusCoinCollision() {
+  bonusCoins.forEach(coin => {
+    if (coin.active && coin.y + coin.radius * 2 >= canvas.height - paddleHeight && coin.x + coin.radius > paddleX && coin.x < paddleX + paddleWidth) {
+      coin.active = false;
+      score += 5;
+      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+    }
+  });
+}
+
+const originalCollision = collisionDetection;
+collisionDetection = function () {
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      let b = bricks[c][r];
+      if (b.status === 1) {
+        if (x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
+          dy = -dy;
+          b.status = 0;
+          score += 10;
+          spawnCoin(b.x, b.y);
+          document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+
+          if (activeSpecialBlock && activeSpecialBlock.c === c && activeSpecialBlock.r === r) {
+            spawnFlags(b.x);
+          }
+        }
+      }
+    }
+  }
+};
+
+draw = function () {
+  collisionDetection();
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawCoins();
+  drawBonusCoins();
+  checkCoinCollision();
+  checkBonusCoinCollision();
+  drawBricks();
+  drawBall();
+  drawPaddle();
+  drawFlags();
+  drawBullets();
+  checkBulletCollision();
+
+  if (rightPressed && paddleX < canvas.width - paddleWidth) paddleX += 7;
+  else if (leftPressed && paddleX > 0) paddleX -= 7;
+
+  if (flagActive && !flagCollected) {
+    const flagX = paddleX + flagXOffset;
+    if (flagX >= paddleX && flagX <= paddleX + paddleWidth) {
+      collectFlag();
+    }
+  }
+
+  if (ballLaunched) {
+    x += dx;
+    y += dy;
+
+    if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) dx = -dx;
+    if (y + dy < ballRadius) dy = -dy;
+
+    if (y + dy > canvas.height - paddleHeight - ballRadius && x > paddleX && x < paddleX + paddleWidth) {
+      const hitPos = (x - paddleX) / paddleWidth;
+      const angle = (hitPos - 0.5) * Math.PI / 2;
+      const speed = Math.sqrt(dx * dx + dy * dy);
+      dx = speed * Math.sin(angle);
+      dy = -Math.abs(speed * Math.cos(angle));
+    }
+
+    if (y + dy > canvas.height - ballRadius) {
+      saveHighscore();
+      ballLaunched = false;
+      dx = 4;
+      dy = -4;
+      elapsedTime = 0;
+      timerRunning = false;
+      clearInterval(timerInterval);
+    }
+  } else {
+    x = paddleX + paddleWidth / 2 - ballRadius;
+    resetBricks();
+    y = canvas.height - paddleHeight - ballRadius * 2;
+  }
+
+  requestAnimationFrame(draw);
+};
