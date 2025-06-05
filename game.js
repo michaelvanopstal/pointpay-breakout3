@@ -258,9 +258,9 @@ function collectFlag() {
 
 // Nieuwe vlag afbeeldingen
 const flagLeftImg = new Image();
-flagLeftImg.src = "vlaggetje .png";
+flagLeftImg.src = "vlaggetje1.png";
 const flagRightImg = new Image();
-flagRightImg.src = "vlaggetje 2.png";
+flagRightImg.src = "vlaggetje2.png";
 
 // Pas drawFlags aan met aparte vlaggen links en rechts
 function drawFlags() {
