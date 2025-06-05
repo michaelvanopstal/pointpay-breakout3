@@ -1,3 +1,7 @@
+    bricks[c][r] = { x: 0, y: 0, status: 1 };
+  }
+}
+
 let activeSpecialBlock = null;
 
 function chooseSpecialBlock() {
@@ -18,6 +22,7 @@ function chooseSpecialBlock() {
 setInterval(() => {
   chooseSpecialBlock();
 }, 4000);
+
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
