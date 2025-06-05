@@ -79,5 +79,41 @@
   });
 </script>
 
+
+<!-- PXP Coin Banner -->
+<div id="pxp-banner-overlay">
+  <div id="pxp-scroll-text">Loading PXP data...</div>
+</div>
+<script>
+  async function loadPXPBanner() {
+    try {
+      const res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=pointpay');
+      const data = await res.json();
+      if (data && data[0]) {
+        const pxp = data[0];
+        const price = `$${pxp.current_price.toFixed(5)}`;
+        const change = pxp.price_change_percentage_24h.toFixed(2);
+        const changeClass = change >= 0 ? 'positive' : 'negative';
+        const cap = `$${(pxp.market_cap / 1000).toFixed(2)}K`;
+        const vol = `$${(pxp.total_volume / 1000).toFixed(2)}K`;
+
+        const scrollHTML = \`
+          <strong>PXP:</strong> \${price} <span class="\${changeClass}">\${change}%</span> &nbsp;
+          Market Cap: \${cap} &nbsp;
+          Volume: \${vol} &nbsp;
+          Total Supply: 100M PXP &nbsp;
+          Circulating: \${pxp.circulating_supply.toLocaleString()} PXP
+        \`;
+
+        document.getElementById("pxp-scroll-text").innerHTML = scrollHTML;
+      }
+    } catch (e) {
+      console.error("Failed to load PXP banner:", e);
+    }
+  }
+  loadPXPBanner();
+  setInterval(loadPXPBanner, 60000);
+</script>
+
 </body>
 </html>
