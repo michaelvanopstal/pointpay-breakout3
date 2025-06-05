@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PointPay Breakout</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="top-info">
+    <span id="player-display">Player</span>
+    <span id="scoreDisplay">score 0 pxp.</span>
+    <span id="timeDisplay">time 00:00</span>
+  </div>
+
+  <div id="game-container">
+    <canvas id="gameCanvas" width="645" height="600"></canvas>
+
+    <div id="login-overlay">
+      
+<div id="login-box">
+  <label for="player-name">Inlog:</label><br />
+  <input type="text" id="player-name" placeholder="Voer je naam in" />
+  <button id="login-btn">Login</button>
+  <button id="logout-btn" style="display: none;">Logout</button>
+</div>
+
+    </div>
+
+    <div id="highscore-overlay">
+      <img src="beker_clipped_rev_2.png" id="trophy" alt="Trophy" />
+      <h2>High score</h2>
+      <ol id="highscore-list">
+        <li></li><li></li><li></li><li></li><li></li>
+        <li></li><li></li><li></li><li></li><li></li>
+      </ol>
+    </div>
+  </div>
+
+  <script src="login.js"></script>
+  <script src="game.js"></script>
+
+<script>
+  let highscores = JSON.parse(localStorage.getItem("highscores")) || [
+    { name: "—", score: 0, time: "00:00" },
+    { name: "—", score: 0, time: "00:00" },
+    { name: "—", score: 0, time: "00:00" },
+    { name: "—", score: 0, time: "00:00" },
+    { name: "—", score: 0, time: "00:00" },
+    { name: "—", score: 0, time: "00:00" },
+    { name: "—", score: 0, time: "00:00" },
+    { name: "—", score: 0, time: "00:00" },
+    { name: "—", score: 0, time: "00:00" },
+    { name: "—", score: 0, time: "00:00" }
+  ];
+
+  function updateHighscoreBoard() {
+    const highscoreList = document.getElementById("highscore-list");
+    if (!highscoreList) return;
+    highscoreList.innerHTML = "";
+    highscores.forEach((entry, index) => {
+      const li = document.createElement("li");
+      li.textContent = `${index + 1}. ${entry.name} — ${entry.score} PXP — ${entry.time}`;
+      highscoreList.appendChild(li);
+    });
+  }
+
+  function checkAndUpdateHighscores(name, score, time) {
+    const newEntry = { name, score, time };
+    highscores.push(newEntry);
+    highscores.sort((a, b) => b.score - a.score || a.time.localeCompare(b.time));
+    highscores = highscores.slice(0, 10);
+    localStorage.setItem("highscores", JSON.stringify(highscores));
+    updateHighscoreBoard();
+  }
+
+  window.addEventListener("load", () => {
+    updateHighscoreBoard();
+  });
+  
+  
+  <iframe src="pxp-banner.html" 
+        style="position: fixed; bottom: 30px; right: 30px; width: 600px; height: 50px; border: none; background: transparent; z-index: 9999;"
+        scrolling="no"></iframe>
+
+</script>
+
+
+<button id="pxp-overlay-toggle">Toon Banner</button>
+
+<div id="scroll-overlay">
+  <div id="scroll-banner">
+    <div class="scroll-content">
+      $0.01726 &nbsp; 
+      <span class="positive">+1.22%</span> (1d) &nbsp; 
+      Market cap $517.92K 
+      <span class="positive">+1.22%</span> &nbsp; 
+      Volume (24h) $145.52K 
+      <span class="negative">-8.99%</span> &nbsp; 
+      FDV $1.72M &nbsp; 
+      Vol/Mkt Cap (24h): 28.06% &nbsp; 
+      Total supply: 100M PXP &nbsp; 
+      Max. supply: 100M PXP &nbsp; 
+      Circulating: 30M PXP
+    </div>
+  </div>
+</div>
+
+<script>
+  const toggleBtn = document.getElementById('pxp-overlay-toggle');
+  const overlay = document.getElementById('scroll-overlay');
+
+  toggleBtn.addEventListener('click', () => {
+    const isVisible = overlay.style.display === 'block';
+    overlay.style.display = isVisible ? 'none' : 'block';
+    toggleBtn.textContent = isVisible ? 'Toon Banner' : 'Verberg Banner';
+  });
+</script>
+
+</body>
+</html>
