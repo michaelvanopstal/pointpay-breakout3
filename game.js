@@ -240,8 +240,10 @@ let flagStartTime = 0;
 let flagXOffset = 0;
 let bullets = [];
 let bonusCoins = [];
-const flagImg = new Image();
-flagImg.src = "vlaggetjes.png";
+const flagLeftImg = new Image();
+flagLeftImg.src = "vlaggetje .png";
+const flagRightImg = new Image();
+flagRightImg.src = "vlaggetje 2.png";
 
 function spawnFlags(x) {
   flagActive = true;
@@ -255,6 +257,7 @@ function collectFlag() {
   flagStartTime = Date.now();
 }
 
+
 function drawFlags() {
   if (!flagActive) return;
 
@@ -267,14 +270,16 @@ function drawFlags() {
     return;
   }
 
-  const flagX = paddleX + flagXOffset;
+  const flagXLeft = paddleX - 10;
+  const flagXRight = paddleX + paddleWidth - 20;
   const flagY = canvas.height - paddleHeight - 50;
 
   if (flagCollected || (!flagCollected && Math.floor(now / 300) % 2 === 0)) {
-    ctx.drawImage(flagImg, flagX, flagY, 30, 50);
-    ctx.drawImage(flagImg, flagX + paddleWidth - 40, flagY, 30, 50);
+    ctx.drawImage(flagLeftImg, flagXLeft, flagY, 30, 50);
+    ctx.drawImage(flagRightImg, flagXRight, flagY, 30, 50);
   }
 }
+
 
 document.addEventListener("keydown", (e) => {
   if (flagCollected && (e.key === "ArrowUp" || e.key === " ")) {
