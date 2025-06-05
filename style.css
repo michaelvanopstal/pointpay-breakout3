@@ -1,4 +1,3 @@
-
 body {
   margin: 0;
   background: url('wandljk_kl_png_V1.jpeg') no-repeat center center;
@@ -138,42 +137,28 @@ body {
   white-space: nowrap;
 }
 
-
-
-#pxp-overlay-toggle {
-  position: fixed;
-  bottom: 90px;
-  right: 30px;
-  background: #333;
-  color: white;
-  border: none;
-  padding: 6px 10px;
-  font-size: 12px;
-  cursor: pointer;
-  z-index: 200;
-}
-
-#scroll-overlay {
+/* PXP Banner Overlay */
+#pxp-banner-overlay {
   position: fixed;
   bottom: 10px;
-  right: 10px;
-  background-color: rgba(0, 0, 0, 0.85);
-  border-radius: 8px;
-  padding: 10px 14px;
-  z-index: 200;
-  display: none;
-  max-width: 360px;
-  overflow: hidden;
-}
-
-#scroll-banner {
+  right: 0px;
+  left: 685px;
+  width: 770px;
+  height: 36px;
+  background-color: rgba(0, 0, 0, 0.9);
   color: white;
   font-size: 14px;
-  height: 24px;
+  font-family: Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
   white-space: nowrap;
+  overflow: hidden;
+  border-radius: 6px;
+  z-index: 1020;
 }
 
-.scroll-content {
+#pxp-scroll-text {
   display: inline-block;
   white-space: nowrap;
   animation: scrollBanner 25s linear infinite;
