@@ -189,6 +189,13 @@ function resetBricks() {
 
 function draw() {
   collisionDetection();
+  if (bricks.flat().every(b => b.status === 0)) {
+    const rocket = document.getElementById("rocket-animation");
+    const video = document.getElementById("rocket-video");
+    video.src = "assets/PointPayRaket.mp4";
+    rocket.style.display = "block";
+  }
+
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawCoins();
   checkCoinCollision();
