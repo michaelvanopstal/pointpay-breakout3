@@ -234,6 +234,11 @@ document.addEventListener("keydown", function (e) {
 });
 
 // --- Vlaggetjes & Schietfunctie na knipperblokje ---
+const flagLeftImg = new Image();
+flagLeftImg.src = "vlaggetje1.png";
+const flagRightImg = new Image();
+flagRightImg.src = "vlaggetje2.png";
+
 let flagActive = false;
 let flagCollected = false;
 let flagStartTime = 0;
@@ -258,13 +263,14 @@ function collectFlag() {
 
 // Nieuwe vlag afbeeldingen
 const flagLeftImg = new Image();
-flagLeftImg.src = "vlaggetje1.png";
+flagLeftImg.src = "vlaggetje .png";
 const flagRightImg = new Image();
-flagRightImg.src = "vlaggetje2.png";
+flagRightImg.src = "vlaggetje 2.png";
 
 // Pas drawFlags aan met aparte vlaggen links en rechts
+function 
 function drawFlags() {
-  if (!flagActive) return;
+  if (!flagActive || !flagCollected) return;
 
   const now = Date.now();
   const elapsed = now - flagStartTime;
@@ -274,6 +280,12 @@ function drawFlags() {
     bullets = [];
     return;
   }
+
+  const flagY = canvas.height - paddleHeight - 50;
+  ctx.drawImage(flagLeftImg, paddleX, flagY, 30, 50);
+  ctx.drawImage(flagRightImg, paddleX + paddleWidth - 30, flagY, 30, 50);
+}
+
 
   const flagY = canvas.height - paddleHeight - 50;
 
