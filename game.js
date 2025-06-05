@@ -1,3 +1,23 @@
+let activeSpecialBlock = null;
+
+function chooseSpecialBlock() {
+  const candidates = [];
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      if (bricks[c][r].status === 1) {
+        candidates.push({ c, r });
+      }
+    }
+  }
+  if (candidates.length > 0) {
+    const chosen = candidates[Math.floor(Math.random() * candidates.length)];
+    activeSpecialBlock = chosen;
+  }
+}
+
+setInterval(() => {
+  chooseSpecialBlock();
+}, 4000);
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
