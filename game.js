@@ -214,7 +214,11 @@ function draw() {
       x > paddleX &&
       x < paddleX + paddleWidth
     ) {
-      dy = -dy;
+      let hitPoint = (x - paddleX) / paddleWidth;
+      let angle = (hitPoint - 0.5) * Math.PI / 2; // -45° tot +45°
+      let speed = Math.sqrt(dx * dx + dy * dy);
+      dx = speed * Math.sin(angle);
+      dy = -Math.abs(speed * Math.cos(angle));
     }
 
     if (y + dy > canvas.height - ballRadius) {
