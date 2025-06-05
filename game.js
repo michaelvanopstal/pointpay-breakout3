@@ -415,3 +415,117 @@ function draw() {
 
   requestAnimationFrame(draw);
 }
+
+
+// -- EXTRA: vlaggetje laten vallen en opvangen --
+let fallingFlag = null;
+
+function updateFallingFlag() {
+  if (!fallingFlag) return;
+
+  ctx.drawImage(flagImg, fallingFlag.x, fallingFlag.y, 30, 50);
+  fallingFlag.y += 3;
+
+  // Paddle raakt vlag
+  if (
+    fallingFlag.y + 50 >= canvas.height - paddleHeight &&
+    fallingFlag.x + 30 > paddleX &&
+    fallingFlag.x < paddleX + paddleWidth
+  ) {
+    collectFlag();
+    fallingFlag = null;
+  }
+
+  // Buiten beeld
+  if (fallingFlag.y > canvas.height) {
+    fallingFlag = null;
+  }
+}
+
+// Pas collisionDetection aan zodat vlaggetje gaat vallen
+collisionDetection = function () {
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      let b = bricks[c][r];
+      if (b.status === 1) {
+        if (
+          x > b.x &&
+          x < b.x + brickWidth &&
+          y > b.y &&
+          y < b.y + brickHeight
+        ) {
+          dy = -dy;
+          b.status = 0;
+          score += 10;
+          spawnCoin(b.x, b.y);
+          document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+
+          // Start vlag
+          if (activeSpecialBlock && activeSpecialBlock.c === c && activeSpecialBlock.r === r) {
+            fallingFlag = {
+              x: b.x + brickWidth / 2 - 15,
+              y: b.y
+            };
+          }
+        }
+      }
+    }
+  }
+};
+
+// Voeg toe aan draw()
+const originalDraw = draw;
+draw = function () {
+  collisionDetection();
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawCoins();
+  drawBonusCoins();
+  checkCoinCollision();
+  checkBonusCoinCollision();
+  drawBricks();
+  drawBall();
+  drawPaddle();
+  updateFallingFlag();
+  drawFlags();
+  drawBullets();
+  checkBulletCollision();
+
+  if (rightPressed && paddleX < canvas.width - paddleWidth) paddleX += 7;
+  else if (leftPressed && paddleX > 0) paddleX -= 7;
+
+  if (ballLaunched) {
+    x += dx;
+    y += dy;
+
+    if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) dx = -dx;
+    if (y + dy < ballRadius) dy = -dy;
+
+    if (
+      y + dy > canvas.height - paddleHeight - ballRadius &&
+      x > paddleX &&
+      x < paddleX + paddleWidth
+    ) {
+      const hitPos = (x - paddleX) / paddleWidth;
+      const angle = (hitPos - 0.5) * Math.PI / 2;
+      const speed = Math.sqrt(dx * dx + dy * dy);
+      dx = speed * Math.sin(angle);
+      dy = -Math.abs(speed * Math.cos(angle));
+    }
+
+    if (y + dy > canvas.height - ballRadius) {
+      saveHighscore();
+      ballLaunched = false;
+      dx = 4;
+      dy = -4;
+      elapsedTime = 0;
+      timerRunning = false;
+      clearInterval(timerInterval);
+    }
+  } else {
+    x = paddleX + paddleWidth / 2 - ballRadius;
+    resetBricks();
+    y = canvas.height - paddleHeight - ballRadius * 2;
+  }
+
+  requestAnimationFrame(draw);
+};
