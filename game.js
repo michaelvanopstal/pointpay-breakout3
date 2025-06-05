@@ -192,7 +192,7 @@ function draw() {
   if (bricks.flat().every(b => b.status === 0)) {
     const rocket = document.getElementById("rocket-animation");
     const video = document.getElementById("rocket-video");
-    video.src = "assets/PointPayRaket.mp4";
+    video.src = "assets/Professional_Mode__A_3D_animation_of_a_blue_rocket.mp4";
     rocket.style.display = "block";
   }
 
