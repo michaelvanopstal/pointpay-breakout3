@@ -93,12 +93,7 @@ document.addEventListener("mousedown", function () {
   }
 });
 
-    }
-  }
-});
-
-  }
-});
+  
 
 function keyDownHandler(e) {
   if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
