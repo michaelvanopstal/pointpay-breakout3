@@ -124,7 +124,7 @@ function collisionDetection() {
     }
   }
 
-  // Check powerBlock
+  
   if (powerBlock.active && powerBlock.visible) {
     if (
       x > powerBlock.x &&
@@ -135,7 +135,7 @@ function collisionDetection() {
       dy = -dy;
       powerBlock.active = false;
 
-      // Verwijder ook de brick eronder
+   
       if (bricks[powerBlockCol] && bricks[powerBlockCol][powerBlockRow]) {
         bricks[powerBlockCol][powerBlockRow].status = 0;
       }
@@ -143,7 +143,7 @@ function collisionDetection() {
       score += 10;
       document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
 
-      spawnPowerBlock(); // direct nieuwe powerBlock
+      spawnPowerBlock(); 
     }
   }
 }
@@ -228,7 +228,7 @@ function resetBricks() {
 
 
 
-// Power Block Setup
+
 const powerBlockImg = new Image();
 powerBlockImg.src = "power_block_logo.png";
 
@@ -266,7 +266,7 @@ function spawnPowerBlock() {
     } else {
       clearInterval(blinkInterval);
     }
-  }, 500); // knippert elke 0.5 sec
+  }, 500); 
 }
 
 function drawPowerBlock() {
@@ -277,8 +277,8 @@ function drawPowerBlock() {
 
 
 function draw() {
-  collisionDetection();
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  collisionDetection();
   drawCoins();
   checkCoinCollision();
   drawBricks();
