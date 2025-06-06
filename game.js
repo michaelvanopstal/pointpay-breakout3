@@ -238,6 +238,9 @@ const flagLeftImg = new Image();
 flagLeftImg.src = "vlaggetje1.png";
 const flagRightImg = new Image();
 flagRightImg.src = "vlaggetje2.png";
+const flagLeftImg = new Image();
+flagLeftImg.src = "vlaggetje1.png";
+
 
 let flagActive = false;
 let flagCollected = false;
@@ -245,8 +248,7 @@ let flagStartTime = 0;
 let flagXOffset = 0;
 let bullets = [];
 let bonusCoins = [];
-const flagImg = new Image();
-flagImg.src = "vlaggetjes.png";
+
 
 function spawnFlags(x) {
   flagActive = true;
@@ -262,26 +264,12 @@ function collectFlag() {
 
 
 // Nieuwe vlag afbeeldingen
-const flagLeftImg = new Image();
-flagLeftImg.src = "vlaggetje .png";
-const flagRightImg = new Image();
-flagRightImg.src = "vlaggetje 2.png";
+
+
 
 // Pas drawFlags aan met aparte vlaggen links en rechts
 function 
-function drawFlags() {
-  if (!flagActive || !flagCollected) return;
-
-  const now = Date.now();
-  const elapsed = now - flagStartTime;
-  if (elapsed > 15000) {
-    flagActive = false;
-    flagCollected = false;
-    bullets = [];
-    return;
-  }
-
-  const flagY = canvas.height - paddleHeight - 50;
+const flagY = canvas.height - paddleHeight - 50;
   ctx.drawImage(flagLeftImg, paddleX, flagY, 30, 50);
   ctx.drawImage(flagRightImg, paddleX + paddleWidth - 30, flagY, 30, 50);
 }
@@ -410,6 +398,24 @@ function draw() {
   drawBall();
   drawPaddle();
 
+function drawFlags() {
+  if (!flagActive || !flagCollected) return;
+
+  const now = Date.now();
+  const elapsed = now - flagStartTime;
+  if (elapsed > 15000) {
+    flagActive = false;
+    flagCollected = false;
+    bullets = [];
+    return;
+  }
+
+  const flagY = canvas.height - paddleHeight - 50;
+  ctx.drawImage(flagLeftImg, paddleX, flagY, 30, 50); // links
+  ctx.drawImage(flagRightImg, paddleX + paddleWidth - 30, flagY, 30, 50); // rechts
+}
+
+
   if (rightPressed && paddleX < canvas.width - paddleWidth) paddleX += 7;
   else if (leftPressed && paddleX > 0) paddleX -= 7;
 
@@ -516,6 +522,24 @@ draw = function () {
   drawBricks();
   drawBall();
   drawPaddle();
+
+function drawFlags() {
+  if (!flagActive || !flagCollected) return;
+
+  const now = Date.now();
+  const elapsed = now - flagStartTime;
+  if (elapsed > 15000) {
+    flagActive = false;
+    flagCollected = false;
+    bullets = [];
+    return;
+  }
+
+  const flagY = canvas.height - paddleHeight - 50;
+  ctx.drawImage(flagLeftImg, paddleX, flagY, 30, 50); // links
+  ctx.drawImage(flagRightImg, paddleX + paddleWidth - 30, flagY, 30, 50); // rechts
+}
+
   updateFallingFlag();
   drawFlags();
   drawBullets();
