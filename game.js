@@ -124,7 +124,7 @@ function collisionDetection() {
     }
   }
 
-  
+  // Check powerBlock
   if (powerBlock.active && powerBlock.visible) {
     if (
       x > powerBlock.x &&
@@ -134,14 +134,16 @@ function collisionDetection() {
     ) {
       dy = -dy;
       powerBlock.active = false;
-      powerBlockHit = true;
 
+      // Verwijder ook de brick eronder
       if (bricks[powerBlockCol] && bricks[powerBlockCol][powerBlockRow]) {
         bricks[powerBlockCol][powerBlockRow].status = 0;
       }
 
       score += 10;
       document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+
+      spawnPowerBlock(); // direct nieuwe powerBlock
     }
   }
 }
