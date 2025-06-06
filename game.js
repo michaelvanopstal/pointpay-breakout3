@@ -343,6 +343,8 @@ function draw() {
   drawBall();
   drawPaddle();
   drawPaddleFlags();
+  drawFlyingCoins();
+  checkFlyingCoinHits();
 
   if (rightPressed && paddleX < canvas.width - paddleWidth) paddleX += 7;
   else if (leftPressed && paddleX > 0) paddleX -= 7;
