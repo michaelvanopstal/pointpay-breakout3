@@ -238,6 +238,15 @@ function drawCoins() {
   });
 }
 
+function drawFlyingCoins() {
+  flyingCoins.forEach((coin) => {
+    if (coin.active) {
+      ctx.drawImage(shootCoinImg, coin.x - 12, coin.y - 12, 24, 24);
+      coin.y += coin.dy;
+    }
+  });
+}
+
 function checkCoinCollision() {
   coins.forEach(coin => {
     if (
