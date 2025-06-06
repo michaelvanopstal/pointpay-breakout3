@@ -61,7 +61,6 @@ document.addEventListener("keydown", (e) => {
     score = 0;
     document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
   }
-});
 
 document.addEventListener("keydown", (e) => {
   if (flagsOnPaddle && Date.now() - flagTimer < 20000) {
@@ -69,27 +68,24 @@ document.addEventListener("keydown", (e) => {
       shootFromFlags();
     }
   }
-});
 
 document.addEventListener("keydown", (e) => {
   if (flagsOnPaddle && (e.code === "ArrowUp" || e.code === "Space")) {
     shootFromFlags();
   }
-});
 
 
 document.addEventListener("mousedown", () => {
   if (flagsOnPaddle) {
     shootFromFlags();
   }
-});
+
 
 
 document.addEventListener("mousedown", function () {
   if (flagsOnPaddle) {
     shootFromFlags();
   }
-});
 
   
 
