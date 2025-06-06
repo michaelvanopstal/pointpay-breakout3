@@ -118,7 +118,7 @@ function collisionDetection() {
           score += 10;
           spawnCoin(b.x, b.y);
           document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-  if if (powerBlock.active && powerBlock.visible) {
+if (powerBlock.active && powerBlock.visible) {
   if (
     x > powerBlock.x &&
     x < powerBlock.x + powerBlock.width &&
