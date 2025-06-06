@@ -234,10 +234,15 @@ let powerBlockTimer = 0;
 let powerBlockInterval = 10000;
 let powerBlockHit = false;
 let blinkInterval;
+let powerBlockRow = 0;
+let powerBlockCol = 0;
+
 
 function spawnPowerBlock() {
   const randCol = Math.floor(Math.random() * brickColumnCount);
   const randRow = Math.floor(Math.random() * brickRowCount);
+  powerBlockCol = randCol;
+  powerBlockRow = randRow;
   powerBlock.x = randCol * brickWidth;
   powerBlock.y = randRow * brickHeight;
   powerBlock.active = true;
