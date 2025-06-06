@@ -340,7 +340,7 @@ function draw() {
   }
 
   
-  if (Date.now() - powerBlockTimer > powerBlockInterval && !powerBlock.active && ballLaunched && !powerBlockUsed) {
+  if (Date.now() - powerBlockTimer > powerBlockInterval && !powerBlock.active && ballLaunched && !powerBlockUsed) powerBlockUsed = false;{
   !powerBlock.active && ballLaunched) {
     spawnPowerBlock();
     powerBlockTimer = Date.now();
