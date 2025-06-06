@@ -20,6 +20,7 @@ let leftPressed = false;
 let flagsOnPaddle = false;
 let flagTimer = 0;
 let powerBlockUsed = false;
+let shootingCoins = [];
 
 
 const brickRowCount = 5;
@@ -57,7 +58,15 @@ document.addEventListener("keydown", (e) => {
     dy = -4;
     if (!timerRunning) startTimer();score = 0;
     document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
-  
+    
+  document.addEventListener("keydown", (e) => {
+  if (flagsOnPaddle && Date.now() - flagTimer < 20000) {
+    if (e.code === "ArrowLeft" || e.code === "ArrowRight") {
+      shootFromFlags();
+    }
+  }
+});
+
   }
 });
 
@@ -110,6 +119,27 @@ function drawPaddleFlags() {
   } else if (flagsOnPaddle && Date.now() - flagTimer >= 20000) {
     flagsOnPaddle = false;
   }
+}
+function shootFromFlags() {
+  const coinSpeed = 6;
+
+ 
+  shootingCoins.push({
+    x: paddleX - 5 + 12,
+    y: canvas.height - paddleHeight - 28,
+    dx: 0,
+    dy: -coinSpeed,
+    active: true
+  });
+
+  
+  shootingCoins.push({
+    x: paddleX + paddleWidth - 19 + 12,
+    y: canvas.height - paddleHeight - 28,
+    dx: 0,
+    dy: -coinSpeed,
+    active: true
+  });
 }
 
 
