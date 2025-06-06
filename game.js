@@ -19,6 +19,7 @@ let rightPressed = false;
 let leftPressed = false;
 let flagsOnPaddle = false;
 let flagTimer = 0;
+let powerBlockUsed = false;
 
 
 const brickRowCount = 5;
@@ -338,7 +339,8 @@ function draw() {
   }
 
   
-  if (Date.now() - powerBlockTimer > powerBlockInterval && !powerBlock.active && ballLaunched) {
+  if (Date.now() - powerBlockTimer > powerBlockInterval && !powerBlock.active && ballLaunched && !powerBlockUsed) {
+  !powerBlock.active && ballLaunched) {
     spawnPowerBlock();
     powerBlockTimer = Date.now();
   }
