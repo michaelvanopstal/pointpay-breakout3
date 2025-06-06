@@ -155,6 +155,9 @@ function collisionDetection() {
     ) {
       dy = -dy;
       powerBlock.active = false;
+      flagsOnPaddle = true;
+      flagTimer = Date.now();
+
 
    
       if (bricks[powerBlockCol] && bricks[powerBlockCol][powerBlockRow]) {
