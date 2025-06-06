@@ -138,17 +138,11 @@ if (powerBlock.active && powerBlock.visible) {
       bricks[powerBlockCol][powerBlockRow].status = 0;
     }
 
-    score += 10;
-    document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-    }
-  }   
-}
-
-        }
+      score += 10;
+      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
       }
-    }
+    }   
   }
-}
 
 function saveHighscore() {
   const timeText = document.getElementById("timeDisplay").textContent.replace("time ", "");
