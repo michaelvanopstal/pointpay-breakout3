@@ -51,7 +51,7 @@ document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 document.addEventListener("mousemove", mouseMoveHandler, false);
 
-// Start het spel bij pijltje omhoog of 'Up'
+
 document.addEventListener("keydown", (e) => {
   if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched && window.readyToLaunch) {
     ballLaunched = true;
@@ -63,7 +63,6 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-// Schiet bij pijltje links of rechts wanneer vlaggen actief zijn
 document.addEventListener("keydown", (e) => {
   if (flagsOnPaddle && Date.now() - flagTimer < 20000) {
     if (e.code === "ArrowLeft" || e.code === "ArrowRight") {
@@ -72,7 +71,6 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-// Schiet ook bij pijltje omhoog of spatie als vlaggen actief zijn
 document.addEventListener("keydown", (e) => {
   if (flagsOnPaddle && (e.code === "ArrowUp" || e.code === "Space")) {
     shootFromFlags();
