@@ -20,7 +20,7 @@ let leftPressed = false;
 let flagsOnPaddle = false;
 let flagTimer = 0;
 let powerBlockUsed = false;
-
+let flyingCoins = [];
 
 const brickRowCount = 5;
 const brickColumnCount = 9;
@@ -44,6 +44,9 @@ vlagImgLeft.src = "vlaggetje1.png";
 
 const vlagImgRight = new Image();
 vlagImgRight.src = "vlaggetje2.png";
+const shootCoinImg = new Image();
+shootCoinImg.src = "3.png"; 
+
 
 
 document.addEventListener("keydown", keyDownHandler, false);
@@ -110,6 +113,25 @@ function drawPaddleFlags() {
   } else if (flagsOnPaddle && Date.now() - flagTimer >= 20000) {
     flagsOnPaddle = false;
   }
+}
+function shootFromFlags() {
+  const coinSpeed = 8;
+
+  // Linkervlag
+  flyingCoins.push({
+    x: paddleX - 5 + 12,
+    y: canvas.height - paddleHeight - 40,
+    dy: -coinSpeed,
+    active: true
+  });
+
+  // Rechtervlag
+  flyingCoins.push({
+    x: paddleX + paddleWidth - 19 + 12,
+    y: canvas.height - paddleHeight - 40,
+    dy: -coinSpeed,
+    active: true
+  });
 }
 
 
