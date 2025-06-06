@@ -1,266 +1,147 @@
+// [Bestaande game.js code hierboven behouden]
 
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
+// --- NIEUWE VARIABELEN VOOR VLAG- EN BONUSLOGICA ---
+const overlayImg = new Image();
+overlayImg.src = "assets/logo_tint.png";
+const vlagLeftImg = new Image();
+vlagLeftImg.src = "assets/vlaggetje.png";
+const vlagRightImg = new Image();
+vlagRightImg.src = "assets/vlaggetje_2.png";
 
-let elapsedTime = 0;
-let timerInterval = null;
-let timerRunning = false;
-let score = 0;
-let ballRadius = 8;
-let dx = 4;
-let dy = -4;
-let ballLaunched = false;
-let x;
-let y;
-let paddleHeight = 10;
-let paddleWidth = 100;
-let paddleX = (canvas.width - paddleWidth) / 2;
-let rightPressed = false;
-let leftPressed = false;
+let overlayActive = false;
+let overlayPos = { c: 0, r: 0 };
+let overlayBlink = false;
+let overlayTimer = 0;
+let vlaggetjesFalling = [];
+let paddleFlags = [];
+let bonusActive = false;
+let bonusTimer = 0;
+let firedCoins = [];
 
-const brickRowCount = 5;
-const brickColumnCount = 9;
-const brickWidth = canvas.width / brickColumnCount;
-const brickHeight = 60;
+// --- HULPFUNCTIE VOOR OVERLAY ---
+function activateOverlay() {
+  const c = Math.floor(Math.random() * brickColumnCount);
+  const r = Math.floor(Math.random() * brickRowCount);
+  overlayPos = { c, r };
+  overlayActive = true;
+  overlayBlink = true;
+  overlayTimer = 0;
+}
 
-const bricks = [];
-for (let c = 0; c < brickColumnCount; c++) {
-  bricks[c] = [];
-  for (let r = 0; r < brickRowCount; r++) {
-    bricks[c][r] = { x: 0, y: 0, status: 1 };
+// --- TEKENEN VAN OVERLAY ---
+function drawOverlayBlink() {
+  if (overlayActive && bricks[overlayPos.c][overlayPos.r].status === 1 && overlayBlink) {
+    const bx = overlayPos.c * brickWidth;
+    const by = overlayPos.r * brickHeight;
+    ctx.drawImage(overlayImg, bx, by, brickWidth, brickHeight);
   }
 }
 
-const blockImg = new Image();
-blockImg.src = "block_logo.png";
-const ballImg = new Image();
-ballImg.src = "ball_logo.png";
+// --- VLAGGETJES FALLEN NA RAAKTE OVERLAY ---
+function spawnVlaggetjes(x, y) {
+  vlaggetjesFalling.push({ x: x - 15, y, vx: 0, vy: 2, side: 'left' });
+  vlaggetjesFalling.push({ x: x + brickWidth - 15, y, vx: 0, vy: 2, side: 'right' });
+}
 
-document.addEventListener("keydown", keyDownHandler, false);
-document.addEventListener("keyup", keyUpHandler, false);
-document.addEventListener("mousemove", mouseMoveHandler, false);
+function drawFallingVlaggetjes() {
+  vlaggetjesFalling.forEach(v => {
+    ctx.drawImage(v.side === 'left' ? vlagLeftImg : vlagRightImg, v.x, v.y, 30, 30);
+    v.y += v.vy;
 
-document.addEventListener("keydown", (e) => {
-  if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched && window.readyToLaunch) {
-    ballLaunched = true;
-    dx = 0;
-    dy = -4;
-    if (!timerRunning) startTimer();score = 0;
-    document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
-  
+    // Collision met paddle
+    if (
+      v.y + 30 >= canvas.height - paddleHeight &&
+      v.x + 30 > paddleX &&
+      v.x < paddleX + paddleWidth
+    ) {
+      paddleFlags.push({ side: v.side });
+      vlaggetjesFalling = vlaggetjesFalling.filter(f => f !== v);
+      if (!bonusActive) {
+        bonusActive = true;
+        bonusTimer = 1200; // 20 seconden bij 60fps
+      }
+    }
+  });
+}
+
+function drawPaddleFlags() {
+  paddleFlags.forEach(flag => {
+    const x = flag.side === 'left' ? paddleX - 15 : paddleX + paddleWidth - 15;
+    ctx.drawImage(flag.side === 'left' ? vlagLeftImg : vlagRightImg, x, canvas.height - 30, 30, 30);
+  });
+}
+
+// --- FIRE COINS FROM FLAGS ---
+document.addEventListener("keydown", function (e) {
+  if (bonusActive && e.key === "ArrowUp") {
+    paddleFlags.forEach(flag => {
+      const cx = flag.side === 'left' ? paddleX : paddleX + paddleWidth - 10;
+      firedCoins.push({ x: cx, y: canvas.height - 40, vy: -5 });
+    });
   }
 });
 
-function keyDownHandler(e) {
-  if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
-  else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
-}
+function drawFiredCoins() {
+  firedCoins.forEach(c => {
+    ctx.drawImage(coinImg, c.x, c.y, 20, 20);
+    c.y += c.vy;
 
-function keyUpHandler(e) {
-  if (e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
-  else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = false;
-}
-
-function mouseMoveHandler(e) {
-  const relativeX = e.clientX - canvas.offsetLeft;
-  if (relativeX > 0 && relativeX < canvas.width) paddleX = relativeX - paddleWidth / 2;
-}
-
-function drawBricks() {
-  for (let c = 0; c < brickColumnCount; c++) {
-    for (let r = 0; r < brickRowCount; r++) {
-      if (bricks[c][r].status === 1) {
-        const brickX = c * brickWidth;
-        const brickY = r * brickHeight;
-        bricks[c][r].x = brickX;
-        bricks[c][r].y = brickY;
-        ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
-      }
-    }
-  }
-}
-
-function drawBall() {
-  ctx.drawImage(ballImg, x, y, ballRadius * 2, ballRadius * 2);
-}
-
-function drawPaddle() {
-  ctx.beginPath();
-  ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-  ctx.fillStyle = "#0095DD";
-  ctx.fill();
-  ctx.closePath();
-}
-
-function startTimer() {
-  timerRunning = true;
-  timerInterval = setInterval(() => {
-    elapsedTime++;
-    const minutes = String(Math.floor(elapsedTime / 60)).padStart(2, '0');
-    const seconds = String(elapsedTime % 60).padStart(2, '0');
-    document.getElementById("timeDisplay").textContent = "time " + minutes + ":" + seconds;
-  }, 1000);
-}
-
-function collisionDetection() {
-  for (let c = 0; c < brickColumnCount; c++) {
-    for (let r = 0; r < brickRowCount; r++) {
-      let b = bricks[c][r];
-      if (b.status === 1) {
-        if (
-          x > b.x &&
-          x < b.x + brickWidth &&
-          y > b.y &&
-          y < b.y + brickHeight
-        ) {
-          dy = -dy;
+    // Check hit op bricks
+    for (let cc = 0; cc < brickColumnCount; cc++) {
+      for (let rr = 0; rr < brickRowCount; rr++) {
+        let b = bricks[cc][rr];
+        if (b.status === 1 && c.x > b.x && c.x < b.x + brickWidth && c.y > b.y && c.y < b.y + brickHeight) {
           b.status = 0;
           score += 10;
           spawnCoin(b.x, b.y);
           document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+          firedCoins = firedCoins.filter(fc => fc !== c);
         }
       }
     }
-  }
-}
-
-function saveHighscore() {
-  const timeText = document.getElementById("timeDisplay").textContent.replace("time ", "");
-  const highscore = {
-    name: window.currentPlayer || "Unknown",
-    score: score,
-    time: timeText
-  };
-
-  let highscores = JSON.parse(localStorage.getItem("highscores")) || [];
-  if (!highscores.some(h => h.name === highscore.name && h.score === highscore.score && h.time === highscore.time)) {
-    highscores.push(highscore);
-  }
-  highscores.sort((a, b) => b.score - a.score || a.time.localeCompare(b.time));
-  highscores = highscores.slice(0, 10);
-  localStorage.setItem("highscores", JSON.stringify(highscores));
-
-  const list = document.getElementById("highscore-list");
-  list.innerHTML = "";
-  highscores.forEach((entry, index) => {
-    const li = document.createElement("li");
-    li.textContent = `${index + 1} ${entry.name} - ${entry.score} pxp - ${entry.time}`;
-    list.appendChild(li);
   });
 }
 
-const coinImg = new Image();
-coinImg.src = "pxp coin perfect_clipped_rev_1.png";
-let coins = [];
+// --- UPDATE OVERLAY TIMER ---
+let overlayCountdown = 0;
 
-function spawnCoin(x, y) {
-  coins.push({ x: x + brickWidth / 2 - 12, y: y, radius: 12, active: true });
-}
+function updateOverlayLogic() {
+  overlayCountdown++;
+  if (overlayCountdown > 600) { // elke 10 sec
+    activateOverlay();
+    overlayCountdown = 0;
+  }
 
-function drawCoins() {
-  coins.forEach(coin => {
-    if (coin.active) {
-      ctx.drawImage(coinImg, coin.x, coin.y, 24, 24);
-      coin.y += 2;
-    }
-  });
-}
+  overlayTimer++;
+  if (overlayTimer % 30 === 0) overlayBlink = !overlayBlink;
 
-function checkCoinCollision() {
-  coins.forEach(coin => {
+  // Check hit
+  if (overlayActive) {
+    const b = bricks[overlayPos.c][overlayPos.r];
     if (
-      coin.active &&
-      coin.y + coin.radius * 2 >= canvas.height - paddleHeight &&
-      coin.x + coin.radius > paddleX &&
-      coin.x < paddleX + paddleWidth
+      b.status === 1 &&
+      x > b.x && x < b.x + brickWidth &&
+      y > b.y && y < b.y + brickHeight
     ) {
-      coin.active = false;
-      score += 5;
-      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+      dy = -dy;
+      b.status = 0;
+      overlayActive = false;
+      spawnVlaggetjes(b.x, b.y);
     }
-  });
-}
+  }
 
-function resetBricks() {
-  for (let c = 0; c < brickColumnCount; c++) {
-    for (let r = 0; r < brickRowCount; r++) {
-      bricks[c][r].status = 1;
+  if (bonusActive) {
+    bonusTimer--;
+    if (bonusTimer <= 0) {
+      bonusActive = false;
+      paddleFlags = [];
     }
   }
 }
 
-function draw() {
-  collisionDetection();
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawCoins();
-  checkCoinCollision();
-  drawBricks();
-  drawBall();
-  drawPaddle();
-
-  if (rightPressed && paddleX < canvas.width - paddleWidth) paddleX += 7;
-  else if (leftPressed && paddleX > 0) paddleX -= 7;
-
-  if (ballLaunched) {
-    x += dx;
-    y += dy;
-
-    if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) dx = -dx;
-    if (y + dy < ballRadius) dy = -dy;
-
-    if (y + dy > canvas.height - paddleHeight - ballRadius && x > paddleX && x < paddleX + paddleWidth) {
-      const hitPos = (x - paddleX) / paddleWidth; // 0 = links, 1 = rechts
-      const angle = (hitPos - 0.5) * Math.PI / 2; // van -45° tot 45°
-      const speed = Math.sqrt(dx * dx + dy * dy);
-      dx = speed * Math.sin(angle);
-      dy = -Math.abs(speed * Math.cos(angle)); // omhoog
-}
-
-    if (y + dy > canvas.height - ballRadius) {
-      saveHighscore();
-      ballLaunched = false;
-      dx = 4;
-      dy = -4;
-      elapsedTime = 0;
-      timerRunning = false;
-      clearInterval(timerInterval);
-    }
-  } else {
-    x = paddleX + paddleWidth / 2 - ballRadius;
-    resetBricks();
-    y = canvas.height - paddleHeight - ballRadius * 2;
-  }
-
-  requestAnimationFrame(draw);
-}
-
-let imagesLoaded = 0;
-function onImageLoad() {
-  imagesLoaded++;
-  if (imagesLoaded === 2) {
-    x = paddleX + paddleWidth / 2 - ballRadius;
-    y = canvas.height - paddleHeight - ballRadius * 2;
-    draw();
-  }
-}
-blockImg.onload = onImageLoad;
-ballImg.onload = onImageLoad;
-document.addEventListener("keydown", function (e) {
-  if (!ballMoving && (e.code === "ArrowUp" || e.code === "Space")) {
-    if (lives <= 0) {
-      lives = 3;
-      score = 0;
-      level = 1;
-      resetBricks();
-      resetBall();
-      resetPaddle();
-      startTime = new Date();
-      gameOver = false;
-      updateScoreDisplay();
-      updateTimeDisplay();
-      score = 0;
-
-    }
-    ballMoving = true;
-  }
-});
+// In draw() vóór requestAnimationFrame(draw); toevoegen:
+// updateOverlayLogic();
+// drawOverlayBlink();
+// drawFallingVlaggetjes();
+// drawPaddleFlags();
+// drawFiredCoins();
