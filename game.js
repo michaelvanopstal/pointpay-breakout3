@@ -58,12 +58,14 @@ document.addEventListener("keydown", (e) => {
     dy = -4;
     if (!timerRunning) startTimer();score = 0;
     document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
-    
+      }
+});
   document.addEventListener("keydown", (e) => {
   if (flagsOnPaddle && Date.now() - flagTimer < 20000) {
     if (e.code === "ArrowLeft" || e.code === "ArrowRight") {
       shootFromFlags(); 
-      
+       }
+}); 
       document.addEventListener("keydown", function (e) {
   if (flagsOnPaddle && (e.code === "ArrowUp" || e.code === "Space")) {
     shootFromFlags();
