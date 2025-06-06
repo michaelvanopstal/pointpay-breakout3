@@ -254,7 +254,7 @@ function spawnPowerBlock() {
     } else {
       clearInterval(blinkInterval);
     }
-  }, 500); 
+  }, 300); 
 }
 
 function drawPowerBlock() {
