@@ -118,6 +118,10 @@ function collisionDetection() {
           score += 10;
           spawnCoin(b.x, b.y);
           document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+        }
+      }
+    }
+  }
 if (powerBlock.active && powerBlock.visible) {
   if (
     x > powerBlock.x &&
@@ -136,9 +140,9 @@ if (powerBlock.active && powerBlock.visible) {
 
     score += 10;
     document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-  }
+    }
+  }   
 }
-
 
         }
       }
