@@ -17,6 +17,9 @@ let paddleWidth = 100;
 let paddleX = (canvas.width - paddleWidth) / 2;
 let rightPressed = false;
 let leftPressed = false;
+let flagsOnPaddle = false;
+let flagTimer = 0;
+
 
 const brickRowCount = 5;
 const brickColumnCount = 9;
@@ -101,12 +104,13 @@ function drawPaddle() {
 
 function drawPaddleFlags() {
   if (flagsOnPaddle && Date.now() - flagTimer < 20000) {
-    ctx.drawImage(vlagImgLeft, paddleX - 10, canvas.height - paddleHeight - 50, 30, 50);
-    ctx.drawImage(vlagImgRight, paddleX + paddleWidth - 20, canvas.height - paddleHeight - 50, 30, 50);
-  } else if (Date.now() - flagTimer >= 20000) {
+    ctx.drawImage(vlagImgLeft, paddleX - 5, canvas.height - paddleHeight - 28, 24, 24);
+    ctx.drawImage(vlagImgRight, paddleX + paddleWidth - 19, canvas.height - paddleHeight - 28, 24, 24);
+  } else if (flagsOnPaddle && Date.now() - flagTimer >= 20000) {
     flagsOnPaddle = false;
   }
 }
+
 
 
 function startTimer() {
@@ -120,7 +124,7 @@ function startTimer() {
 }
 
 function collisionDetection() {
-  // Check gewone bricks
+
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
       let b = bricks[c][r];
@@ -290,6 +294,7 @@ function draw() {
   drawPowerBlock();
   drawBall();
   drawPaddle();
+  drawPaddleFlags();
 
   if (rightPressed && paddleX < canvas.width - paddleWidth) paddleX += 7;
   else if (leftPressed && paddleX > 0) paddleX -= 7;
