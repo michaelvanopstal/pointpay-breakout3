@@ -201,19 +201,7 @@ function checkCoinCollision() {
       coin.active = false;
       score += 5;
       document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-  if (powerBlock.active && powerBlock.visible) {
-    if (
-      x > powerBlock.x &&
-      x < powerBlock.x + powerBlock.width &&
-      y > powerBlock.y &&
-      y < powerBlock.y + powerBlock.height
-    ) {
-      dy = -dy;
-      powerBlock.active = false;
-      powerBlockHit = true;
-    }
-  }
-
+  
     }
   });
 }
