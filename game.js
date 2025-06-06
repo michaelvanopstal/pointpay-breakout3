@@ -244,6 +244,8 @@ function spawnPowerBlock() {
   powerBlock.y = randRow * brickHeight;
   powerBlock.active = true;
   powerBlock.visible = true;
+  powerBlockCol = randCol;
+  powerBlockRow = randRow;
 
   clearInterval(blinkInterval);
   blinkInterval = setInterval(() => {
