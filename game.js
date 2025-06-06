@@ -103,6 +103,7 @@ function startTimer() {
 }
 
 function collisionDetection() {
+  // Check gewone bricks
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
       let b = bricks[c][r];
@@ -122,26 +123,28 @@ function collisionDetection() {
       }
     }
   }
-if (powerBlock.active && powerBlock.visible) {
-  if (
-    x > powerBlock.x &&
-    x < powerBlock.x + powerBlock.width &&
-    y > powerBlock.y &&
-    y < powerBlock.y + powerBlock.height
-  ) {
-    dy = -dy;
-    powerBlock.active = false;
-    powerBlockHit = true;
 
-    if (bricks[powerBlockCol] && bricks[powerBlockCol][powerBlockRow]) {
-      bricks[powerBlockCol][powerBlockRow].status = 0;
-    }
+  
+  if (powerBlock.active && powerBlock.visible) {
+    if (
+      x > powerBlock.x &&
+      x < powerBlock.x + powerBlock.width &&
+      y > powerBlock.y &&
+      y < powerBlock.y + powerBlock.height
+    ) {
+      dy = -dy;
+      powerBlock.active = false;
+      powerBlockHit = true;
+
+      if (bricks[powerBlockCol] && bricks[powerBlockCol][powerBlockRow]) {
+        bricks[powerBlockCol][powerBlockRow].status = 0;
+      }
 
       score += 10;
       document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-      }
-    }   
+    }
   }
+}
 
 function saveHighscore() {
   const timeText = document.getElementById("timeDisplay").textContent.replace("time ", "");
