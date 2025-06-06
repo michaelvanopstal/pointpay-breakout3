@@ -1,4 +1,6 @@
 
+// Nieuwe game.js met gekoppeld knipperend blokje aan brick
+
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -35,6 +37,24 @@ const blockImg = new Image();
 blockImg.src = "block_logo.png";
 const ballImg = new Image();
 ballImg.src = "ball_logo.png";
+const powerBlockImg = new Image();
+powerBlockImg.src = "power_block_logo.png";
+
+let powerBlock = {
+  x: 0,
+  y: 0,
+  width: brickWidth,
+  height: brickHeight,
+  active: false,
+  visible: true
+};
+
+let powerBlockTimer = 0;
+let powerBlockInterval = 10000;
+let powerBlockHit = false;
+let blinkInterval;
+let powerBlockRow = 0;
+let powerBlockCol = 0;
 
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
@@ -45,9 +65,9 @@ document.addEventListener("keydown", (e) => {
     ballLaunched = true;
     dx = 0;
     dy = -4;
-    if (!timerRunning) startTimer();score = 0;
+    if (!timerRunning) startTimer();
+    score = 0;
     document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
-  
   }
 });
 
@@ -80,26 +100,30 @@ function drawBricks() {
   }
 }
 
-function drawBall() {
-  ctx.drawImage(ballImg, x, y, ballRadius * 2, ballRadius * 2);
+function drawPowerBlock() {
+  if (powerBlock.active && powerBlock.visible) {
+    ctx.drawImage(powerBlockImg, powerBlock.x, powerBlock.y, powerBlock.width, powerBlock.height);
+  }
 }
 
-function drawPaddle() {
-  ctx.beginPath();
-  ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-  ctx.fillStyle = "#0095DD";
-  ctx.fill();
-  ctx.closePath();
-}
+function spawnPowerBlock() {
+  const randCol = Math.floor(Math.random() * brickColumnCount);
+  const randRow = Math.floor(Math.random() * brickRowCount);
+  powerBlockCol = randCol;
+  powerBlockRow = randRow;
+  powerBlock.x = randCol * brickWidth;
+  powerBlock.y = randRow * brickHeight;
+  powerBlock.active = true;
+  powerBlock.visible = true;
 
-function startTimer() {
-  timerRunning = true;
-  timerInterval = setInterval(() => {
-    elapsedTime++;
-    const minutes = String(Math.floor(elapsedTime / 60)).padStart(2, '0');
-    const seconds = String(elapsedTime % 60).padStart(2, '0');
-    document.getElementById("timeDisplay").textContent = "time " + minutes + ":" + seconds;
-  }, 1000);
+  clearInterval(blinkInterval);
+  blinkInterval = setInterval(() => {
+    if (powerBlock.active) {
+      powerBlock.visible = !powerBlock.visible;
+    } else {
+      clearInterval(blinkInterval);
+    }
+  }, 500);
 }
 
 function collisionDetection() {
@@ -116,80 +140,12 @@ function collisionDetection() {
           dy = -dy;
           b.status = 0;
           score += 10;
-          spawnCoin(b.x, b.y);
           document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-  if (powerBlock.active && powerBlock.visible) {
-    if (
-      x > powerBlock.x &&
-      x < powerBlock.x + powerBlock.width &&
-      y > powerBlock.y &&
-      y < powerBlock.y + powerBlock.height
-    ) {
-      dy = -dy;
-      powerBlock.active = false;
-      powerBlockHit = true;
-    }
-  }
-
         }
       }
     }
   }
-}
 
-function saveHighscore() {
-  const timeText = document.getElementById("timeDisplay").textContent.replace("time ", "");
-  const highscore = {
-    name: window.currentPlayer || "Unknown",
-    score: score,
-    time: timeText
-  };
-
-  let highscores = JSON.parse(localStorage.getItem("highscores")) || [];
-  if (!highscores.some(h => h.name === highscore.name && h.score === highscore.score && h.time === highscore.time)) {
-    highscores.push(highscore);
-  }
-  highscores.sort((a, b) => b.score - a.score || a.time.localeCompare(b.time));
-  highscores = highscores.slice(0, 10);
-  localStorage.setItem("highscores", JSON.stringify(highscores));
-
-  const list = document.getElementById("highscore-list");
-  list.innerHTML = "";
-  highscores.forEach((entry, index) => {
-    const li = document.createElement("li");
-    li.textContent = `${index + 1} ${entry.name} - ${entry.score} pxp - ${entry.time}`;
-    list.appendChild(li);
-  });
-}
-
-const coinImg = new Image();
-coinImg.src = "pxp coin perfect_clipped_rev_1.png";
-let coins = [];
-
-function spawnCoin(x, y) {
-  coins.push({ x: x + brickWidth / 2 - 12, y: y, radius: 12, active: true });
-}
-
-function drawCoins() {
-  coins.forEach(coin => {
-    if (coin.active) {
-      ctx.drawImage(coinImg, coin.x, coin.y, 24, 24);
-      coin.y += 2;
-    }
-  });
-}
-
-function checkCoinCollision() {
-  coins.forEach(coin => {
-    if (
-      coin.active &&
-      coin.y + coin.radius * 2 >= canvas.height - paddleHeight &&
-      coin.x + coin.radius > paddleX &&
-      coin.x < paddleX + paddleWidth
-    ) {
-      coin.active = false;
-      score += 5;
-      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
   if (powerBlock.active && powerBlock.visible) {
     if (
       x > powerBlock.x &&
@@ -200,62 +156,14 @@ function checkCoinCollision() {
       dy = -dy;
       powerBlock.active = false;
       powerBlockHit = true;
+
+      if (bricks[powerBlockCol] && bricks[powerBlockCol][powerBlockRow]) {
+        bricks[powerBlockCol][powerBlockRow].status = 0;
+      }
+
+      score += 10;
+      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
     }
-  }
-
-    }
-  });
-}
-
-function resetBricks() {
-  for (let c = 0; c < brickColumnCount; c++) {
-    for (let r = 0; r < brickRowCount; r++) {
-      bricks[c][r].status = 1;
-    }
-  }
-}
-
-
-
-// Power Block Setup
-const powerBlockImg = new Image();
-powerBlockImg.src = "power_block_logo.png";
-
-let powerBlock = {
-  x: 0,
-  y: 0,
-  width: brickWidth,
-  height: brickHeight,
-  active: false,
-  visible: true
-};
-
-let powerBlockTimer = 0;
-let powerBlockInterval = 10000;
-let powerBlockHit = false;
-let blinkInterval;
-
-function spawnPowerBlock() {
-  const randCol = Math.floor(Math.random() * brickColumnCount);
-  const randRow = Math.floor(Math.random() * brickRowCount);
-  powerBlock.x = randCol * brickWidth;
-  powerBlock.y = randRow * brickHeight;
-  powerBlock.active = true;
-  powerBlock.visible = true;
-
-  clearInterval(blinkInterval);
-  blinkInterval = setInterval(() => {
-    if (powerBlock.active) {
-      powerBlock.visible = !powerBlock.visible;
-    } else {
-      clearInterval(blinkInterval);
-    }
-  }, 500); // knippert elke 0.5 sec
-}
-
-function drawPowerBlock() {
-  if (powerBlock.active && powerBlock.visible) {
-    ctx.drawImage(powerBlockImg, powerBlock.x, powerBlock.y, powerBlock.width, powerBlock.height);
   }
 }
 
@@ -263,8 +171,6 @@ function drawPowerBlock() {
 function draw() {
   collisionDetection();
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawCoins();
-  checkCoinCollision();
   drawBricks();
   drawPowerBlock();
   drawBall();
@@ -281,20 +187,19 @@ function draw() {
     if (y + dy < ballRadius) dy = -dy;
 
     if (y + dy > canvas.height - paddleHeight - ballRadius && x > paddleX && x < paddleX + paddleWidth) {
-      const hitPos = (x - paddleX) / paddleWidth; // 0 = links, 1 = rechts
-      const angle = (hitPos - 0.5) * Math.PI / 2; // van -45° tot 45°
+      const hitPos = (x - paddleX) / paddleWidth;
+      const angle = (hitPos - 0.5) * Math.PI / 2;
       const speed = Math.sqrt(dx * dx + dy * dy);
       dx = speed * Math.sin(angle);
-      dy = -Math.abs(speed * Math.cos(angle)); // omhoog
-    if (powerBlockHit) {
-      spawnPowerBlock();
-      powerBlockHit = false;
+      dy = -Math.abs(speed * Math.cos(angle));
+
+      if (powerBlockHit) {
+        spawnPowerBlock();
+        powerBlockHit = false;
+      }
     }
 
-}
-
     if (y + dy > canvas.height - ballRadius) {
-      saveHighscore();
       ballLaunched = false;
       dx = 4;
       dy = -4;
@@ -304,11 +209,9 @@ function draw() {
     }
   } else {
     x = paddleX + paddleWidth / 2 - ballRadius;
-    resetBricks();
     y = canvas.height - paddleHeight - ballRadius * 2;
   }
 
-  
   if (Date.now() - powerBlockTimer > powerBlockInterval && !powerBlock.active && ballLaunched) {
     spawnPowerBlock();
     powerBlockTimer = Date.now();
@@ -328,22 +231,3 @@ function onImageLoad() {
 }
 blockImg.onload = onImageLoad;
 ballImg.onload = onImageLoad;
-document.addEventListener("keydown", function (e) {
-  if (!ballMoving && (e.code === "ArrowUp" || e.code === "Space")) {
-    if (lives <= 0) {
-      lives = 3;
-      score = 0;
-      level = 1;
-      resetBricks();
-      resetBall();
-      resetPaddle();
-      startTime = new Date();
-      gameOver = false;
-      updateScoreDisplay();
-      updateTimeDisplay();
-      score = 0;
-
-    }
-    ballMoving = true;
-  }
-});
