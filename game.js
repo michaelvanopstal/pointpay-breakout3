@@ -334,7 +334,7 @@ function draw() {
 let imagesLoaded = 0;
 function onImageLoad() {
   imagesLoaded++;
-  if (imagesLoaded === 2) {
+  if (imagesLoaded === 3) {
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
     draw();
@@ -342,6 +342,7 @@ function onImageLoad() {
 }
 blockImg.onload = onImageLoad;
 ballImg.onload = onImageLoad;
+powerBlockImg.onload = onImageLoad;
 document.addEventListener("keydown", function (e) {
   if (!ballMoving && (e.code === "ArrowUp" || e.code === "Space")) {
     if (lives <= 0) {
