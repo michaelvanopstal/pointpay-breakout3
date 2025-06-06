@@ -389,6 +389,19 @@ function onImageLoad() {
     draw();
   }
 }
+
+document.addEventListener("keydown", function (e) {
+  if (flagsOnPaddle && (e.code === "ArrowUp" || e.code === "ArrowLeft" || e.code === "ArrowRight" || e.code === "Space")) {
+    shootFromFlags();
+  }
+});
+
+document.addEventListener("mousedown", function () {
+  if (flagsOnPaddle) {
+    shootFromFlags();
+  }
+});
+
 blockImg.onload = onImageLoad;
 ballImg.onload = onImageLoad;
 powerBlockImg.onload = onImageLoad;
