@@ -77,7 +77,7 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-// Schiet bij muisklik als vlaggen actief zijn
+
 document.addEventListener("mousedown", () => {
   if (flagsOnPaddle) {
     shootFromFlags();
