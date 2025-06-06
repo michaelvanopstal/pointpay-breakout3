@@ -145,6 +145,28 @@ function shootFromFlags() {
     active: true
   });
 }
+function checkFlyingCoinHits() {
+  flyingCoins.forEach((coin) => {
+    if (!coin.active) return;
+
+    for (let c = 0; c < brickColumnCount; c++) {
+      for (let r = 0; r < brickRowCount; r++) {
+        const b = bricks[c][r];
+        if (b.status === 1 &&
+            coin.x > b.x &&
+            coin.x < b.x + brickWidth &&
+            coin.y > b.y &&
+            coin.y < b.y + brickHeight) {
+          b.status = 0;           // Blokje breekt
+          coin.active = false;    // Coin stopt met vliegen
+          score += 10;
+          document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+          return; // Stop met deze coin verder checken
+        }
+      }
+    }
+  });
+}
 
 
 
