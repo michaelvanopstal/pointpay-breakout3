@@ -35,6 +35,12 @@ const blockImg = new Image();
 blockImg.src = "block_logo.png";
 const ballImg = new Image();
 ballImg.src = "ball_logo.png";
+const vlagImgLeft = new Image();
+vlagImgLeft.src = "vlaggetje1.png";
+
+const vlagImgRight = new Image();
+vlagImgRight.src = "vlaggetje2.png";
+
 
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
@@ -90,7 +96,18 @@ function drawPaddle() {
   ctx.fillStyle = "#0095DD";
   ctx.fill();
   ctx.closePath();
+} 
+
+
+function drawPaddleFlags() {
+  if (flagsOnPaddle && Date.now() - flagTimer < 20000) {
+    ctx.drawImage(vlagImgLeft, paddleX - 10, canvas.height - paddleHeight - 50, 30, 50);
+    ctx.drawImage(vlagImgRight, paddleX + paddleWidth - 20, canvas.height - paddleHeight - 50, 30, 50);
+  } else if (Date.now() - flagTimer >= 20000) {
+    flagsOnPaddle = false;
+  }
 }
+
 
 function startTimer() {
   timerRunning = true;
