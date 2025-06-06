@@ -118,6 +118,19 @@ function collisionDetection() {
           score += 10;
           spawnCoin(b.x, b.y);
           document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+  if (powerBlock.active && powerBlock.visible) {
+    if (
+      x > powerBlock.x &&
+      x < powerBlock.x + powerBlock.width &&
+      y > powerBlock.y &&
+      y < powerBlock.y + powerBlock.height
+    ) {
+      dy = -dy;
+      powerBlock.active = false;
+      powerBlockHit = true;
+    }
+  }
+
         }
       }
     }
@@ -177,6 +190,19 @@ function checkCoinCollision() {
       coin.active = false;
       score += 5;
       document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+  if (powerBlock.active && powerBlock.visible) {
+    if (
+      x > powerBlock.x &&
+      x < powerBlock.x + powerBlock.width &&
+      y > powerBlock.y &&
+      y < powerBlock.y + powerBlock.height
+    ) {
+      dy = -dy;
+      powerBlock.active = false;
+      powerBlockHit = true;
+    }
+  }
+
     }
   });
 }
@@ -189,12 +215,58 @@ function resetBricks() {
   }
 }
 
+
+
+// Power Block Setup
+const powerBlockImg = new Image();
+powerBlockImg.src = "power_block_logo.png";
+
+let powerBlock = {
+  x: 0,
+  y: 0,
+  width: brickWidth,
+  height: brickHeight,
+  active: false,
+  visible: true
+};
+
+let powerBlockTimer = 0;
+let powerBlockInterval = 10000;
+let powerBlockHit = false;
+let blinkInterval;
+
+function spawnPowerBlock() {
+  const randCol = Math.floor(Math.random() * brickColumnCount);
+  const randRow = Math.floor(Math.random() * brickRowCount);
+  powerBlock.x = randCol * brickWidth;
+  powerBlock.y = randRow * brickHeight;
+  powerBlock.active = true;
+  powerBlock.visible = true;
+
+  clearInterval(blinkInterval);
+  blinkInterval = setInterval(() => {
+    if (powerBlock.active) {
+      powerBlock.visible = !powerBlock.visible;
+    } else {
+      clearInterval(blinkInterval);
+    }
+  }, 500); // knippert elke 0.5 sec
+}
+
+function drawPowerBlock() {
+  if (powerBlock.active && powerBlock.visible) {
+    ctx.drawImage(powerBlockImg, powerBlock.x, powerBlock.y, powerBlock.width, powerBlock.height);
+  }
+}
+
+
 function draw() {
   collisionDetection();
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawCoins();
   checkCoinCollision();
   drawBricks();
+  drawPowerBlock();
   drawBall();
   drawPaddle();
 
@@ -214,6 +286,11 @@ function draw() {
       const speed = Math.sqrt(dx * dx + dy * dy);
       dx = speed * Math.sin(angle);
       dy = -Math.abs(speed * Math.cos(angle)); // omhoog
+    if (powerBlockHit) {
+      spawnPowerBlock();
+      powerBlockHit = false;
+    }
+
 }
 
     if (y + dy > canvas.height - ballRadius) {
@@ -229,6 +306,12 @@ function draw() {
     x = paddleX + paddleWidth / 2 - ballRadius;
     resetBricks();
     y = canvas.height - paddleHeight - ballRadius * 2;
+  }
+
+  
+  if (Date.now() - powerBlockTimer > powerBlockInterval && !powerBlock.active && ballLaunched) {
+    spawnPowerBlock();
+    powerBlockTimer = Date.now();
   }
 
   requestAnimationFrame(draw);
