@@ -236,6 +236,7 @@ document.addEventListener("keydown", function (e) {
 // --- Vlaggetjes & Schietfunctie na knipperblokje ---
 const flagLeftImg = new Image();
 flagLeftImg.src = "vlaggetje1.png";
+
 const flagRightImg = new Image();
 flagRightImg.src = "vlaggetje2.png";
 const flagLeftImg = new Image();
@@ -582,5 +583,7 @@ function drawFlags() {
     y = canvas.height - paddleHeight - ballRadius * 2;
   }
 
-  requestAnimationFrame(draw);
+  
+  drawFlags();
+requestAnimationFrame(draw);
 };
