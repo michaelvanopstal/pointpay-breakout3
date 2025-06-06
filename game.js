@@ -345,7 +345,6 @@ function draw() {
   powerBlockTimer = Date.now();
 }
 
-}
 
   requestAnimationFrame(draw);
 }
