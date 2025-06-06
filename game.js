@@ -62,7 +62,20 @@ document.addEventListener("keydown", (e) => {
   document.addEventListener("keydown", (e) => {
   if (flagsOnPaddle && Date.now() - flagTimer < 20000) {
     if (e.code === "ArrowLeft" || e.code === "ArrowRight") {
-      shootFromFlags();
+      shootFromFlags(); 
+      
+      document.addEventListener("keydown", function (e) {
+  if (flagsOnPaddle && (e.code === "ArrowUp" || e.code === "Space")) {
+    shootFromFlags();
+  }
+});
+
+document.addEventListener("mousedown", function () {
+  if (flagsOnPaddle) {
+    shootFromFlags();
+  }
+});
+
     }
   }
 });
@@ -139,6 +152,14 @@ function shootFromFlags() {
     dx: 0,
     dy: -coinSpeed,
     active: true
+  });
+}
+function drawShootingCoins() {
+  shootingCoins.forEach((coin) => {
+    if (coin.active) {
+      ctx.drawImage(coinImg, coin.x - 12, coin.y - 12, 24, 24);
+      coin.y += coin.dy;
+    }
   });
 }
 
@@ -329,7 +350,10 @@ function draw() {
   drawPowerBlock();
   drawBall();
   drawPaddle();
-  drawPaddleFlags();
+  drawPaddleFlags();  
+  drawShootingCoins();
+  checkShootingCoinHits();
+
 
   if (rightPressed && paddleX < canvas.width - paddleWidth) paddleX += 7;
   else if (leftPressed && paddleX > 0) paddleX -= 7;
