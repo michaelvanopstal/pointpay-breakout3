@@ -133,7 +133,6 @@ if (powerBlock.active && powerBlock.visible) {
     powerBlock.active = false;
     powerBlockHit = true;
 
-    // Verwijder ook de brick eronder
     if (bricks[powerBlockCol] && bricks[powerBlockCol][powerBlockRow]) {
       bricks[powerBlockCol][powerBlockRow].status = 0;
     }
