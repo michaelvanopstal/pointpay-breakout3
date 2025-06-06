@@ -340,11 +340,12 @@ function draw() {
   }
 
   
-  if (Date.now() - powerBlockTimer > powerBlockInterval && !powerBlock.active && ballLaunched && !powerBlockUsed) powerBlockUsed = false;{
-  !powerBlock.active && ballLaunched) {
-    spawnPowerBlock();
-    powerBlockTimer = Date.now();
-  }
+  if (Date.now() - powerBlockTimer > powerBlockInterval && !powerBlock.active && ballLaunched && !powerBlockUsed) {
+  spawnPowerBlock();
+  powerBlockTimer = Date.now();
+}
+
+}
 
   requestAnimationFrame(draw);
 }
