@@ -423,7 +423,10 @@ function draw() {
       timerRunning = false;
       clearInterval(timerInterval);
       flagsOnPaddle = false;    // vlaggetjes verdwijnen
-      flyingCoins = []; 
+      flyingCoins = [];
+      owerBlock.active = false;
+      powerBlock.visible = false;
+      clearInterval(blinkInterval);
     }
 
     
@@ -496,7 +499,11 @@ document.addEventListener("keydown", function (e) {
       
   flagsOnPaddle = false;
   flyingCoins = [];
-  
+  if (!powerBlock.active && !powerBlockUsed) {
+  spawnPowerBlock();
+  powerBlockTimer = Date.now();
+
+
 }
     
     ballMoving = true;
