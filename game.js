@@ -27,6 +27,12 @@ let lives = 3;
 let level = 1;
 let gameOver = false;
 let ballMoving = false;
+let rocketAvailable = false;
+let rocketOnPaddle = false;
+let rocketFired = false;
+let rocketX = 0;
+let rocketY = 0;
+let rocketSpeed = 10;
 
 
 
@@ -49,11 +55,14 @@ const ballImg = new Image();
 ballImg.src = "ball_logo.png";
 const vlagImgLeft = new Image();
 vlagImgLeft.src = "vlaggetje1.png";
-
 const vlagImgRight = new Image();
 vlagImgRight.src = "vlaggetje2.png";
 const shootCoinImg = new Image();
 shootCoinImg.src = "3.png"; 
+const raket1Img = new Image();
+raket1Img.src = "images/raket1.png";
+const raket2Img = new Image();
+raket2Img.src = "images/raket2.png";
 
 
 
