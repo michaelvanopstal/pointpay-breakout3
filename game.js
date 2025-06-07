@@ -65,8 +65,10 @@ document.addEventListener("keydown", (e) => {
 });
 
 document.addEventListener("keydown", function (e) {
-  if (flagsOnPaddle && (e.code === "ArrowUp" || e.code === "ArrowLeft" || e.code === "ArrowRight" || e.code === "Space")) {
-    shootFromFlags();
+  if (flagsOnPaddle) {
+    if (e.code === "Space" || e.code === "ArrowUp") {
+      shootFromFlags(); // Alleen schieten bij pijltje omhoog of spatie
+    }
   }
 });
 
