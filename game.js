@@ -162,8 +162,8 @@ function checkFlyingCoinHits() {
             coin.x < b.x + brickWidth &&
             coin.y > b.y &&
             coin.y < b.y + brickHeight) {
-          b.status = 0;           // Blokje breekt
-          coin.active = false;    // Coin stopt met vliegen
+          b.status = 0;
+          coin.active = false;    
           score += 10;
           document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
           return; 
