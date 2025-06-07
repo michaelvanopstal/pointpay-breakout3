@@ -282,6 +282,34 @@ function collisionDetection() {
           spawnCoin(b.x, b.y);
           document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
         }
+function checkRocketHit() {
+  if (!rocket || !rocketFired) return;
+
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      const b = bricks[c][r];
+      if (
+        b.status === 1 &&
+        rocket.x > b.x &&
+        rocket.x < b.x + brickWidth &&
+        rocket.y > b.y &&
+        rocket.y < b.y + brickHeight
+      ) {
+        for (let i = -2; i <= 1; i++) {
+          const col = c + i;
+          if (col >= 0 && col < brickColumnCount) {
+            bricks[col][r].status = 0;
+          }
+        }
+        spawnExplosion(rocket.x, rocket.y);
+        rocket = null;
+        rocketFired = false;
+        return;
+      }
+    }
+  }
+}
+
       }
     }
   }
@@ -328,18 +356,7 @@ function collisionDetection() {
 }
 
   
-if (
-  rocketBlock.active &&
-  x > rocketBlock.x &&
-  x < rocketBlock.x + brickWidth &&
-  y > rocketBlock.y &&
-  y < rocketBlock.y + brickHeight
-) {
-  rocketBlock.active = false;
-  rocketOnPaddle = true;
-  score += 20;
-  document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-}
+
 
   
   if (powerBlock.active && powerBlock.visible) {
