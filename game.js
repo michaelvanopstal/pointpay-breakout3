@@ -70,7 +70,7 @@ document.addEventListener("keydown", (e) => {
 document.addEventListener("keydown", function (e) {
   if (flagsOnPaddle) {
     if (e.code === "Space" || e.code === "ArrowUp") {
-      shootFromFlags(); // Alleen schieten bij pijltje omhoog of spatie
+      shootFromFlags(); 
     }
   }
 });
@@ -166,7 +166,7 @@ function checkFlyingCoinHits() {
           coin.active = false;    // Coin stopt met vliegen
           score += 10;
           document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-          return; // Stop met deze coin verder checken
+          return; 
         }
       }
     }
@@ -217,11 +217,13 @@ function collisionDetection() {
   ) {
     dy = -dy;
     powerBlock.active = false;
-    powerBlock.visible = false;
+    powerBlock.visible = false;powerBlock.active = false;
+    clearInterval(blinkInterval); 
+
     powerBlockUsed = true;
     flagsOnPaddle = true;
     flagTimer = Date.now();
-    powerBlockHitTime = Date.now(); // ⬅ opslaan wanneer geraakt
+    powerBlockHitTime = Date.now(); 
     ...
   }
 }
