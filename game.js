@@ -355,12 +355,14 @@ function spawnPowerBlock() {
     }
   }, 300); 
   
-   setTimeout(() => {
-  if (powerBlock.active) {
-    spawnPowerBlock(); // spring naar een nieuwe plek
-  }
- }, 15000);
+   function startPowerBlockJumping() {
+  setInterval(() => {
+    if (powerBlock.active) {
+      spawnPowerBlock(); // Verspring elke 15 seconden
+    }
+  }, 15000);
 }
+
 
 
 function drawPowerBlock() {
