@@ -354,6 +354,7 @@ function spawnPowerBlock() {
       clearInterval(blinkInterval);
     }
   }, 300); 
+  
    setTimeout(() => {
   if (powerBlock.active) {
     spawnPowerBlock(); // spring naar een nieuwe plek
