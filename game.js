@@ -27,6 +27,11 @@ let lives = 3;
 let level = 1;
 let gameOver = false;
 let ballMoving = false;
+let rocketBlock = { x: 0, y: 0, col: 0, row: 0, active: false };
+let rocketOnPaddle = false;
+let rocketFired = false;
+let rocket = null;
+let explosionParticles = [];
 
 
 
