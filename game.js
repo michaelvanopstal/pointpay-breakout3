@@ -157,7 +157,22 @@ function shootFromFlags() {
     dy: -coinSpeed,
     active: true
   });
+
+  
+  function resetPaddle() {
+  paddleX = (canvas.width - paddleWidth) / 2;
+
+  }
+  
+  function resetBall() {
+  x = paddleX + paddleWidth / 2 - ballRadius;
+  y = canvas.height - paddleHeight - ballRadius * 2;
+  dx = 4;
+  dy = -4;
+  ballLaunched = false;
 }
+
+
 function checkFlyingCoinHits() {
   flyingCoins.forEach((coin) => {
     if (!coin.active) return;
