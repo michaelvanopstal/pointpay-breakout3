@@ -449,6 +449,9 @@ function draw() {
       powerBlock.active = false;
       powerBlock.visible = false;
       clearInterval(blinkInterval);
+      powerBlockUsed = false;
+      powerBlockHitTime = null;
+
     }
 
     
