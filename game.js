@@ -369,7 +369,12 @@ function spawnPowerBlock() {
     }
   }, 300); 
 }
-
+  const col = Math.floor(Math.random() * brickColumnCount);
+  const row = Math.floor(Math.random() * brickRowCount);
+  rocketBlock.x = col * brickWidth;
+  rocketBlock.y = row * brickHeight;
+  rocketBlock.active = true;
+}
    function startPowerBlockJumping() {
   setInterval(() => {
     if (powerBlock.active) {
