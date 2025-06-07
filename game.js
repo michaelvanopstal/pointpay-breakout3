@@ -190,6 +190,8 @@ function drawRocketSmoke() {
     p.alpha -= 0.02;
   }
   
+    rocketExplosionParticles = rocketExplosionParticles.filter(p => p.alpha > 0);
+}
 function drawExplosion() {
   for (let i = 0; i < rocketExplosionParticles.length; i++) {
     const p = rocketExplosionParticles[i];
@@ -203,10 +205,7 @@ function drawExplosion() {
     p.y += p.dy;
     p.alpha -= 0.03;
   }
-
-  rocketExplosionParticles = rocketExplosionParticles.filter(p => p.alpha > 0);
-}
-
+  
   rocketSmokeParticles = rocketSmokeParticles.filter(p => p.alpha > 0);
 }
 
