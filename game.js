@@ -216,6 +216,19 @@ function collisionDetection() {
       }
     }
   }
+  
+if (
+  rocketBlock.active &&
+  x > rocketBlock.x &&
+  x < rocketBlock.x + brickWidth &&
+  y > rocketBlock.y &&
+  y < rocketBlock.y + brickHeight
+) {
+  rocketBlock.active = false;
+  rocketOnPaddle = true;
+  score += 20;
+  document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+}
 
   
   if (powerBlock.active && powerBlock.visible) {
@@ -323,6 +336,18 @@ function resetBricks() {
   }
 }
 
+function placeRocketBlock() {
+  const randCol = Math.floor(Math.random() * brickColumnCount);
+  const randRow = Math.floor(Math.random() * brickRowCount);
+  rocketBlock = {
+    x: randCol * brickWidth,
+    y: randRow * brickHeight,
+    col: randCol,
+    row: randRow,
+    active: true
+  };
+}
+
 
 
 
@@ -381,6 +406,10 @@ function drawPowerBlock() {
     ctx.drawImage(powerBlockImg, powerBlock.x, powerBlock.y, powerBlock.width, powerBlock.height);
   }
 }
+if (rocketBlock.active) {
+  ctx.fillStyle = "blue";
+  ctx.fillRect(rocketBlock.x + 10, rocketBlock.y + 10, brickWidth - 20, brickHeight - 20);
+}
 
 
 function draw() {
@@ -430,6 +459,12 @@ function draw() {
       flagsOnPaddle = false;    // vlaggetjes verdwijnen
       flyingCoins = []; 
     }
+
+    
+if (rocketOnPaddle && !rocketFired) {
+  ctx.fillStyle = "red";
+  ctx.fillRect(paddleX + paddleWidth / 2 - 5, canvas.height - paddleHeight - 15, 10, 15);
+}
 
     
   } else {
