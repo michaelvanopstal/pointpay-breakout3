@@ -486,9 +486,11 @@ document.addEventListener("keydown", function (e) {
   powerBlockHitTime = null;
   powerBlock.active = false;
   powerBlock.visible = false;
-
-  // ❗ Zorg dat hij niet blijft knipperen
   clearInterval(blinkInterval);
+      
+      
+  flagsOnPaddle = false;
+  flyingCoins = [];
 }
 
 
