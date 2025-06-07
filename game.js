@@ -209,17 +209,23 @@ function collisionDetection() {
 
   
   if (powerBlock.active && powerBlock.visible) {
-    if (
-      x > powerBlock.x &&
-      x < powerBlock.x + powerBlock.width &&
-      y > powerBlock.y &&
-      y < powerBlock.y + powerBlock.height
-    ) {
-      dy = -dy;
-      powerBlock.active = false;
-      powerBlockUsed = true;
-      flagsOnPaddle = true;
-      flagTimer = Date.now();
+  if (
+    x > powerBlock.x &&
+    x < powerBlock.x + powerBlock.width &&
+    y > powerBlock.y &&
+    y < powerBlock.y + powerBlock.height
+  ) {
+    dy = -dy;
+    powerBlock.active = false;
+    powerBlock.visible = false;
+    powerBlockUsed = true;
+    flagsOnPaddle = true;
+    flagTimer = Date.now();
+    powerBlockHitTime = Date.now(); // ⬅ opslaan wanneer geraakt
+    ...
+  }
+}
+
 
 
    
@@ -417,6 +423,15 @@ function draw() {
   if (Date.now() - powerBlockTimer > powerBlockInterval && !powerBlock.active && ballLaunched && !powerBlockUsed) {
   spawnPowerBlock();
   powerBlockTimer = Date.now();
+}
+
+  if (
+  powerBlockHitTime &&
+  Date.now() - powerBlockHitTime > powerBlockRespawnTime
+) {
+  spawnPowerBlock();
+  powerBlockUsed = false;
+  powerBlockHitTime = null;
 }
 
 
