@@ -158,20 +158,6 @@ function shootFromFlags() {
     active: true
   });
 
-  
-  function resetPaddle() {
-  paddleX = (canvas.width - paddleWidth) / 2;
-
-  }
-  
-  function resetBall() {
-  x = paddleX + paddleWidth / 2 - ballRadius;
-  y = canvas.height - paddleHeight - ballRadius * 2;
-  dx = 4;
-  dy = -4;
-  ballLaunched = false;
-}
-
 
 function checkFlyingCoinHits() {
   flyingCoins.forEach((coin) => {
@@ -338,6 +324,19 @@ function resetBricks() {
       bricks[c][r].status = 1;
     }
   }
+}
+
+  
+  function resetPaddle() {
+  paddleX = (canvas.width - paddleWidth) / 2;
+}
+
+function resetBall() {
+  x = paddleX + paddleWidth / 2 - ballRadius;
+  y = canvas.height - paddleHeight - ballRadius * 2;
+  dx = 4;
+  dy = -4;
+  ballLaunched = false;
 }
 
 
