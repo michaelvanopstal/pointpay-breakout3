@@ -313,15 +313,6 @@ function spawnExplosion(x, y) {
   }
 }
 
-        // optie: spawn explosie
-        rocket = null;
-        rocketFired = false;
-        return;
-      }
-    }
-  }
-}
-
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
       let b = bricks[c][r];
