@@ -529,6 +529,8 @@ document.addEventListener("keydown", function (e) {
       
   flagsOnPaddle = false;
   flyingCoins = []; 
+  spawnPowerBlock();
+  powerBlockTimer = Date.now();
 }    
       
     ballMoving = true;
