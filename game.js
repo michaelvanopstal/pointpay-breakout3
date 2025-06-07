@@ -366,7 +366,7 @@ function spawnPowerBlock() {
     if (powerBlock.active) {
       spawnPowerBlock(); // Verspring elke 15 seconden
     }
-  }, 15000);
+  }, 25000);
 }
 
 
