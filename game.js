@@ -449,7 +449,14 @@ function draw() {
       timerRunning = false;
       clearInterval(timerInterval);
       flagsOnPaddle = false;    // vlaggetjes verdwijnen
-      flyingCoins = []; 
+      flyingCoins = []; powerBlockUsed = false;
+
+      
+      powerBlockHitTime = null;
+      powerBlock.active = false;
+      powerBlock.visible = false;
+      spawnPowerBlock(); // <-- direct opnieuw activeren
+      powerBlockTimer = Date.now(); 
     }
 
     
@@ -512,7 +519,7 @@ document.addEventListener("keydown", function (e) {
   updateScoreDisplay();
   updateTimeDisplay();
 
-  // ✅ PowerBlock reset toevoegen:
+ 
   powerBlockUsed = false;
   powerBlockHitTime = null;
   powerBlock.active = false;
@@ -521,10 +528,9 @@ document.addEventListener("keydown", function (e) {
       
       
   flagsOnPaddle = false;
-  flyingCoins = [];
-  
-}
-    
+  flyingCoins = []; 
+}    
+      
     ballMoving = true;
   } 
 });
