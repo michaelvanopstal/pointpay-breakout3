@@ -470,17 +470,27 @@ powerBlockImg.onload = onImageLoad;
 document.addEventListener("keydown", function (e) {
   if (!ballMoving && (e.code === "ArrowUp" || e.code === "Space")) {
     if (lives <= 0) {
-      lives = 3;
-      score = 0;
-      level = 1;
-      resetBricks();
-      resetBall();
-      resetPaddle();
-      startTime = new Date();
-      gameOver = false;
-      updateScoreDisplay();
-      updateTimeDisplay();
-      score = 0;
+  lives = 3;
+  score = 0;
+  level = 1;
+  resetBricks();
+  resetBall();
+  resetPaddle();
+  startTime = new Date();
+  gameOver = false;
+  updateScoreDisplay();
+  updateTimeDisplay();
+
+  // ✅ PowerBlock reset toevoegen:
+  powerBlockUsed = false;
+  powerBlockHitTime = null;
+  powerBlock.active = false;
+  powerBlock.visible = false;
+
+  // ❗ Zorg dat hij niet blijft knipperen
+  clearInterval(blinkInterval);
+}
+
 
     }
     ballMoving = true;
