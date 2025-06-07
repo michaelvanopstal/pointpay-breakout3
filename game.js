@@ -66,9 +66,12 @@ document.addEventListener("keydown", (e) => {
     ballLaunched = true;
     dx = 0;
     dy = -4;
-    if (!timerRunning) startTimer();score = 0;
+    
+    if (!timerRunning)  {
+    startTimer();
+    score = 0;
     document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
-  
+    }
   }
 });
 
