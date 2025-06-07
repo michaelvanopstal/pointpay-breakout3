@@ -219,7 +219,6 @@ function collisionDetection() {
     powerBlock.active = false;
     powerBlock.visible = false;
     clearInterval(blinkInterval); 
-
     powerBlockUsed = true;
     flagsOnPaddle = true;
     flagTimer = Date.now();
