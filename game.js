@@ -21,8 +21,13 @@ let flagsOnPaddle = false;
 let flagTimer = 0;
 let powerBlockUsed = false;
 let flyingCoins = [];
-let powerBlockRespawnTime = 180000; // 3 minuten in ms
+let powerBlockRespawnTime = 100000; // 3 minuten in ms
 let powerBlockHitTime = null;
+let lives = 3;
+let level = 1;
+let gameOver = false;
+let ballMoving = false;
+
 
 
 const brickRowCount = 5;
@@ -219,7 +224,6 @@ function collisionDetection() {
     powerBlock.active = false;
     powerBlock.visible = false;
     clearInterval(blinkInterval); 
-
     powerBlockUsed = true;
     flagsOnPaddle = true;
     flagTimer = Date.now();
@@ -232,7 +236,7 @@ function collisionDetection() {
       score += 10;
       document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
 
-      spawnPowerBlock(); 
+    
     }
   }
 }
@@ -357,6 +361,16 @@ function spawnPowerBlock() {
   }, 300); 
 }
 
+   function startPowerBlockJumping() {
+  setInterval(() => {
+    if (powerBlock.active) {
+      spawnPowerBlock(); // Verspring elke 15 seconden
+    }
+  }, 25000);
+}
+
+
+
 function drawPowerBlock() {
   if (powerBlock.active && powerBlock.visible) {
     ctx.drawImage(powerBlockImg, powerBlock.x, powerBlock.y, powerBlock.width, powerBlock.height);
@@ -443,7 +457,8 @@ function onImageLoad() {
   imagesLoaded++;
   if (imagesLoaded === 3) {
     x = paddleX + paddleWidth / 2 - ballRadius;
-    y = canvas.height - paddleHeight - ballRadius * 2;
+    y = canvas.height - paddleHeight - ballRadius * 2
+    ;startPowerBlockJumping(); 
     draw();
   }
 }
@@ -460,19 +475,30 @@ powerBlockImg.onload = onImageLoad;
 document.addEventListener("keydown", function (e) {
   if (!ballMoving && (e.code === "ArrowUp" || e.code === "Space")) {
     if (lives <= 0) {
-      lives = 3;
-      score = 0;
-      level = 1;
-      resetBricks();
-      resetBall();
-      resetPaddle();
-      startTime = new Date();
-      gameOver = false;
-      updateScoreDisplay();
-      updateTimeDisplay();
-      score = 0;
+  lives = 3;
+  score = 0;
+  level = 1;
+  resetBricks();
+  resetBall();
+  resetPaddle();
+  startTime = new Date();
+  gameOver = false;
+  updateScoreDisplay();
+  updateTimeDisplay();
 
-    }
+  // ✅ PowerBlock reset toevoegen:
+  powerBlockUsed = false;
+  powerBlockHitTime = null;
+  powerBlock.active = false;
+  powerBlock.visible = false;
+  clearInterval(blinkInterval);
+      
+      
+  flagsOnPaddle = false;
+  flyingCoins = [];
+  
+}
+    
     ballMoving = true;
-  }
+  } 
 });
