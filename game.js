@@ -430,29 +430,32 @@ function draw() {
       dx = speed * Math.sin(angle);
       dy = -Math.abs(speed * Math.cos(angle)); // omhoog
     if (powerBlockHit) {
+      
       spawnPowerBlock();
       powerBlockHit = false;
     }
 
-}
+
 
     if (y + dy > canvas.height - ballRadius) {
-      saveHighscore();
-      ballLaunched = false;
-      dx = 4;
-      dy = -4;
-      elapsedTime = 0;
-      timerRunning = false;
-      clearInterval(timerInterval);
-      flagsOnPaddle = false;    // vlaggetjes verdwijnen
-      flyingCoins = [];
-      powerBlock.active = false;
-      powerBlock.visible = false;
-      clearInterval(blinkInterval);
-      powerBlockUsed = false;
-      powerBlockHitTime = null;
+  saveHighscore();
+  ballLaunched = false;
+  dx = 4;
+  dy = -4;
+  elapsedTime = 0;
+  timerRunning = false;
+  clearInterval(timerInterval);
+  flagsOnPaddle = false;         // vlaggetjes verdwijnen
+  flyingCoins = [];
+  powerBlock.active = false;
+  powerBlock.visible = false;
+  clearInterval(blinkInterval);
 
-    }
+  
+  powerBlockUsed = false;
+  powerBlockHitTime = null;
+}
+
 
     
   } else {
