@@ -335,9 +335,6 @@ function resetBall() {
   ballLaunched = false;
 }
 
-
-
-
 const powerBlockImg = new Image();
 powerBlockImg.src = "power_block_logo.png";
 
