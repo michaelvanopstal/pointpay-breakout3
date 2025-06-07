@@ -358,7 +358,8 @@ function spawnPowerBlock() {
   if (powerBlock.active) {
     spawnPowerBlock(); // spring naar een nieuwe plek
   }
-}, 15000);
+ }, 15000);
+}
 
 
 function drawPowerBlock() {
