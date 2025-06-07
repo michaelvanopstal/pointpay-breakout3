@@ -211,17 +211,24 @@ function collisionDetection() {
     for (let r = 0; r < brickRowCount; r++) {
       let b = bricks[c][r];
       if (b.status === 1) {
-        if (
-          x > b.x &&
-          x < b.x + brickWidth &&
-          y > b.y &&
-          y < b.y + brickHeight
-        ) {
-          dy = -dy;
-          b.status = 0;
-          score += 10;
-          spawnCoin(b.x, b.y);
-          document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+  if (
+    x > b.x &&
+    x < b.x + brickWidth &&
+    y > b.y &&
+    y < b.y + brickHeight
+  ) {
+    dy = -dy;
+    b.status = 0;
+
+    
+    if (c === 3 && r === 2) {
+      rocketOnPaddle = true;
+      rocketAvailable = true;
+    }
+
+    score += 10;
+    spawnCoin(b.x, b.y);
+    document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
         }
       }
     }
