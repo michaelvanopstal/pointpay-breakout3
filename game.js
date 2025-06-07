@@ -91,6 +91,19 @@ document.addEventListener("mousedown", function () {
   }
 });
 
+document.addEventListener("keydown", function (e) {
+  if (rocketOnPaddle && !rocketFired && e.code === "ArrowUp") {
+    rocketFired = true;
+    rocketOnPaddle = false;
+    rocket = {
+      x: paddleX + paddleWidth / 2 - 2,
+      y: canvas.height - paddleHeight - 15,
+      dy: -8
+    };
+    // (rook kan hier toegevoegd worden later)
+  }
+});
+
 function keyDownHandler(e) {
   if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
   else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
@@ -204,6 +217,36 @@ function startTimer() {
 }
 
 function collisionDetection() {
+
+function checkRocketHit() {
+  if (!rocket || rocketFired === false) return;
+
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      const b = bricks[c][r];
+      if (
+        b.status === 1 &&
+        rocket.x > b.x &&
+        rocket.x < b.x + brickWidth &&
+        rocket.y > b.y &&
+        rocket.y < b.y + brickHeight
+      ) {
+        // vernietig blokken in de breedte (4 totaal)
+        for (let i = -2; i <= 1; i++) {
+          const col = c + i;
+          if (col >= 0 && col < brickColumnCount) {
+            bricks[col][r].status = 0;
+          }
+        }
+
+        // optie: spawn explosie
+        rocket = null;
+        rocketFired = false;
+        return;
+      }
+    }
+  }
+}
 
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
@@ -470,6 +513,19 @@ function draw() {
 if (rocketOnPaddle && !rocketFired) {
   ctx.fillStyle = "red";
   ctx.fillRect(paddleX + paddleWidth / 2 - 5, canvas.height - paddleHeight - 15, 10, 15);
+}
+    
+if (rocketFired && rocket) {
+  ctx.fillStyle = "red";
+  ctx.fillRect(rocket.x, rocket.y, 4, 15);
+  rocket.y += rocket.dy;
+
+  // Rookspoor
+  spawnRocketSmoke(rocket.x, rocket.y);
+  drawRocketSmoke();
+
+  // Check botsing met bricks
+  checkRocketHit();
 }
 
     
