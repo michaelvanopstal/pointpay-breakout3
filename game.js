@@ -489,7 +489,7 @@ document.addEventListener("keydown", function (e) {
   updateScoreDisplay();
   updateTimeDisplay();
 
-  // ✅ PowerBlock reset toevoegen:
+  
   powerBlockUsed = false;
   powerBlockHitTime = null;
   powerBlock.active = false;
