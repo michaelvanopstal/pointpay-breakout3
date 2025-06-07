@@ -76,9 +76,6 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-  }
-});
-
 document.addEventListener("keydown", function (e) {
   if (flagsOnPaddle) {
     if (e.code === "Space" || e.code === "ArrowUp") {
