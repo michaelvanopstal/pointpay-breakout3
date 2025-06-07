@@ -310,6 +310,14 @@ function checkCoinCollision() {
   });
 }
 
+function resetPowerBlock() {
+  powerBlockUsed = false;
+  powerBlockHitTime = null;
+  powerBlock.active = false;
+  powerBlock.visible = false;
+  clearInterval(blinkInterval);
+}
+
 function resetBricks() {
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
@@ -424,6 +432,7 @@ function draw() {
       clearInterval(timerInterval);
       flagsOnPaddle = false;    // vlaggetjes verdwijnen
       flyingCoins = []; 
+      resetPowerBlock();
     }
 
     
@@ -486,13 +495,8 @@ document.addEventListener("keydown", function (e) {
   updateScoreDisplay();
   updateTimeDisplay();
 
-  // ✅ PowerBlock reset toevoegen:
-  powerBlockUsed = false;
-  powerBlockHitTime = null;
-  powerBlock.active = false;
-  powerBlock.visible = false;
-  clearInterval(blinkInterval);
-      
+  resetPowerBlock();
+
       
   flagsOnPaddle = false;
   flyingCoins = [];
