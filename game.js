@@ -430,12 +430,6 @@ function onImageLoad() {
   }
 }
 
-document.addEventListener("keydown", function (e) {
-  if (flagsOnPaddle && (e.code === "ArrowUp" || e.code === "ArrowLeft" || e.code === "ArrowRight" || e.code === "Space")) {
-    shootFromFlags();
-  }
-});
-
 document.addEventListener("mousedown", function () {
   if (flagsOnPaddle) {
     shootFromFlags();
