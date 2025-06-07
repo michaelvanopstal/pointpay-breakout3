@@ -141,6 +141,14 @@ function drawPaddleFlags() {
     flagsOnPaddle = false;
   }
 }
+
+function drawRocketBlock() {
+  if (rocketBlock.active) {
+    ctx.fillStyle = "blue";
+    ctx.fillRect(rocketBlock.x + 10, rocketBlock.y + 10, brickWidth - 20, brickHeight - 20);
+  }
+}
+
 function shootFromFlags() {
   const coinSpeed = 8;
 
@@ -405,10 +413,6 @@ function drawPowerBlock() {
   if (powerBlock.active && powerBlock.visible) {
     ctx.drawImage(powerBlockImg, powerBlock.x, powerBlock.y, powerBlock.width, powerBlock.height);
   }
-}
-if (rocketBlock.active) {
-  ctx.fillStyle = "blue";
-  ctx.fillRect(rocketBlock.x + 10, rocketBlock.y + 10, brickWidth - 20, brickHeight - 20);
 }
 
 
