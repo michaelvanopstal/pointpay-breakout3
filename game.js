@@ -279,6 +279,8 @@ function drawFlyingCoins() {
       coin.y += coin.dy;
     }
   });
+  
+  flyingCoins = flyingCoins.filter(coin => coin.y > -24 && coin.active);
 }
 
 function checkCoinCollision() {
