@@ -267,10 +267,6 @@ function startTimer() {
 
 function collisionDetection() {
 
-}
-
-function checkRocketHit() {
-  if (!rocket || rocketFired === false) return;
 
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
