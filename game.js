@@ -424,7 +424,7 @@ function draw() {
       clearInterval(timerInterval);
       flagsOnPaddle = false;    // vlaggetjes verdwijnen
       flyingCoins = [];
-      owerBlock.active = false;
+      powerBlock.active = false;
       powerBlock.visible = false;
       clearInterval(blinkInterval);
     }
