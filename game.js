@@ -265,49 +265,7 @@ function startTimer() {
 }
 
 function collisionDetection() {
-
-
-  for (let c = 0; c < brickColumnCount; c++) {
-    for (let r = 0; r < brickRowCount; r++) {
-      const b = bricks[c][r];
-      if (
-        b.status === 1 &&
-        rocket.x > b.x &&
-        rocket.x < b.x + brickWidth &&
-        rocket.y > b.y &&
-        rocket.y < b.y + brickHeight
-      ) {
-        for (let i = -2; i <= 1; i++) {
-          const col = c + i;
-          if (col >= 0 && col < brickColumnCount) {
-            bricks[col][r].status = 0;
-          }
-        }
-
-        spawnExplosion(rocket.x, rocket.y);
-        rocket = null;
-        rocketFired = false;
-        return;
-      }
-    }
-  }
-}
-
-        
-function spawnExplosion(x, y) {
-  for (let i = 0; i < 30; i++) {
-    rocketExplosionParticles.push({
-      x: x,
-      y: y,
-      dx: Math.random() * 4 - 2,
-      dy: Math.random() * 4 - 2,
-      radius: Math.random() * 4 + 2,
-      color: Math.random() > 0.5 ? "orange" : "red",
-      alpha: 1
-    });
-  }
-}
-
+  // Bal raakt gewone blokken
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
       let b = bricks[c][r];
@@ -327,6 +285,48 @@ function spawnExplosion(x, y) {
       }
     }
   }
+
+  // Bal raakt het speciale rocket-blok
+  if (
+    rocketBlock.active &&
+    x > rocketBlock.x &&
+    x < rocketBlock.x + brickWidth &&
+    y > rocketBlock.y &&
+    y < rocketBlock.y + brickHeight
+  ) {
+    rocketBlock.active = false;
+    rocketOnPaddle = true;
+    score += 20;
+    document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+  }
+
+  // Bal raakt powerBlock
+  if (powerBlock.active && powerBlock.visible) {
+    if (
+      x > powerBlock.x &&
+      x < powerBlock.x + powerBlock.width &&
+      y > powerBlock.y &&
+      y < powerBlock.y + powerBlock.height
+    ) {
+      dy = -dy;
+      powerBlock.active = false;
+      powerBlock.visible = false;
+      clearInterval(blinkInterval);
+      powerBlockUsed = true;
+      flagsOnPaddle = true;
+      flagTimer = Date.now();
+      powerBlockHitTime = Date.now();
+
+      if (bricks[powerBlockCol] && bricks[powerBlockCol][powerBlockRow]) {
+        bricks[powerBlockCol][powerBlockRow].status = 0;
+      }
+
+      score += 10;
+      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+    }
+  }
+}
+
   
 if (
   rocketBlock.active &&
