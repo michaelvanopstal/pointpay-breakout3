@@ -217,7 +217,7 @@ function collisionDetection() {
   ) {
     dy = -dy;
     powerBlock.active = false;
-    powerBlock.visible = false;powerBlock.active = false;
+    powerBlock.visible = false;
     clearInterval(blinkInterval); 
 
     powerBlockUsed = true;
