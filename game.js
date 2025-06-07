@@ -354,7 +354,7 @@ function spawnPowerBlock() {
       clearInterval(blinkInterval);
     }
   }, 300); 
-  
+}
    function startPowerBlockJumping() {
   setInterval(() => {
     if (powerBlock.active) {
