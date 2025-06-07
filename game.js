@@ -66,9 +66,16 @@ document.addEventListener("keydown", (e) => {
     ballLaunched = true;
     dx = 0;
     dy = -4;
-    if (!timerRunning) startTimer();score = 0;
+
+    if (!timerRunning) {
+      startTimer();
+      score = 0;
+    }
+
     document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
-  
+  }
+});
+
   }
 });
 
@@ -318,6 +325,12 @@ function resetPowerBlock() {
   clearInterval(blinkInterval);
 }
 
+function stopTimer() {
+  timerRunning = false;
+  clearInterval(timerInterval);
+}
+
+
 function resetBricks() {
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
@@ -423,17 +436,16 @@ function draw() {
 }
 
     if (y + dy > canvas.height - ballRadius) {
-      saveHighscore();
-      ballLaunched = false;
-      dx = 4;
-      dy = -4;
-      elapsedTime = 0;
-      timerRunning = false;
-      clearInterval(timerInterval);
-      flagsOnPaddle = false;    // vlaggetjes verdwijnen
-      flyingCoins = []; 
-      resetPowerBlock();
-    }
+  saveHighscore();
+  ballLaunched = false;
+  dx = 4;
+  dy = -4;
+  elapsedTime = 0;
+  stopTimer();
+  flagsOnPaddle = false;
+  flyingCoins = [];
+  resetPowerBlock(); 
+
 
     
   } else {
