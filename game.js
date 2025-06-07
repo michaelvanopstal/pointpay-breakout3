@@ -143,8 +143,7 @@ function drawPaddleFlags() {
 function shootFromFlags() {
   const coinSpeed = 8;
 
-  
- 
+  // Linkervlag
   flyingCoins.push({
     x: paddleX - 5 + 12,
     y: canvas.height - paddleHeight - 40,
@@ -152,7 +151,7 @@ function shootFromFlags() {
     active: true
   });
 
- 
+  // Rechtervlag
   flyingCoins.push({
     x: paddleX + paddleWidth - 19 + 12,
     y: canvas.height - paddleHeight - 40,
@@ -161,32 +160,21 @@ function shootFromFlags() {
   });
 }
 
-
-function checkFlyingCoinHits() {
-  flyingCoins.forEach((coin) => {
-    if (!coin.active) return;
-
-    for (let c = 0; c < brickColumnCount; c++) {
-      for (let r = 0; r < brickRowCount; r++) {
-        const b = bricks[c][r];
-        if (b.status === 1 &&
-            coin.x > b.x &&
-            coin.x < b.x + brickWidth &&
-            coin.y > b.y &&
-            coin.y < b.y + brickHeight) {
-          b.status = 0;
-          coin.active = false;    
-          score += 10;
-          document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-          return; 
-        }
-      }
+function checkCoinCollision() {
+  coins.forEach(coin => {
+    if (
+      coin.active &&
+      coin.y + coin.radius * 2 >= canvas.height - paddleHeight &&
+      coin.x + coin.radius > paddleX &&
+      coin.x < paddleX + paddleWidth
+    ) {
+      coin.active = false;
+      score += 5;
+      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
     }
   });
 }
-
-
-
+  
 function startTimer() {
   timerRunning = true;
   timerInterval = setInterval(() => {
