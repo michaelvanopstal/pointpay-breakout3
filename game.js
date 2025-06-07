@@ -21,6 +21,9 @@ let flagsOnPaddle = false;
 let flagTimer = 0;
 let powerBlockUsed = false;
 let flyingCoins = [];
+let powerBlockRespawnTime = 180000; // 3 minuten in ms
+let powerBlockHitTime = null;
+
 
 const brickRowCount = 5;
 const brickColumnCount = 9;
