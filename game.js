@@ -224,14 +224,8 @@ function collisionDetection() {
     flagsOnPaddle = true;
     flagTimer = Date.now();
     powerBlockHitTime = Date.now(); 
-    ...
-  }
-}
 
-
-
-   
-      if (bricks[powerBlockCol] && bricks[powerBlockCol][powerBlockRow]) {
+     if (bricks[powerBlockCol] && bricks[powerBlockCol][powerBlockRow]) {
         bricks[powerBlockCol][powerBlockRow].status = 0;
       }
 
