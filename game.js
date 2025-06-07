@@ -342,6 +342,7 @@ function resetBricks() {
       bricks[c][r].status = 1;
     }
   }
+  placeRocketBlock();
 }
 
 function placeRocketBlock() {
@@ -423,6 +424,7 @@ function draw() {
   checkCoinCollision();
   drawBricks();
   drawPowerBlock();
+  drawRocketBlock();
   drawBall();
   drawPaddle();
   drawPaddleFlags();
