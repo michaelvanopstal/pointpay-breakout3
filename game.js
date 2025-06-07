@@ -23,6 +23,11 @@ let powerBlockUsed = false;
 let flyingCoins = [];
 let powerBlockRespawnTime = 180000; // 3 minuten in ms
 let powerBlockHitTime = null;
+let lives = 3;
+let level = 1;
+let gameOver = false;
+let ballMoving = false;
+
 
 
 const brickRowCount = 5;
@@ -491,10 +496,9 @@ document.addEventListener("keydown", function (e) {
       
   flagsOnPaddle = false;
   flyingCoins = [];
+  
 }
-
-
-    }
+    
     ballMoving = true;
-  }
+  } 
 });
