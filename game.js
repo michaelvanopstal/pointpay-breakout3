@@ -118,13 +118,17 @@ function drawBricks() {
         const brickY = r * brickHeight;
         bricks[c][r].x = brickX;
         bricks[c][r].y = brickY;
+       
+        
+        
+        if (c === 3 && r === 2 && raket1Img.complete && raket1Img.naturalWidth !== 0) {
+  ctx.drawImage(raket1Img, brickX, brickY, brickWidth, brickHeight);
+} else {
+  ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
+}
 
         
-        if (c === 3 && r === 2) {
-          ctx.drawImage(raket1Img, brickX, brickY, brickWidth, brickHeight);
-        } else {
-          ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
-        }
+       
       }
     }
   }
