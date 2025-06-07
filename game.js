@@ -231,7 +231,7 @@ function collisionDetection() {
       score += 10;
       document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
 
-      spawnPowerBlock(); 
+    
     }
   }
 }
