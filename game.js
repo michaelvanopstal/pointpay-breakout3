@@ -451,7 +451,8 @@ function onImageLoad() {
   imagesLoaded++;
   if (imagesLoaded === 3) {
     x = paddleX + paddleWidth / 2 - ballRadius;
-    y = canvas.height - paddleHeight - ballRadius * 2;
+    y = canvas.height - paddleHeight - ballRadius * 2
+    ;startPowerBlockJumping(); 
     draw();
   }
 }
