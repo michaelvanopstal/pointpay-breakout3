@@ -136,17 +136,6 @@ function drawBricks() {
   }
 }
 
-if (rocketFired && rocket) {
-  ctx.fillStyle = "red";
-  ctx.fillRect(rocket.x, rocket.y, 4, 15);
-  rocket.y += rocket.dy;
-
-  spawnRocketSmoke(rocket.x, rocket.y + 15); // rook
-  drawRocketSmoke();                         // rook tekenen
-
-  checkRocketHit();                          // botsing
-}
-
 function drawBall() {
   ctx.drawImage(ballImg, x, y, ballRadius * 2, ballRadius * 2);
 }
@@ -278,6 +267,8 @@ function startTimer() {
 
 function collisionDetection() {
 
+}
+
 function checkRocketHit() {
   if (!rocket || rocketFired === false) return;
 
@@ -291,7 +282,6 @@ function checkRocketHit() {
         rocket.y > b.y &&
         rocket.y < b.y + brickHeight
       ) {
-        // vernietig 4 blokken in de breedte (rond impactpunt)
         for (let i = -2; i <= 1; i++) {
           const col = c + i;
           if (col >= 0 && col < brickColumnCount) {
@@ -299,10 +289,7 @@ function checkRocketHit() {
           }
         }
 
-        // spawn explosie
         spawnExplosion(rocket.x, rocket.y);
-
-        // reset raket
         rocket = null;
         rocketFired = false;
         return;
