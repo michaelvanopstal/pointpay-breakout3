@@ -138,7 +138,7 @@ function drawPaddleFlags() {
   } else if (flagsOnPaddle && Date.now() - flagTimer >= 20000) {
     flagsOnPaddle = false;
   }
-
+}
 
 function shootFromFlags() {
   const coinSpeed = 8;
