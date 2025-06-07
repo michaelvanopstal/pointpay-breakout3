@@ -482,6 +482,8 @@ document.addEventListener("mousedown", function () {
 blockImg.onload = onImageLoad;
 ballImg.onload = onImageLoad;
 powerBlockImg.onload = onImageLoad;
+
+
 document.addEventListener("keydown", function (e) {
   if (!ballMoving && (e.code === "ArrowUp" || e.code === "Space")) {
     if (lives <= 0) {
@@ -509,9 +511,9 @@ document.addEventListener("keydown", function (e) {
   if (!powerBlock.active && !powerBlockUsed) {
   spawnPowerBlock();
   powerBlockTimer = Date.now();
-
-
+  }
 }
+
     
     ballMoving = true;
   } 
