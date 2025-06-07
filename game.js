@@ -142,9 +142,9 @@ function drawPaddleFlags() {
 
 function shootFromFlags() {
   const coinSpeed = 8;
-}
+
   
-  // Linkervlag
+ 
   flyingCoins.push({
     x: paddleX - 5 + 12,
     y: canvas.height - paddleHeight - 40,
@@ -152,13 +152,14 @@ function shootFromFlags() {
     active: true
   });
 
-  // Rechtervlag
+ 
   flyingCoins.push({
     x: paddleX + paddleWidth - 19 + 12,
     y: canvas.height - paddleHeight - 40,
     dy: -coinSpeed,
     active: true
   });
+}
 
 
 function checkFlyingCoinHits() {
