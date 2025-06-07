@@ -412,7 +412,11 @@ function draw() {
       elapsedTime = 0;
       timerRunning = false;
       clearInterval(timerInterval);
+      flagsOnPaddle = false;    // vlaggetjes verdwijnen
+      flyingCoins = []; 
     }
+
+    
   } else {
     x = paddleX + paddleWidth / 2 - ballRadius;
     resetBricks();
