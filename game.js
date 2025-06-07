@@ -32,6 +32,9 @@ let rocketOnPaddle = false;
 let rocketFired = false;
 let rocket = null;
 let explosionParticles = [];
+let rocketSmokeParticles = [];
+let rocketExplosionParticles = [];
+
 
 
 
@@ -133,6 +136,17 @@ function drawBricks() {
   }
 }
 
+if (rocketFired && rocket) {
+  ctx.fillStyle = "red";
+  ctx.fillRect(rocket.x, rocket.y, 4, 15);
+  rocket.y += rocket.dy;
+
+  spawnRocketSmoke(rocket.x, rocket.y + 15); // rook
+  drawRocketSmoke();                         // rook tekenen
+
+  checkRocketHit();                          // botsing
+}
+
 function drawBall() {
   ctx.drawImage(ballImg, x, y, ballRadius * 2, ballRadius * 2);
 }
@@ -161,6 +175,52 @@ function drawRocketBlock() {
     ctx.fillRect(rocketBlock.x + 10, rocketBlock.y + 10, brickWidth - 20, brickHeight - 20);
   }
 }
+
+function spawnRocketSmoke(x, y) {
+  for (let i = 0; i < 3; i++) {
+    rocketSmokeParticles.push({
+      x: x + (Math.random() * 6 - 3),
+      y: y + 10,
+      radius: Math.random() * 4 + 2,
+      alpha: 1,
+      dy: Math.random() * -0.5 - 0.5
+    });
+  }
+}
+
+function drawRocketSmoke() {
+  for (let i = 0; i < rocketSmokeParticles.length; i++) {
+    const p = rocketSmokeParticles[i];
+    ctx.beginPath();
+    ctx.globalAlpha = p.alpha;
+    ctx.fillStyle = "gray";
+    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+    p.y += p.dy;
+    p.alpha -= 0.02;
+  }
+  
+function drawExplosion() {
+  for (let i = 0; i < rocketExplosionParticles.length; i++) {
+    const p = rocketExplosionParticles[i];
+    ctx.beginPath();
+    ctx.globalAlpha = p.alpha;
+    ctx.fillStyle = p.color;
+    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+    p.x += p.dx;
+    p.y += p.dy;
+    p.alpha -= 0.03;
+  }
+
+  rocketExplosionParticles = rocketExplosionParticles.filter(p => p.alpha > 0);
+}
+
+  rocketSmokeParticles = rocketSmokeParticles.filter(p => p.alpha > 0);
+}
+
 
 function shootFromFlags() {
   const coinSpeed = 8;
@@ -231,13 +291,40 @@ function checkRocketHit() {
         rocket.y > b.y &&
         rocket.y < b.y + brickHeight
       ) {
-        // vernietig blokken in de breedte (4 totaal)
+        // vernietig 4 blokken in de breedte (rond impactpunt)
         for (let i = -2; i <= 1; i++) {
           const col = c + i;
           if (col >= 0 && col < brickColumnCount) {
             bricks[col][r].status = 0;
           }
         }
+
+        // spawn explosie
+        spawnExplosion(rocket.x, rocket.y);
+
+        // reset raket
+        rocket = null;
+        rocketFired = false;
+        return;
+      }
+    }
+  }
+}
+
+        
+function spawnExplosion(x, y) {
+  for (let i = 0; i < 30; i++) {
+    rocketExplosionParticles.push({
+      x: x,
+      y: y,
+      dx: Math.random() * 4 - 2,
+      dy: Math.random() * 4 - 2,
+      radius: Math.random() * 4 + 2,
+      color: Math.random() > 0.5 ? "orange" : "red",
+      alpha: 1
+    });
+  }
+}
 
         // optie: spawn explosie
         rocket = null;
@@ -473,6 +560,8 @@ function draw() {
   drawPaddleFlags();
   drawFlyingCoins();
   checkFlyingCoinHits();
+  drawExplosion();
+
 
   if (rightPressed && paddleX < canvas.width - paddleWidth) paddleX += 7;
   else if (leftPressed && paddleX > 0) paddleX -= 7;
