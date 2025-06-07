@@ -313,6 +313,10 @@ function checkCoinCollision() {
   });
 }
 
+function resetPaddle() {
+  paddleX = (canvas.width - paddleWidth) / 2;
+}
+
 function resetBricks() {
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
