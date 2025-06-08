@@ -631,8 +631,10 @@ if (rocketY < -48) {
   rocketFired = false;
   rocketActive = false; // éénmalige raket
 } else {
-  ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
-  checkRocketCollision(); // botst met blokjes
+   ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
+  checkRocketCollision(); // botst met blokjes  
+  
+  }
 }
 
 // 🔥 Explosies tekenen
