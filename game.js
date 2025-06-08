@@ -242,7 +242,6 @@ function collisionDetection() {
     }
   }
 
-  
   if (powerBlock.active && powerBlock.visible) {
   if (
     x > powerBlock.x &&
