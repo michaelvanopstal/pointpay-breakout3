@@ -534,8 +534,7 @@ function draw() {
   ) {
     spawnPowerBlock2();
     powerBlock2HitTime = null;
-  
-
+  }
 
   requestAnimationFrame(draw);
 }
