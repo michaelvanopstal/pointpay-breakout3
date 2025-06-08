@@ -91,14 +91,13 @@ function keyDownHandler(e) {
     score = 0;
     document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
   }
-}
 
-  // Schieten met vlaggetjes
+  
   if (flagsOnPaddle && (e.code === "Space" || e.code === "ArrowUp")) {
     shootFromFlags();
   }
 
-  // Reset bij game over
+  
   if (!ballMoving && (e.code === "ArrowUp" || e.code === "Space")) {
     if (lives <= 0) {
       lives = 3;
@@ -123,7 +122,7 @@ function keyDownHandler(e) {
     }
     ballMoving = true;
   }
-});
+}
 
 document.addEventListener("keyup", keyUpHandler);
 document.addEventListener("mousemove", mouseMoveHandler);
