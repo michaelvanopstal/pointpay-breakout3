@@ -614,11 +614,12 @@ function draw() {
     powerBlock2HitTime = null;
   }
   
-  if (rocketActive) {
-  rocketX = paddleX + paddleWidth / 2 - 12; // gecentreerd op paddle
-  rocketY = canvas.height - paddleHeight - 48; // boven paddle
-  ctx.drawImage(rocketImg, rocketX, rocketY, 24, 48); // raket tekenen
+  if (rocketActive && !rocketFired) {
+  rocketX = paddleX + paddleWidth / 2 - 12;
+  rocketY = canvas.height - paddleHeight - 48;
+  ctx.drawImage(rocketImg, rocketX, rocketY, 24, 48);
 }
+
 // === RAKET AFVUREN EN BEWEGEN ===
 if (rocketFired && rocketInAir) {
   rocketY -= rocketSpeed;
