@@ -178,8 +178,7 @@ function drawBricks() {
         ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
       }
     }
-  }
-}
+  
 
 function drawRocketBlock() {
   if (rocketBlock.active && rocketBlock.visible) {
@@ -252,10 +251,7 @@ function checkFlyingCoinHits() {
           coin.active = false;    
           score += 10;
           document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-          return; 
-        }
-      }
-    }
+          return;
   });
 }
 
@@ -659,7 +655,7 @@ function onImageLoad() {
   imagesLoaded++;
   console.log("Afbeelding geladen:", imagesLoaded);
 
-  if (imagesLoaded === 5) {
+  if (imagesLoaded === 9) {
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
     startPowerBlockJumping();
