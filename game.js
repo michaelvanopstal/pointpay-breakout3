@@ -286,7 +286,6 @@ if (powerBlock2.active && powerBlock2.visible) {
     document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
   }
 
-function collisionDetection() {
 
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
