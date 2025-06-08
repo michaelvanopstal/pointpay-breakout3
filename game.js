@@ -64,8 +64,14 @@ shootCoinImg.src = "3.png";
 const powerBlock2Img = new Image();
 powerBlock2Img.src = "signalblock2.png";
 powerBlock2Img.onload = onImageLoad;
+onst rocketImg = new Image();
+rocketImg.src = "raket1.png";
 
-
+let rocketActive = true;{ // Voor nu altijd zichtbaar om te testen
+let rocketX = 0;
+let rocketY = 0;
+};
+  
 let powerBlock2 = {
   x: 0,
   y: 0,
