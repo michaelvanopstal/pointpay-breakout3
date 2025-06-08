@@ -93,12 +93,10 @@ function keyDownHandler(e) {
     document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
   }
 
-  
   if (flagsOnPaddle && (e.code === "Space" || e.code === "ArrowUp")) {
     shootFromFlags();
   }
 
-  
   if (!ballMoving && (e.code === "ArrowUp" || e.code === "Space")) {
    if (lives <= 0) {
       lives = 3;
@@ -123,8 +121,15 @@ function keyDownHandler(e) {
     }
     ballMoving = true;
   }
+}
+ 
+function keyUpHandler(e) {
+  if (e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
+  else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = false;
+}
 
-  
+
+
 function mouseMoveHandler(e) {
   const relativeX = e.clientX - canvas.offsetLeft;
   if (relativeX > 0 && relativeX < canvas.width) paddleX = relativeX - paddleWidth / 2;
