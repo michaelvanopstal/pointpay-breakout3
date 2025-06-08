@@ -400,7 +400,6 @@ function checkRocketCollision() {
 
         document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
         rocketFired = false;
-        rocketActive = false;
        
         explosions.push({
           x: rocketX + 12,
