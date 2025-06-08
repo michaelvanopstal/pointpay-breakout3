@@ -96,21 +96,18 @@ let powerBlock2 = {
 };
 
 
-document.addEventListener("keydown", keyDownHandler);
 document.addEventListener("keyup", keyUpHandler);
 document.addEventListener("mousemove", mouseMoveHandler);
 document.addEventListener("keydown", function (e){
  
-  if (rocketActive && !rocketFired && (e.code === "Space" || e.code === "ArrowUp")) {
-    rocketFired = true;
-    rocketInAir = true;
-  }
-});
 
 function keyDownHandler(e) {
-  if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
-  else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
- 
+  if (e.key === "Right" || e.key === "ArrowRight") {
+    rightPressed = true;
+  } else if (e.key === "Left" || e.key === "ArrowLeft") {
+    leftPressed = true;
+  }
+
   if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched) {
     ballLaunched = true;
     dx = 0;
@@ -125,7 +122,7 @@ function keyDownHandler(e) {
   }
 
   if (!ballMoving && (e.code === "ArrowUp" || e.code === "Space")) {
-   if (lives <= 0) {
+    if (lives <= 0) {
       lives = 3;
       score = 0;
       level = 1;
@@ -147,8 +144,13 @@ function keyDownHandler(e) {
       flyingCoins = [];
     }
     ballMoving = true;
-    
- 
+  }
+
+  if (rocketActive && !rocketFired && (e.code === "Space" || e.code === "ArrowUp")) {
+    rocketFired = true;
+    rocketInAir = true;
+  }
+}
 
          document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
         rocketInAir = false;
