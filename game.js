@@ -101,11 +101,6 @@ document.addEventListener("keydown", function (e) {
   }
 });
 
-document.addEventListener("mousedown", function () {
-  if (flagsOnPaddle) {
-    shootFromFlags();
-  }
-});
 
 function keyDownHandler(e) {
   if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
@@ -537,7 +532,8 @@ function draw() {
 let imagesLoaded = 0;
 function onImageLoad() {
   imagesLoaded++;
-  if (imagesLoaded === 6) {
+  if (imagesLoaded === 5
+     ) {
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2
     ;startPowerBlockJumping(); 
