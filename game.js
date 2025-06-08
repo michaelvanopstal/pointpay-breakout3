@@ -56,6 +56,7 @@ const shootCoinImg = new Image();
 shootCoinImg.src = "3.png"; 
 const powerBlock2Img = new Image();
 powerBlock2Img.src = "signalblock2.png";
+powerBlock2Img.onload = onImageLoad;
 
 
 
