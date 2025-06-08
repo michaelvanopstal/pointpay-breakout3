@@ -148,6 +148,15 @@ function drawPaddle() {
   ctx.closePath();
 } 
 
+function resetBall() {
+  x = paddleX + paddleWidth / 2 - ballRadius;
+  y = canvas.height - paddleHeight - ballRadius * 2;
+}
+
+function resetPaddle() {
+  paddleX = (canvas.width - paddleWidth) / 2;
+}
+
 
 function drawPaddleFlags() {
   if (flagsOnPaddle && Date.now() - flagTimer < 20000) {
