@@ -520,6 +520,8 @@ function draw() {
   drawPaddleFlags();
   drawFlyingCoins();
   checkFlyingCoinHits();
+  drawRocketBlock();
+
 
   
   if (rightPressed && paddleX < canvas.width - paddleWidth) paddleX += 7;
