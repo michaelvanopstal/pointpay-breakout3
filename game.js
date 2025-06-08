@@ -555,16 +555,22 @@ function draw() {
 let imagesLoaded = 0;
 function onImageLoad() {
   imagesLoaded++;
-  if (imagesLoaded === 4
-     ) {
+  if (imagesLoaded === 4) {
     x = paddleX + paddleWidth / 2 - ballRadius;
-    y = canvas.height - paddleHeight - ballRadius * 2
-    ;startPowerBlockJumping(); 
+    y = canvas.height - paddleHeight - ballRadius * 2;
+    startPowerBlockJumping();
     spawnPowerBlock2();
     draw();
   }
 }
 
+// Koppel alle images aan onImageLoad
+blockImg.onload = onImageLoad;
+ballImg.onload = onImageLoad;
+powerBlockImg.onload = onImageLoad;
+powerBlock2Img.onload = onImageLoad;
+
+// Muisactie voor schieten met vlaggetjes
 document.addEventListener("mousedown", function () {
   if (flagsOnPaddle) {
     shootFromFlags();
