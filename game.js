@@ -43,6 +43,8 @@ const bricks = [
   { x: 200, y: 0, status: 1, img: "blue" },
   { x: 300, y: 0, status: 1, img: "default" },
   { x: 0, y: 60, status: 1, img: "green" },
+  { x: brickWidth * 2, y: brickHeight * 2, status: 1, img: "default" },
+
 ];
 
 
