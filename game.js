@@ -549,6 +549,12 @@ function draw() {
     spawnPowerBlock2();
     powerBlock2HitTime = null;
   }
+  
+  if (rocketActive) {
+  rocketX = paddleX + paddleWidth / 2 - 12; // gecentreerd op paddle
+  rocketY = canvas.height - paddleHeight - 48; // boven paddle
+  ctx.drawImage(rocketImg, rocketX, rocketY, 24, 48); // raket tekenen
+}
 
   requestAnimationFrame(draw);
 }
@@ -570,6 +576,7 @@ blockImg.onload = onImageLoad;
 ballImg.onload = onImageLoad;
 powerBlockImg.onload = onImageLoad;
 powerBlock2Img.onload = onImageLoad;
+rocketImg.onload = onImageLoad;
 
 // Muisactie voor schieten met vlaggetjes
 document.addEventListener("mousedown", function () {
