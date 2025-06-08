@@ -34,6 +34,9 @@ let powerBlock2Row = 0;
 let powerBlock2Col = 0;
 let powerBlock2RespawnDelay = 20000; // 20 seconden na raken terug
 let powerBlock2HitTime = null;
+let rocketFired = false;
+let rocketInAir = false;
+let rocketSpeed = 8;
 
 
 
@@ -96,6 +99,13 @@ let powerBlock2 = {
 document.addEventListener("keydown", keyDownHandler);
 document.addEventListener("keyup", keyUpHandler);
 document.addEventListener("mousemove", mouseMoveHandler);
+document.addEventListener("keydown", function (e) 
+ 
+  if (rocketActive && !rocketFired && (e.code === "Space" || e.code === "ArrowUp")) {
+    rocketFired = true;
+    rocketInAir = true;
+  }
+});
 
 function keyDownHandler(e) {
   if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
@@ -140,6 +150,48 @@ function keyDownHandler(e) {
   }
 }
  
+if (rocketFired && rocketInAir) {
+  rocketY -= rocketSpeed;
+  ctx.drawImage(rocketImg, rocketX, rocketY, 24, 48);
+
+  // check of hij buiten beeld gaat
+  if (rocketY < 0) {
+    rocketInAir = false;
+    rocketActive = false;
+  }
+
+  // check of hij blok raakt
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      const b = bricks[c][r];
+      if (b.status === 1 &&
+          rocketX + 12 > b.x &&
+          rocketX + 12 < b.x + brickWidth &&
+          rocketY < b.y + brickHeight &&
+          rocketY + 48 > b.y) {
+
+        // vernietig maximaal 4 blokjes: dit + 2 links/rechts
+        for (let dc = -2; dc <= 2; dc++) {
+          const nc = c + dc;
+          if (nc >= 0 && nc < brickColumnCount) {
+            for (let nr = r; nr <= r; nr++) {
+              if (bricks[nc][nr] && bricks[nc][nr].status === 1) {
+                bricks[nc][nr].status = 0;
+                score += 10;
+              }
+            }
+          }
+        }
+
+        document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+        rocketInAir = false;
+        rocketActive = false;
+        break;
+      }
+    }
+  }
+}
+
 function keyUpHandler(e) {
   if (e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
   else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = false;
