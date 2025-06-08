@@ -76,7 +76,7 @@ let powerBlock2 = {
 };
 
 
-document.addEventListener("keydown", function (e) {
+  document.addEventListener("keydown", keyDownHandler);
 
   // Links/rechts bewegen
   if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
