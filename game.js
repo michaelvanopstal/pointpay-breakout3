@@ -99,7 +99,7 @@ function keyDownHandler(e) {
 
   
   if (!ballMoving && (e.code === "ArrowUp" || e.code === "Space")) {
-    if (lives <= 0) {
+   if (lives <= 0) {
       lives = 3;
       score = 0;
       level = 1;
@@ -122,7 +122,7 @@ function keyDownHandler(e) {
     }
     ballMoving = true;
   }
-}
+
 
 document.addEventListener("keyup", keyUpHandler);
 document.addEventListener("mousemove", mouseMoveHandler);
