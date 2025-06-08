@@ -98,13 +98,15 @@ let powerBlock2 = {
 
 document.addEventListener("keyup", keyUpHandler);
 document.addEventListener("mousemove", mouseMoveHandler);
-document.addEventListener("keydown", function (e){
- 
+document.addEventListener("keydown", keyDownHandler);
+
 
 function keyDownHandler(e) {
   if (e.key === "Right" || e.key === "ArrowRight") {
     rightPressed = true;
-  } else if (e.key === "Left" || e.key === "ArrowLeft") {
+  }
+  
+  else if (e.key === "Left" || e.key === "ArrowLeft") {
     leftPressed = true;
   }
 
