@@ -124,8 +124,6 @@ function keyDownHandler(e) {
   }
 
 
-document.addEventListener("keyup", keyUpHandler);
-document.addEventListener("mousemove", mouseMoveHandler);
 
 function keyDownHandler(e) {
   if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
