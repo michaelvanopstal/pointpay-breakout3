@@ -571,36 +571,3 @@ document.addEventListener("mousedown", function () {
   }
 });
 
-blockImg.onload = onImageLoad;
-ballImg.onload = onImageLoad;
-powerBlockImg.onload = onImageLoad;
-document.addEventListener("keydown", function (e) {
-  if (!ballMoving && (e.code === "ArrowUp" || e.code === "Space")) {
-    if (lives <= 0) {
-  lives = 3;
-  score = 0;
-  level = 1;
-  resetBricks();
-  resetBall();
-  resetPaddle();
-  startTime = new Date();
-  gameOver = false;
-  document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-  document.getElementById("timeDisplay").textContent = "time 00:00";
-
-  
-  powerBlockUsed = false;
-  powerBlockHitTime = null;
-  powerBlock.active = false;
-  powerBlock.visible = false;
-  clearInterval(blinkInterval);
-      
-      
-  flagsOnPaddle = false;
-  flyingCoins = [];
-  
-}
-    
-    ballMoving = true;
-  } 
-});
