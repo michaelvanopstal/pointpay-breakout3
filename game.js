@@ -36,6 +36,7 @@ let powerBlock2RespawnDelay = 20000; // 20 seconden na raken terug
 let powerBlock2HitTime = null;
 let rocketFired = false;
 let rocketSpeed = 10;
+let smokeParticles = [];
 
 
 
@@ -607,6 +608,15 @@ function draw() {
   ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
 } else if (rocketFired) {
   rocketY -= rocketSpeed;
+
+  // Voeg rookdeeltje toe
+  smokeParticles.push({
+    x: rocketX + 15, // iets onder midden raket
+    y: rocketY + 65, // onderkant raket
+    radius: Math.random() * 6 + 4,
+    alpha: 1
+  });
+
   if (rocketY < -48) {
     rocketFired = false;
     rocketActive = false; // éénmalige raket
@@ -617,7 +627,21 @@ function draw() {
 }
 
 
+
   requestAnimationFrame(draw);
+  
+  smokeParticles.forEach(p => {
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(150, 150, 150, ${p.alpha})`;
+  ctx.fill();
+  p.y += 1;
+  p.radius += 0.3;
+  p.alpha -= 0.02;
+});
+  
+smokeParticles = smokeParticles.filter(p => p.alpha > 0);
+
 }
 
 
