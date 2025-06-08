@@ -509,7 +509,8 @@ function drawPowerBlock() {
 
 function drawPowerBlock2() {
   if (powerBlock2.active && powerBlock2.visible) {
-    ctx.drawImage(powerBlock2Img, powerBlock2.x, powerBlock2.y, powerBlock2.width, powerBlock2.height);
+   ctx.drawImage(powerBlock2Img, powerBlock2.x, powerBlock2.y, brickWidth, brickHeight);
+
   }
 }
 
