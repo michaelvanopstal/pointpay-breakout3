@@ -281,11 +281,12 @@ if (powerBlock2.active && powerBlock2.visible) {
     clearInterval(blinkInterval2);
     powerBlock2HitTime = Date.now();
 
-    // Eventueel effect toevoegen:
-    score += 20;
-    document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+     // Eventueel effect toevoegen:
+     score += 20;
+     document.getElementById("scoreDisplay").textContent = "score " + score + " pxp."; 
+    }
   }
-
+}
 
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
