@@ -37,6 +37,7 @@ let powerBlock2HitTime = null;
 let rocketFired = false;
 let rocketSpeed = 10;
 let smokeParticles = [];
+let explosions = [];
 
 
 
@@ -398,7 +399,16 @@ function checkRocketCollision() {
         document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
         rocketFired = false;
         rocketActive = false;
-        return;
+       
+        explosions.push({
+          x: rocketX + 12,
+          y: rocketY,
+          radius: 10,
+          alpha: 1
+         
+        });
+        
+        return; 
       }
     }
   }
@@ -617,18 +627,29 @@ function draw() {
     alpha: 1
   });
 
-  if (rocketY < -48) {
-    rocketFired = false;
-    rocketActive = false; // éénmalige raket
-  } else {
-    ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
-    checkRocketCollision(); // botst met blokjes
-  }
+if (rocketY < -48) {
+  rocketFired = false;
+  rocketActive = false; // éénmalige raket
+} else {
+  ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
+  checkRocketCollision(); // botst met blokjes
 }
 
+// 🔥 Explosies tekenen
+explosions.forEach(e => {
+  ctx.beginPath();
+  ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(255, 165, 0, ${e.alpha})`; // oranje explosie
+  ctx.fill();
+  e.radius += 2;       // explosie wordt groter
+  e.alpha -= 0.05;     // en vervaagt
+});
 
+explosions = explosions.filter(e => e.alpha > 0); // alleen zichtbare explosies blijven
 
-  requestAnimationFrame(draw);
+// 🚀 Nieuwe frame tekenen
+requestAnimationFrame(draw);
+
   
   smokeParticles.forEach(p => {
   ctx.beginPath();
