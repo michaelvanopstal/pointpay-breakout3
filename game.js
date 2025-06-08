@@ -559,10 +559,13 @@ function draw() {
   requestAnimationFrame(draw);
 }
 
-console.log("Afbeelding geladen:", imagesLoaded);
-let imagesLoaded = 0;
+
+let imagesLoaded = 0; 
+
 function onImageLoad() {
   imagesLoaded++;
+  console.log("Afbeelding geladen:", imagesLoaded); // ← mag hier
+
   if (imagesLoaded === 5) {
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
@@ -571,6 +574,7 @@ function onImageLoad() {
     draw();
   }
 }
+
 
 // Koppel alle images aan onImageLoad
 blockImg.onload = onImageLoad;
