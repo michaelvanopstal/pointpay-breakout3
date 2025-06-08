@@ -154,15 +154,7 @@ function keyDownHandler(e) {
   }
 }
 
-         document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-        rocketInAir = false;
-        rocketActive = false;
-      
-      }
-    }
-  }
-}
-
+        
 function keyUpHandler(e) {
   if (e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
   else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = false;
