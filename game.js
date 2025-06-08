@@ -71,7 +71,7 @@ powerBlock2Img.onload = onImageLoad;
 const rocketImg = new Image();
 rocketImg.src = "raket1.png";
 
-let rocketAmmo = 0; // speler kan max 3 raketten schieten als powerBlock2 geraakt is
+let rocketActive = false; // Voor nu altijd zichtbaar om te testen
 let rocketX = 0;
 let rocketY = 0;
 
@@ -103,11 +103,9 @@ function keyDownHandler(e) {
     document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
   }
 
-  if ((e.code === "ArrowUp" || e.code === "Space") && rocketAmmo > 0 && !rocketFired) {
+  if ((e.code === "ArrowUp" || e.code === "Space") && rocketActive && !rocketFired) {
   rocketFired = true;
-  rocketAmmo--;
 }
-
 
   if (flagsOnPaddle && (e.code === "Space" || e.code === "ArrowUp")) {
     shootFromFlags();
@@ -400,6 +398,7 @@ function checkRocketCollision() {
 
         document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
         rocketFired = false;
+        rocketActive = false;
        
         explosions.push({
           x: rocketX + 12,
@@ -693,10 +692,8 @@ powerBlock2Img.onload = onImageLoad;
 rocketImg.onload = onImageLoad;
 
 document.addEventListener("mousedown", function () {
-if (rocketAmmo > 0 && !rocketFired) {
-  rocketFired = true;
-  rocketAmmo--;
-
+  if (rocketActive && !rocketFired) {
+    rocketFired = true;
   } else if (flagsOnPaddle) {
     shootFromFlags();
   }
