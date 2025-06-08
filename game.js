@@ -76,30 +76,53 @@ let powerBlock2 = {
 };
 
 
+document.addEventListener("keydown", function (e) {
+  // Links/rechts bewegen
+  if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
+  else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
 
-
-document.addEventListener("keydown", keyDownHandler, false);
-document.addEventListener("keyup", keyUpHandler, false);
-document.addEventListener("mousemove", mouseMoveHandler, false);
-
-document.addEventListener("keydown", (e) => {
-if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched) {
-  ballLaunched = true;
+  // Bal lanceren
+  if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched) {
+    ballLaunched = true;
     dx = 0;
     dy = -4;
-    if (!timerRunning) startTimer();score = 0;
+    if (!timerRunning) startTimer();
+    score = 0;
     document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
-  
+  }
+
+  // Schieten met vlaggetjes
+  if (flagsOnPaddle && (e.code === "Space" || e.code === "ArrowUp")) {
+    shootFromFlags();
+  }
+
+  // Reset bij game over
+  if (!ballMoving && (e.code === "ArrowUp" || e.code === "Space")) {
+    if (lives <= 0) {
+      lives = 3;
+      score = 0;
+      level = 1;
+      resetBricks();
+      resetBall();
+      resetPaddle();
+      startTime = new Date();
+      gameOver = false;
+      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+      document.getElementById("timeDisplay").textContent = "time 00:00";
+
+      powerBlockUsed = false;
+      powerBlockHitTime = null;
+      powerBlock.active = false;
+      powerBlock.visible = false;
+      clearInterval(blinkInterval);
+
+      flagsOnPaddle = false;
+      flyingCoins = [];
+    }
+    ballMoving = true;
   }
 });
 
-document.addEventListener("keydown", function (e) {
-  if (flagsOnPaddle) {
-    if (e.code === "Space" || e.code === "ArrowUp") {
-      shootFromFlags(); 
-    }
-  }
-});
 
 
 function keyDownHandler(e) {
