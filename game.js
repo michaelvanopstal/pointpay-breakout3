@@ -71,6 +71,17 @@ let rocketActive = true; // Voor nu altijd zichtbaar om te testen
 let rocketX = 0;
 let rocketY = 0;
 
+let rocketBlock = {
+  x: 0,
+  y: 0,
+  width: brickWidth,
+  height: brickHeight,
+  active: true,     // standaard aan
+  visible: true,
+  col: 0,
+  row: 0
+};
+
   
 let powerBlock2 = {
   x: 0,
@@ -285,6 +296,19 @@ function collisionDetection() {
     }
   }
 
+  if (
+  rocketBlock.active && rocketBlock.visible &&
+  x > rocketBlock.x &&
+  x < rocketBlock.x + rocketBlock.width &&
+  y > rocketBlock.y &&
+  y < rocketBlock.y + rocketBlock.height
+) {
+  dy = -dy;
+  rocketBlock.active = false;
+  rocketBlock.visible = false;
+  rocketActive = true;  // toont raket op paddle
+}
+
   
   if (powerBlock2.active && powerBlock2.visible) {
     if (
@@ -381,8 +405,15 @@ function resetBricks() {
       bricks[c][r].status = 1;
     }
   }
-}
 
+
+  rocketBlock.col = Math.floor(Math.random() * brickColumnCount);
+  rocketBlock.row = Math.floor(Math.random() * brickRowCount);
+  rocketBlock.x = rocketBlock.col * brickWidth;
+  rocketBlock.y = rocketBlock.row * brickHeight;
+  rocketBlock.active = true;
+  rocketBlock.visible = true;
+}
 
 
 
