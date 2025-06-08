@@ -527,6 +527,14 @@ function draw() {
   powerBlockUsed = false;
   powerBlockHitTime = null;
 }
+  
+  if (
+    powerBlock2HitTime &&
+    Date.now() - powerBlock2HitTime > powerBlock2RespawnDelay
+  ) {
+    spawnPowerBlock2();
+    powerBlock2HitTime = null;
+  
 
 
   requestAnimationFrame(draw);
