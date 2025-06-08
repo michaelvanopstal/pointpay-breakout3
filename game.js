@@ -27,6 +27,22 @@ let lives = 3;
 let level = 1;
 let gameOver = false;
 let ballMoving = false;
+let powerBlock2 = {
+  x: 0,
+  y: 0,
+  width: brickWidth,
+  height: brickHeight,
+  active: false,
+  visible: true
+};
+
+let powerBlock2Timer = 0;
+let powerBlock2Interval = 15000; // verschijnt om de 15 seconden
+let blinkInterval2;
+let powerBlock2Row = 0;
+let powerBlock2Col = 0;
+let powerBlock2RespawnDelay = 20000; // 20 seconden na raken terug
+let powerBlock2HitTime = null;
 
 
 
