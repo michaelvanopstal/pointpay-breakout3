@@ -147,13 +147,7 @@ function keyDownHandler(e) {
       flyingCoins = [];
     }
     ballMoving = true;
-  }
-
-  if (rocketActive && !rocketFired && (e.code === "Space" || e.code === "ArrowUp")) {
-    rocketFired = true;
-    rocketInAir = true;
-  }
-
+    
  
 
          document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
@@ -669,7 +663,7 @@ function onImageLoad() {
   imagesLoaded++;
   console.log("Afbeelding geladen:", imagesLoaded);
 
-  if (imagesLoaded === 4) {
+  if (imagesLoaded === 5) {
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
     startPowerBlockJumping();
@@ -685,8 +679,10 @@ blockImg.onload = onImageLoad;
 ballImg.onload = onImageLoad;
 powerBlockImg.onload = onImageLoad;
 powerBlock2Img.onload = onImageLoad;
+rocketImg.onload = onImageLoad;
 
-// Muisactie voor schieten met vlaggetjes
+
+
 document.addEventListener("mousedown", function () {
   if (flagsOnPaddle) {
     shootFromFlags();
