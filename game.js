@@ -27,15 +27,7 @@ let lives = 3;
 let level = 1;
 let gameOver = false;
 let ballMoving = false;
-let powerBlock2 = {
-  x: 0,
-  y: 0,
-  width: brickWidth,
-  height: brickHeight,
-  active: false,
-  visible: true
-};
-
+let powerBlock2
 let powerBlock2Timer = 0;
 let powerBlock2Interval = 15000; // verschijnt om de 15 seconden
 let blinkInterval2;
@@ -73,6 +65,16 @@ shootCoinImg.src = "3.png";
 const powerBlock2Img = new Image();
 powerBlock2Img.src = "signalblock2.png";
 powerBlock2Img.onload = onImageLoad;
+
+
+let powerBlock2 = {
+  x: 0,
+  y: 0,
+  width: brickWidth,
+  height: brickHeight,
+  active: false,
+  visible: true
+};
 
 
 
@@ -508,6 +510,7 @@ function onImageLoad() {
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2
     ;startPowerBlockJumping(); 
+    spawnPowerBlock2();
     draw();
   }
 }
@@ -535,7 +538,7 @@ document.addEventListener("keydown", function (e) {
   updateScoreDisplay();
   updateTimeDisplay();
 
-  // ✅ PowerBlock reset toevoegen:
+  
   powerBlockUsed = false;
   powerBlockHitTime = null;
   powerBlock.active = false;
