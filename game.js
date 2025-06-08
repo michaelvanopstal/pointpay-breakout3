@@ -543,8 +543,8 @@ document.addEventListener("keydown", function (e) {
   resetPaddle();
   startTime = new Date();
   gameOver = false;
-  updateScoreDisplay();
-  updateTimeDisplay();
+  document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+  document.getElementById("timeDisplay").textContent = "time 00:00";
 
   
   powerBlockUsed = false;
