@@ -240,7 +240,6 @@ function collisionDetection() {
         }
       }
     }
-  }
 
   if (powerBlock.active && powerBlock.visible) {
   if (
@@ -266,7 +265,6 @@ function collisionDetection() {
       document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
 
     }
-  }
 
 if (powerBlock2.active && powerBlock2.visible) {
   if (
@@ -286,7 +284,6 @@ if (powerBlock2.active && powerBlock2.visible) {
      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp."; 
     }
   }
-}
 
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
