@@ -390,10 +390,37 @@ function spawnPowerBlock() {
 }
 
 
+function spawnPowerBlock2() {
+  const randCol = Math.floor(Math.random() * brickColumnCount);
+  const randRow = Math.floor(Math.random() * brickRowCount);
+  powerBlock2Col = randCol;
+  powerBlock2Row = randRow;
+  powerBlock2.x = randCol * brickWidth;
+  powerBlock2.y = randRow * brickHeight;
+  powerBlock2.active = true;
+  powerBlock2.visible = true;
+
+  clearInterval(blinkInterval2);
+  blinkInterval2 = setInterval(() => {
+    if (powerBlock2.active) {
+      powerBlock2.visible = !powerBlock2.visible;
+    } else {
+      clearInterval(blinkInterval2);
+    }
+  }, 500); // knipper elke 500ms
+}
+
+
 
 function drawPowerBlock() {
   if (powerBlock.active && powerBlock.visible) {
     ctx.drawImage(powerBlockImg, powerBlock.x, powerBlock.y, powerBlock.width, powerBlock.height);
+  }
+}
+
+function drawPowerBlock2() {
+  if (powerBlock2.active && powerBlock2.visible) {
+    ctx.drawImage(powerBlock2Img, powerBlock2.x, powerBlock2.y, powerBlock2.width, powerBlock2.height);
   }
 }
 
@@ -405,12 +432,14 @@ function draw() {
   checkCoinCollision();
   drawBricks();
   drawPowerBlock();
+  drawPowerBlock2();
   drawBall();
   drawPaddle();
   drawPaddleFlags();
   drawFlyingCoins();
   checkFlyingCoinHits();
 
+  
   if (rightPressed && paddleX < canvas.width - paddleWidth) paddleX += 7;
   else if (leftPressed && paddleX > 0) paddleX -= 7;
 
