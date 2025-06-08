@@ -166,6 +166,12 @@ function drawBricks() {
   }
 }
 
+function drawRocketBlock() {
+  if (rocketBlock.active && rocketBlock.visible) {
+    ctx.drawImage(rocketImg, rocketBlock.x, rocketBlock.y, rocketBlock.width, rocketBlock.height);
+  }
+}
+
 function drawBall() {
   ctx.drawImage(ballImg, x, y, ballRadius * 2, ballRadius * 2);
 }
