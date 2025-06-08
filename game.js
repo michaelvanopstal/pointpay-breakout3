@@ -670,7 +670,7 @@ function onImageLoad() {
   imagesLoaded++;
   console.log("Afbeelding geladen:", imagesLoaded); // ← mag hier
 
-  if (imagesLoaded === 5) {
+  if (imagesLoaded === 4) {
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
     startPowerBlockJumping();
@@ -685,7 +685,6 @@ blockImg.onload = onImageLoad;
 ballImg.onload = onImageLoad;
 powerBlockImg.onload = onImageLoad;
 powerBlock2Img.onload = onImageLoad;
-rocketImg.onload = onImageLoad;
 
 // Muisactie voor schieten met vlaggetjes
 document.addEventListener("mousedown", function () {
