@@ -459,7 +459,7 @@ function draw() {
 let imagesLoaded = 0;
 function onImageLoad() {
   imagesLoaded++;
-  if (imagesLoaded === 3) {
+  if (imagesLoaded === 4) {
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2
     ;startPowerBlockJumping(); 
