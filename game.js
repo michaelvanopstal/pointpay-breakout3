@@ -21,18 +21,18 @@ let flagsOnPaddle = false;
 let flagTimer = 0;
 let powerBlockUsed = false;
 let flyingCoins = [];
-let powerBlockRespawnTime = 100000; // 3 minuten in ms
+let powerBlockRespawnTime = 100000; 
 let powerBlockHitTime = null;
 let lives = 3;
 let level = 1;
 let gameOver = false;
 let ballMoving = false;
 let powerBlock2Timer = 0;
-let powerBlock2Interval = 15000; // verschijnt om de 15 seconden
+let powerBlock2Interval = 15000; 
 let blinkInterval2;
 let powerBlock2Row = 0;
 let powerBlock2Col = 0;
-let powerBlock2RespawnDelay = 20000; // 20 seconden na raken terug
+let powerBlock2RespawnDelay = 20000; 
 let powerBlock2HitTime = null;
 let rocketFired = false;
 let rocketInAir = false;
@@ -70,7 +70,7 @@ powerBlock2Img.onload = onImageLoad;
 const rocketImg = new Image();
 rocketImg.src = "raket1.png";
 
-let rocketActive = false; // Voor nu altijd zichtbaar om te testen
+let rocketActive = false; 
 let rocketX = 0;
 let rocketY = 0;
 
@@ -79,7 +79,7 @@ let rocketBlock = {
   y: 0,
   width: brickWidth,
   height: brickHeight,
-  active: true,     // standaard aan
+  active: true,     
   visible: true,
   col: 0,
   row: 0
@@ -337,7 +337,7 @@ function collisionDetection() {
   dy = -dy;
   rocketBlock.active = false;
   rocketBlock.visible = false;
-  rocketActive = true;  // toont raket op paddle
+  rocketActive = true;  
 }
 
   
@@ -363,7 +363,7 @@ function collisionDetection() {
   function saveHighscore() {
   const timeText = document.getElementById("timeDisplay").textContent.replace("time ", "");
   const highscore = {
-    name: window.currentPlayer || "Unknown",
+    name: window.currentPlayer
     score: score,
    time: timeText
     
@@ -514,7 +514,7 @@ function spawnPowerBlock2() {
     } else {
       clearInterval(blinkInterval2);
     }
-  }, 500); // knipper elke 500ms
+  }, 500); 
 }
 
 
@@ -620,18 +620,17 @@ function draw() {
   ctx.drawImage(rocketImg, rocketX, rocketY, 24, 48);
 }
 
-// === RAKET AFVUREN EN BEWEGEN ===
+
 if (rocketFired && rocketInAir) {
   rocketY -= rocketSpeed;
   ctx.drawImage(rocketImg, rocketX, rocketY, 24, 48);
 
-  // Check of raket buiten beeld vliegt
   if (rocketY + 48 < 0) {
     rocketInAir = false;
     rocketActive = false;
   }
 
-  // Check op botsing met blokken
+
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
       const b = bricks[c][r];
@@ -641,7 +640,7 @@ if (rocketFired && rocketInAir) {
           rocketY < b.y + brickHeight &&
           rocketY + 48 > b.y) {
 
-        // Vernietig maximaal 4 blokjes: dit + 2 links/rechts
+        
         for (let dc = -2; dc <= 2; dc++) {
           const nc = c + dc;
           if (nc >= 0 && nc < brickColumnCount) {
@@ -681,7 +680,7 @@ function onImageLoad() {
 
 
 
-// Koppel alle images aan onImageLoad
+
 blockImg.onload = onImageLoad;
 ballImg.onload = onImageLoad;
 powerBlockImg.onload = onImageLoad;
