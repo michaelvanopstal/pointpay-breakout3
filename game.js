@@ -150,40 +150,8 @@ function keyDownHandler(e) {
   }
 }
  
-if (rocketFired && rocketInAir) {
-  rocketY -= rocketSpeed;
-  ctx.drawImage(rocketImg, rocketX, rocketY, 24, 48);
 
-  // check of hij buiten beeld gaat
-  if (rocketY < 0) {
-    rocketInAir = false;
-    rocketActive = false;
-  }
-
-  // check of hij blok raakt
-  for (let c = 0; c < brickColumnCount; c++) {
-    for (let r = 0; r < brickRowCount; r++) {
-      const b = bricks[c][r];
-      if (b.status === 1 &&
-          rocketX + 12 > b.x &&
-          rocketX + 12 < b.x + brickWidth &&
-          rocketY < b.y + brickHeight &&
-          rocketY + 48 > b.y) {
-
-        // vernietig maximaal 4 blokjes: dit + 2 links/rechts
-        for (let dc = -2; dc <= 2; dc++) {
-          const nc = c + dc;
-          if (nc >= 0 && nc < brickColumnCount) {
-            for (let nr = r; nr <= r; nr++) {
-              if (bricks[nc][nr] && bricks[nc][nr].status === 1) {
-                bricks[nc][nr].status = 0;
-                score += 10;
-              }
-            }
-          }
-        }
-
-        document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+         document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
         rocketInAir = false;
         rocketActive = false;
         break;
@@ -645,6 +613,46 @@ function draw() {
   rocketX = paddleX + paddleWidth / 2 - 12; // gecentreerd op paddle
   rocketY = canvas.height - paddleHeight - 48; // boven paddle
   ctx.drawImage(rocketImg, rocketX, rocketY, 24, 48); // raket tekenen
+}
+// === RAKET AFVUREN EN BEWEGEN ===
+if (rocketFired && rocketInAir) {
+  rocketY -= rocketSpeed;
+  ctx.drawImage(rocketImg, rocketX, rocketY, 24, 48);
+
+  // Check of raket buiten beeld vliegt
+  if (rocketY + 48 < 0) {
+    rocketInAir = false;
+    rocketActive = false;
+  }
+
+  // Check op botsing met blokken
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      const b = bricks[c][r];
+      if (b.status === 1 &&
+          rocketX + 12 > b.x &&
+          rocketX + 12 < b.x + brickWidth &&
+          rocketY < b.y + brickHeight &&
+          rocketY + 48 > b.y) {
+
+        // Vernietig maximaal 4 blokjes: dit + 2 links/rechts
+        for (let dc = -2; dc <= 2; dc++) {
+          const nc = c + dc;
+          if (nc >= 0 && nc < brickColumnCount) {
+            if (bricks[nc][r] && bricks[nc][r].status === 1) {
+              bricks[nc][r].status = 0;
+              score += 10;
+            }
+          }
+        }
+
+        document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+        rocketInAir = false;
+        rocketActive = false;
+        break;
+      }
+    }
+  }
 }
 
   requestAnimationFrame(draw);
