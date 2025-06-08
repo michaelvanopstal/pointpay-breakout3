@@ -353,7 +353,7 @@ function collisionDetection() {
   function saveHighscore() {
   const timeText = document.getElementById("timeDisplay").textContent.replace("time ", "");
   const highscore = {
-    name: window.currentPlayer
+    name: window.currentPlayer,
     score: score,
    time: timeText
     
