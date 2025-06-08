@@ -35,16 +35,31 @@ const brickColumnCount = 9;
 const brickWidth = canvas.width / brickColumnCount;
 const brickHeight = 60;
 
-const bricks = [];
-for (let c = 0; c < brickColumnCount; c++) {
-  bricks[c] = [];
-  for (let r = 0; r < brickRowCount; r++) {
-    bricks[c][r] = { x: 0, y: 0, status: 1 };
-  }
-}
 
-const blockImg = new Image();
-blockImg.src = "block_logo.png";
+// Nieuw individueel bricksysteem met eigen afbeelding en positie per blok
+const bricks = [
+  { x: 0, y: 0, status: 1, img: "red" },
+  { x: 100, y: 0, status: 1, img: "green" },
+  { x: 200, y: 0, status: 1, img: "blue" },
+  { x: 300, y: 0, status: 1, img: "default" },
+  { x: 0, y: 60, status: 1, img: "green" },
+];
+
+
+
+// Laad meerdere block-afbeeldingen (zelf te bepalen per brick)
+const blockImgs = {
+  default: new Image(),
+  red: new Image(),
+  green: new Image(),
+  blue: new Image(),
+  // Voeg hier meer toe als nodig
+};
+blockImgs.default.src = "block_logo.png";
+blockImgs.red.src = "red_block.png";
+blockImgs.green.src = "green_block.png";
+blockImgs.blue.src = "blue_block.png";
+
 const ballImg = new Image();
 ballImg.src = "ball_logo.png";
 const vlagImgLeft = new Image();
@@ -101,7 +116,17 @@ function mouseMoveHandler(e) {
   if (relativeX > 0 && relativeX < canvas.width) paddleX = relativeX - paddleWidth / 2;
 }
 
+
 function drawBricks() {
+  for (let i = 0; i < bricks.length; i++) {
+    const b = bricks[i];
+    if (b.status === 1) {
+      const img = blockImgs[b.img] || blockImgs.default;
+      ctx.drawImage(img, b.x, b.y, brickWidth, brickHeight);
+    }
+  }
+}
+
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
       if (bricks[c][r].status === 1) {
@@ -159,9 +184,22 @@ function checkFlyingCoinHits() {
   flyingCoins.forEach((coin) => {
     if (!coin.active) return;
 
-    for (let c = 0; c < brickColumnCount; c++) {
-      for (let r = 0; r < brickRowCount; r++) {
-        const b = bricks[c][r];
+    
+    for (let i = 0; i < bricks.length; i++) {
+      const b = bricks[i];
+      if (b.status === 1 &&
+          coin.x > b.x &&
+          coin.x < b.x + brickWidth &&
+          coin.y > b.y &&
+          coin.y < b.y + brickHeight) {
+        b.status = 0;
+        coin.active = false;
+        score += 10;
+        document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+        return;
+      }
+    }
+
         if (b.status === 1 &&
             coin.x > b.x &&
             coin.x < b.x + brickWidth &&
@@ -192,9 +230,25 @@ function startTimer() {
 
 function collisionDetection() {
 
-  for (let c = 0; c < brickColumnCount; c++) {
-    for (let r = 0; r < brickRowCount; r++) {
-      let b = bricks[c][r];
+  
+  for (let i = 0; i < bricks.length; i++) {
+    let b = bricks[i];
+    if (b.status === 1) {
+      if (
+        x > b.x &&
+        x < b.x + brickWidth &&
+        y > b.y &&
+        y < b.y + brickHeight
+      ) {
+        dy = -dy;
+        b.status = 0;
+        score += 10;
+        spawnCoin(b.x, b.y);
+        document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+      }
+    }
+  }
+
       if (b.status === 1) {
         if (
           x > b.x &&
@@ -310,13 +364,13 @@ function checkCoinCollision() {
   });
 }
 
+
 function resetBricks() {
-  for (let c = 0; c < brickColumnCount; c++) {
-    for (let r = 0; r < brickRowCount; r++) {
-      bricks[c][r].status = 1;
-    }
+  for (let i = 0; i < bricks.length; i++) {
+    bricks[i].status = 1;
   }
 }
+
 
 
 
