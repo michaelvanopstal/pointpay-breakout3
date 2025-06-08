@@ -54,11 +54,6 @@ const vlagImgRight = new Image();
 vlagImgRight.src = "vlaggetje2.png";
 const shootCoinImg = new Image();
 shootCoinImg.src = "3.png"; 
-const rocketBlockImg = new Image();
-rocketBlockImg.src = "raket2.png"; // knipperend blokje in het speelveld
-
-const rocketImg = new Image();
-rocketImg.src = "raket1.png"; // raket op de paddle
 
 
 
