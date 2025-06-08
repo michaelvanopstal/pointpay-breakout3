@@ -76,13 +76,13 @@ let powerBlock2 = {
 };
 
 
-  document.addEventListener("keydown", keyDownHandler);
-
-  // Links/rechts bewegen
+document.addEventListener("keydown", keyDownHandler);
+ 
+function keyDownHandler(e) {
   if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
   else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
 
-  // Bal lanceren
+
   if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched) {
     ballLaunched = true;
     dx = 0;
@@ -91,6 +91,7 @@ let powerBlock2 = {
     score = 0;
     document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
   }
+}
 
   // Schieten met vlaggetjes
   if (flagsOnPaddle && (e.code === "Space" || e.code === "ArrowUp")) {
