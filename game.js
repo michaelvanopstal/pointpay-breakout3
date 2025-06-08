@@ -80,7 +80,10 @@ document.addEventListener("keydown", keyDownHandler);
 document.addEventListener("keyup", keyUpHandler);
 document.addEventListener("mousemove", mouseMoveHandler);
 
-
+function keyDownHandler(e) {
+  if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
+  else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
+ 
   if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched) {
     ballLaunched = true;
     dx = 0;
@@ -121,14 +124,7 @@ document.addEventListener("mousemove", mouseMoveHandler);
     ballMoving = true;
   }
 
-
-
-function keyDownHandler(e) {
-  if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
-  else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
-}
-
-
+  
 function mouseMoveHandler(e) {
   const relativeX = e.clientX - canvas.offsetLeft;
   if (relativeX > 0 && relativeX < canvas.width) paddleX = relativeX - paddleWidth / 2;
