@@ -99,7 +99,7 @@ let powerBlock2 = {
 document.addEventListener("keydown", keyDownHandler);
 document.addEventListener("keyup", keyUpHandler);
 document.addEventListener("mousemove", mouseMoveHandler);
-document.addEventListener("keydown", function (e) 
+document.addEventListener("keydown", function (e){
  
   if (rocketActive && !rocketFired && (e.code === "Space" || e.code === "ArrowUp")) {
     rocketFired = true;
