@@ -285,7 +285,7 @@ if (powerBlock2.active && powerBlock2.visible) {
     score += 20;
     document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
   }
-}
+
 function collisionDetection() {
 
   for (let c = 0; c < brickColumnCount; c++) {
@@ -330,10 +330,9 @@ function collisionDetection() {
 
       score += 10;
       document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-
     
     }
-  }
+  
 
 if (powerBlock2.active && powerBlock2.visible) {
   if (
