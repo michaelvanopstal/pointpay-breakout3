@@ -67,7 +67,7 @@ powerBlock2Img.onload = onImageLoad;
 const rocketImg = new Image();
 rocketImg.src = "raket1.png";
 
-let rocketActive = true; // Voor nu altijd zichtbaar om te testen
+let rocketActive = false; // Voor nu altijd zichtbaar om te testen
 let rocketX = 0;
 let rocketY = 0;
 
@@ -300,6 +300,7 @@ function collisionDetection() {
       powerBlock2HitTime = Date.now();
 
       score += 20;
+      rocketActive = true;
       document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
     }
   }
