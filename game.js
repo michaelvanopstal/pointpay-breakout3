@@ -159,7 +159,7 @@ function keyDownHandler(e) {
          document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
         rocketInAir = false;
         rocketActive = false;
-        break;
+      
       }
     }
   }
