@@ -34,6 +34,8 @@ let powerBlock2Row = 0;
 let powerBlock2Col = 0;
 let powerBlock2RespawnDelay = 20000; // 20 seconden na raken terug
 let powerBlock2HitTime = null;
+let rocketFired = false;
+let rocketSpeed = 10;
 
 
 
@@ -98,6 +100,10 @@ function keyDownHandler(e) {
     score = 0;
     document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
   }
+
+  if ((e.code === "ArrowUp" || e.code === "Space") && rocketActive && !rocketFired) {
+  rocketFired = true;
+}
 
   if (flagsOnPaddle && (e.code === "Space" || e.code === "ArrowUp")) {
     shootFromFlags();
@@ -359,6 +365,43 @@ function drawFlyingCoins() {
   
   flyingCoins = flyingCoins.filter(coin => coin.y > -24 && coin.active);
 }
+function checkRocketCollision() {
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      let b = bricks[c][r];
+      if (b.status === 1 &&
+          rocketX + 12 > b.x &&
+          rocketX + 12 < b.x + brickWidth &&
+          rocketY < b.y + brickHeight &&
+          rocketY + 48 > b.y) {
+
+        // vernietig max 4 blokjes (center + links + rechts + onder)
+        const targets = [
+          [c, r],
+          [c - 1, r],
+          [c + 1, r],
+          [c, r + 1]
+        ];
+
+        targets.forEach(([col, row]) => {
+          if (
+            col >= 0 && col < brickColumnCount &&
+            row >= 0 && row < brickRowCount &&
+            bricks[col][row].status === 1
+          ) {
+            bricks[col][row].status = 0;
+            score += 10;
+          }
+        });
+
+        document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+        rocketFired = false;
+        rocketActive = false;
+        return;
+      }
+    }
+  }
+}
 
 function checkCoinCollision() {
   coins.forEach(coin => {
@@ -551,11 +594,22 @@ function draw() {
     powerBlock2HitTime = null;
   }
   
-  if (rocketActive) {
-  rocketX = paddleX + paddleWidth / 2 - 12; // gecentreerd op paddle
-  rocketY = canvas.height - paddleHeight - 48; // boven paddle
-  ctx.drawImage(rocketImg, rocketX, rocketY, 24, 48); // raket tekenen
+ if (rocketActive && !rocketFired) {
+  // Volgt paddle, nog niet afgevuurd
+  rocketX = paddleX + paddleWidth / 2 - 12;
+  rocketY = canvas.height - paddleHeight - 48;
+  ctx.drawImage(rocketImg, rocketX, rocketY, 24, 48);
+} else if (rocketFired) {
+  rocketY -= rocketSpeed;
+  if (rocketY < -48) {
+    rocketFired = false;
+    rocketActive = false; // éénmalige raket
+  } else {
+    ctx.drawImage(rocketImg, rocketX, rocketY, 24, 48);
+    checkRocketCollision(); // botst met blokjes
+  }
 }
+
 
   requestAnimationFrame(draw);
 }
@@ -584,9 +638,10 @@ powerBlockImg.onload = onImageLoad;
 powerBlock2Img.onload = onImageLoad;
 rocketImg.onload = onImageLoad;
 
-// Muisactie voor schieten met vlaggetjes
 document.addEventListener("mousedown", function () {
-  if (flagsOnPaddle) {
+  if (rocketActive && !rocketFired) {
+    rocketFired = true;
+  } else if (flagsOnPaddle) {
     shootFromFlags();
   }
 });
