@@ -148,6 +148,11 @@ function keyDownHandler(e) {
     }
     ballMoving = true;
   }
+
+  if (rocketActive && !rocketFired && (e.code === "Space" || e.code === "ArrowUp")) {
+    rocketFired = true;
+    rocketInAir = true;
+  }
 }
  
 
