@@ -270,7 +270,6 @@ function collisionDetection() {
   }
 }
 
-
 if (powerBlock2.active && powerBlock2.visible) {
   if (
     x > powerBlock2.x &&
