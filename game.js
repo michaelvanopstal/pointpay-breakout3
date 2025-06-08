@@ -598,14 +598,14 @@ function draw() {
   // Volgt paddle, nog niet afgevuurd
   rocketX = paddleX + paddleWidth / 2 - 12;
   rocketY = canvas.height - paddleHeight - 48;
-  ctx.drawImage(rocketImg, rocketX, rocketY, 24, 48);
+  ctx.drawImage(rocketImg, rocketX, rocketY, 40, 80);
 } else if (rocketFired) {
   rocketY -= rocketSpeed;
   if (rocketY < -48) {
     rocketFired = false;
     rocketActive = false; // éénmalige raket
   } else {
-    ctx.drawImage(rocketImg, rocketX, rocketY, 24, 48);
+    ctx.drawImage(rocketImg, rocketX, rocketY, 40, 80);
     checkRocketCollision(); // botst met blokjes
   }
 }
