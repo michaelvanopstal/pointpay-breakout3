@@ -271,12 +271,33 @@ function collisionDetection() {
   }
 }
 
+
+if (powerBlock2.active && powerBlock2.visible) {
+  if (
+    x > powerBlock2.x &&
+    x < powerBlock2.x + powerBlock2.width &&
+    y > powerBlock2.y &&
+    y < powerBlock2.y + powerBlock2.height
+  ) {
+    dy = -dy;
+    powerBlock2.active = false;
+    powerBlock2.visible = false;
+    clearInterval(blinkInterval2);
+    powerBlock2HitTime = Date.now();
+
+    // Eventueel effect toevoegen:
+    score += 20;
+    document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+  }
+}
+
 function saveHighscore() {
   const timeText = document.getElementById("timeDisplay").textContent.replace("time ", "");
   const highscore = {
     name: window.currentPlayer || "Unknown",
     score: score,
-    time: timeText
+   time: timeText
+    
   };
 
   let highscores = JSON.parse(localStorage.getItem("highscores")) || [];
