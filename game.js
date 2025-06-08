@@ -665,20 +665,21 @@ if (rocketFired && rocketInAir) {
 }
 
 
-let imagesLoaded = 0; 
+let imagesLoaded = 0;
 
 function onImageLoad() {
   imagesLoaded++;
-  console.log("Afbeelding geladen:", imagesLoaded); // ← mag hier
+  console.log("Afbeelding geladen:", imagesLoaded);
 
-  if (imagesLoaded === 4) { 
+  if (imagesLoaded === 4) {
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
     startPowerBlockJumping();
     spawnPowerBlock2();
-    draw();
+    draw(); // start animatie pas als alles klaar is
   }
 }
+
 
 
 // Koppel alle images aan onImageLoad
