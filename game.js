@@ -153,7 +153,7 @@ function keyDownHandler(e) {
     rocketFired = true;
     rocketInAir = true;
   }
-}
+
  
 
          document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
@@ -655,7 +655,6 @@ if (rocketFired && rocketInAir) {
         document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
         rocketInAir = false;
         rocketActive = false;
-        break;
       }
     }
   }
