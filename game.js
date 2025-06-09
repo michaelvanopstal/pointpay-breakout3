@@ -73,6 +73,8 @@ powerBlock2Img.src = "signalblock2.png";
 powerBlock2Img.onload = onImageLoad;
 const rocketImg = new Image();
 rocketImg.src = "raket1.png";
+const doubleBallImg = new Image();
+doubleBallImg.src = "2 balls.png";
 
 let rocketActive = false; // Voor nu altijd zichtbaar om te testen
 let rocketX = 0;
@@ -154,13 +156,14 @@ function mouseMoveHandler(e) {
 
 function drawBricks() {
   const totalBricksWidth = brickColumnCount * brickWidth;
-  const offsetX = (canvas.width - totalBricksWidth) / 2; // midden uitlijnen
+  const offsetX = (canvas.width - totalBricksWidth) / 2;
 
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
       if (bricks[c][r].status === 1) {
         const brickX = offsetX + c * brickWidth;
         const brickY = r * brickHeight;
+
         bricks[c][r].x = brickX;
         bricks[c][r].y = brickY;
 
@@ -170,17 +173,26 @@ function drawBricks() {
               ctx.drawImage(powerBlockImg, brickX, brickY, brickWidth, brickHeight);
             }
             break;
+
           case "rocket":
             if (blinkingBlocks["rocket"]) {
               ctx.drawImage(powerBlock2Img, brickX + brickWidth * 0.05, brickY + brickHeight * 0.05, brickWidth * 0.9, brickHeight * 0.9);
             }
             break;
+
           case "freeze":
             if (blinkingBlocks["freeze"]) {
               ctx.fillStyle = "#00FFFF";
               ctx.fillRect(brickX, brickY, brickWidth, brickHeight);
             }
             break;
+
+          case "doubleball":
+            if (blinkingBlocks["doubleball"]) {
+              ctx.drawImage(doubleBallImg, brickX, brickY, brickWidth, brickHeight);
+            }
+            break;
+
           default:
             ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
         }
@@ -294,12 +306,19 @@ function collisionDetection() {
               flagsOnPaddle = true;
               flagTimer = Date.now();
               break;
+
             case "rocket":
               rocketActive = true;
               break;
+
             case "freeze":
               dx = 0;
-              setTimeout(() => { dx = 4; }, 1000);
+              setTimeout(() => { dx = 4; }, 1000); // tijdelijk effect
+              break;
+
+            case "doubleball":
+              console.log("Doubleball geraakt!");
+              // TODO: later 2 ballen genereren
               break;
           }
 
@@ -313,6 +332,7 @@ function collisionDetection() {
     }
   }
 
+  // powerBlock-botsing
   if (powerBlock.active && powerBlock.visible) {
     if (
       x > powerBlock.x &&
@@ -338,6 +358,7 @@ function collisionDetection() {
     }
   }
 
+  // powerBlock2-botsing
   if (powerBlock2.active && powerBlock2.visible) {
     if (
       x > powerBlock2.x &&
@@ -356,7 +377,7 @@ function collisionDetection() {
       document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
     }
   }
-} // ✅ ENKEL HIER wordt de functie afgesloten — niet eerder, niet later
+}
 
  
 function saveHighscore() {
@@ -485,7 +506,7 @@ function resetBricks() {
 }
 
 
-const bonusTypes = ["power", "rocket", "freeze"]; // Voeg hier eenvoudig nieuwe types toe
+const bonusTypes = ["power", "rocket", "freeze", "doubleball"];
 const bonusBlockCount = 3; // Aantal bonusblokken per level (schaalbaar)
 
 function placeBonusBlocks(level) {
@@ -761,7 +782,9 @@ const blinkingBlocks = {};
 const blinkSpeeds = {
   power: 300,
   rocket: 500,
-  freeze: 700
+  freeze: 700 
+  doubleball: 400
+
 };
 
 for (const type of bonusTypes) {
