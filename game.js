@@ -718,7 +718,7 @@ requestAnimationFrame(draw);
 
 let imagesLoaded = 0; 
 
-ffunction onImageLoad() {
+ function onImageLoad() {
   imagesLoaded++;
   console.log("Afbeelding geladen:", imagesLoaded);
 
