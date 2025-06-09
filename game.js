@@ -1,7 +1,15 @@
-
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
+// Brick instellingen
+const customBrickWidth = 70;
+const customBrickHeight = 25;
+const brickRowCount = 15;
+const brickColumnCount = 9;
+const brickWidth = customBrickWidth;
+const brickHeight = customBrickHeight;
+
+// Spelvariabelen
 let elapsedTime = 0;
 let timerInterval = null;
 let timerRunning = false;
@@ -21,35 +29,27 @@ let flagsOnPaddle = false;
 let flagTimer = 0;
 let powerBlockUsed = false;
 let flyingCoins = [];
-let powerBlockRespawnTime = 100000; // 3 minuten in ms
+let powerBlockRespawnTime = 100000;
 let powerBlockHitTime = null;
 let lives = 3;
 let level = 1;
 let gameOver = false;
 let ballMoving = false;
 let powerBlock2Timer = 0;
-let powerBlock2Interval = 15000; // verschijnt om de 15 seconden
+let powerBlock2Interval = 15000;
 let blinkInterval2;
 let powerBlock2Row = 0;
 let powerBlock2Col = 0;
-let powerBlock2RespawnDelay = 20000; // 20 seconden na raken terug
+let powerBlock2RespawnDelay = 20000;
 let powerBlock2HitTime = null;
 let rocketFired = false;
 let rocketSpeed = 10;
 let smokeParticles = [];
 let explosions = [];
 let bonusBlocks = [];
-
-
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
-
-const customBrickWidth = 70;   // pas aan zoals jij wilt
-const customBrickHeight = 25;  // pas aan zoals jij wilt
-const brickRowCount = 15;
-const brickColumnCount = 9;
-const brickWidth = customBrickWidth;
-const brickHeight = customBrickHeight;
+let rocketActive = false;
+let rocketX = 0;
+let rocketY = 0;
 
 
 const bricks = [];
