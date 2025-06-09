@@ -4,12 +4,50 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PointPay Breakout</title>
+
+  <!-- Preload vlaggetjes -->
   <link rel="preload" href="vlaggetje1.png" as="image">
   <link rel="preload" href="vlaggetje2.png" as="image">
 
-
+  <!-- Externe CSS -->
   <link rel="stylesheet" href="style.css">
+
+  <!-- Interne CSS -->
+  <style>
+    #gameCanvas {
+      width: 648px;
+      height: 600px;
+      background-color: #90ee90; /* lichtgroen */
+      border: 3px solid #000000; /* zwarte rand */
+      position: absolute;
+      top: 0px;
+      left: 0px;
+    }
+  </style>
 </head>
+
+<body>
+
+  <!-- 🎮 Hier komt je canvas -->
+  <canvas id="gameCanvas"></canvas>
+
+  <!-- 📜 Je JavaScript bestand -->
+  <script src="game.js"></script>
+
+</body>
+</html>
+
+
+
+  <!-- 🎮 Hier komt je canvas -->
+  <canvas id="gameCanvas"></canvas>
+
+  <!-- 📜 Je JavaScript bestand -->
+  <script src="game.js"></script>
+
+</body>
+</html>
+
 <body>
   <div id="top-info">
     <span id="player-display">Player</span>
