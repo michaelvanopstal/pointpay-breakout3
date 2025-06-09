@@ -827,6 +827,11 @@ ballImg.onload = onImageLoad;
 powerBlockImg.onload = onImageLoad;
 powerBlock2Img.onload = onImageLoad;
 rocketImg.onload = onImageLoad;
+vlagImgLeft.onload = onImageLoad;
+vlagImgRight.onload = onImageLoad;
+shootCoinImg.onload = onImageLoad;
+doubleBallImg.onload = onImageLoad;
+
 
 document.addEventListener("mousedown", function () {
   if (rocketActive && !rocketFired) {
