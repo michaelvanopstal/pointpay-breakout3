@@ -10,7 +10,7 @@ body {
 #gameCanvas {
   position: absolute;
   top: 15px;
-  left: 10px;
+  left: 5px;
   width: 640px;
   height: 600px;
   background-color: transparent;
