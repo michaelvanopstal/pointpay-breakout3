@@ -8,15 +8,14 @@ body {
 }
 
 #gameCanvas {
-  width: 648px;
-  height: 600px;
   position: absolute;
-  top: 0px;
-  left: 0px;
-  background-color: #ffffff; /* wit */
-  border: 3px solid #90ee90;  /* zwart */
+  top: 5px;
+  left: 5px;
+  width: 645px;
+  height: 600px;
+  background-color: transparent;
+  border: 3px solid "transparent"
 }
-
 
 #scoreDisplay {
   position: absolute;
