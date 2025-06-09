@@ -621,7 +621,7 @@ function draw() {
     
   } else {
     x = paddleX + paddleWidth / 2 - ballRadius;
-    resetBricks();
+   
     y = canvas.height - paddleHeight - ballRadius * 2;
   }
 
