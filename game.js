@@ -776,15 +776,14 @@ smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 
 }
 
-
 // 🔁 Knipperlogica voor bonusblokken
 const blinkingBlocks = {};
+
 const blinkSpeeds = {
   power: 300,
   rocket: 500,
-  freeze: 700 
+  freeze: 700,
   doubleball: 400
-
 };
 
 for (const type of bonusTypes) {
@@ -793,6 +792,7 @@ for (const type of bonusTypes) {
     blinkingBlocks[type] = !blinkingBlocks[type];
   }, blinkSpeeds[type]);
 }
+
 
 // 📥 Laden van afbeeldingen en spel starten
 let imagesLoaded = 0;
