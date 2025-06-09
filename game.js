@@ -179,13 +179,13 @@ function startLevel(levelNum) {
   currentLevel = levelNum;
 
   if (levelNum === 1) {
-  brickRowCount = 5;
-  brickHeight = (canvas.height - paddleHeight - 100) / brickRowCount; // marge voor de paddle
-} else if (levelNum === 2) {
-  brickRowCount = 15;
-  brickHeight = canvas.height / brickRowCount; // volle hoogte benutten
+    brickRowCount = 5;
+    brickHeight = canvas.height / brickRowCount; // Geen marge – blokken strak op elkaar
+  } else if (levelNum === 2) {
+    brickRowCount = 15;
+    brickHeight = canvas.height / brickRowCount; // Ook strak op elkaar
+  }
 
- }
   // Bricks opnieuw genereren
   bricks.length = 0;
   for (let c = 0; c < brickColumnCount; c++) {
@@ -210,6 +210,7 @@ function startLevel(levelNum) {
   powerBlock2.visible = false;
   powerBlock2HitTime = null;
 }
+
 
 function resetBall() {
   x = paddleX + paddleWidth / 2 - ballRadius;
