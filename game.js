@@ -490,13 +490,6 @@ function resetBricks() {
 }
 
 
-
-
-
-
-const powerBlockImg = new Image();
-powerBlockImg.src = "power_block_logo.png";
-
 let powerBlock = {
   x: 0,
   y: 0,
