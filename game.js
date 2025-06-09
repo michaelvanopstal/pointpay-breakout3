@@ -38,6 +38,8 @@ let rocketFired = false;
 let rocketSpeed = 10;
 let smokeParticles = [];
 let explosions = [];
+let bonusBlocks = [];
+
 
 
 const customBrickWidth = 70;   // pas aan zoals jij wilt
@@ -46,6 +48,8 @@ const brickRowCount = 15;
 const brickColumnCount = 9;
 const brickWidth = customBrickWidth;
 const brickHeight = customBrickHeight;
+const brickRowCount = 15;
+const brickColumnCount = 9;
 
 
 const bricks = [];
@@ -439,13 +443,34 @@ function checkCoinCollision() {
   });
 }
 
-function resetBricks() {
-  for (let c = 0; c < brickColumnCount; c++) {
-    for (let r = 0; r < brickRowCount; r++) {
-      bricks[c][r].status = 1;
+function placeBonusBlocks(amount) {
+  bonusBlocks = []; // reset
+  const takenPositions = new Set();
+
+  while (bonusBlocks.length < amount) {
+    const col = Math.floor(Math.random() * brickColumnCount);
+    const row = Math.floor(Math.random() * brickRowCount);
+    const key = `${col},${row}`;
+
+    if (!takenPositions.has(key)) {
+      takenPositions.add(key);
+      bonusBlocks.push({ col, row });
     }
   }
 }
+
+function resetBricks() {
+  placeBonusBlocks(5); // hier stel je in hoeveel bonusblokken per level
+
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      const isBonus = bonusBlocks.some(b => b.col === c && b.row === r);
+      bricks[c][r].status = isBonus ? 2 : 1; // 2 = bonusblok, 1 = normaal blok
+    }
+  }
+}
+
+
 
 
 
