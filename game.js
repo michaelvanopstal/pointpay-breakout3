@@ -44,7 +44,7 @@ let currentLevel = 1;
 let brickRowCount = 5;
 let brickColumnCount = 9;
 let brickWidth = canvas.width / brickColumnCount;
-let brickHeight = 100;
+let brickHeight = 60;
 
 const bricks = [];
 for (let c = 0; c < brickColumnCount; c++) {
