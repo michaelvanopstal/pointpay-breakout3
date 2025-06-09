@@ -165,19 +165,27 @@ function drawBricks() {
   bricks[c][r].y = brickY;
 
   switch (bricks[c][r].type) {
-    case "power":
+  case "power":
+    if (blinkingBlocks["power"]) {
       ctx.drawImage(powerBlockImg, brickX, brickY, brickWidth, brickHeight);
-      break;
-    case "rocket":
+    }
+    break;
+  case "rocket":
+    if (blinkingBlocks["rocket"]) {
       ctx.drawImage(powerBlock2Img, brickX + brickWidth * 0.05, brickY + brickHeight * 0.05, brickWidth * 0.9, brickHeight * 0.9);
-      break;
-    case "freeze":
-      ctx.fillStyle = "#00FFFF"; // tijdelijk blauw blok, later image
+    }
+    break;
+  case "freeze":
+    if (blinkingBlocks["freeze"]) {
+      ctx.fillStyle = "#00FFFF";
       ctx.fillRect(brickX, brickY, brickWidth, brickHeight);
-      break;
-    default:
-      ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
+    }
+    break;
+  default:
+    ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
+
   }
+
 }
 
 
@@ -676,7 +684,21 @@ function draw() {
     spawnPowerBlock2();
     powerBlock2HitTime = null;
   }
-  
+  const blinkingBlocks = {}; // Houd bij of het blok zichtbaar is per type
+const blinkSpeeds = {
+  power: 300,   // ms
+  rocket: 500,  // ms
+  freeze: 700   // ms
+};
+
+// Initialiseer knipperstatus per type
+for (const type of bonusTypes) {
+  blinkingBlocks[type] = true;
+  setInterval(() => {
+    blinkingBlocks[type] = !blinkingBlocks[type];
+  }, blinkSpeeds[type]);
+}
+
  if (rocketActive && !rocketFired) {
   // Volgt paddle, nog niet afgevuurd
   rocketX = paddleX + paddleWidth / 2 - 12;
@@ -734,11 +756,27 @@ smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 }
 
 
-let imagesLoaded = 0; 
+// 🔁 Knipperlogica voor bonusblokken
+const blinkingBlocks = {};
+const blinkSpeeds = {
+  power: 300,
+  rocket: 500,
+  freeze: 700
+};
+
+for (const type of bonusTypes) {
+  blinkingBlocks[type] = true;
+  setInterval(() => {
+    blinkingBlocks[type] = !blinkingBlocks[type];
+  }, blinkSpeeds[type]);
+}
+
+// 📥 Laden van afbeeldingen en spel starten
+let imagesLoaded = 0;
 
 function onImageLoad() {
   imagesLoaded++;
-  console.log("Afbeelding geladen:", imagesLoaded); // ← mag hier
+  console.log("Afbeelding geladen:", imagesLoaded);
 
   if (imagesLoaded === 5) {
     x = paddleX + paddleWidth / 2 - ballRadius;
@@ -748,6 +786,7 @@ function onImageLoad() {
     draw();
   }
 }
+
 
 
 // Koppel alle images aan onImageLoad
