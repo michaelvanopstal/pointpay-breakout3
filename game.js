@@ -475,7 +475,11 @@ function spawnPowerBlock() {
   const randRow = Math.floor(Math.random() * brickRowCount);
   powerBlockCol = randCol;
   powerBlockRow = randRow;
-  powerBlock.x = randCol * brickWidth;
+
+  const totalBricksWidth = brickColumnCount * brickWidth;
+  const offsetX = (canvas.width - totalBricksWidth) / 2;
+
+  powerBlock.x = offsetX + randCol * brickWidth;
   powerBlock.y = randRow * brickHeight;
   powerBlock.active = true;
   powerBlock.visible = true;
@@ -490,6 +494,7 @@ function spawnPowerBlock() {
   }, 300); 
 }
 
+
    function startPowerBlockJumping() {
   setInterval(() => {
     if (powerBlock.active) {
@@ -501,10 +506,13 @@ function spawnPowerBlock() {
 
 function spawnPowerBlock2() {
   const randCol = Math.floor(Math.random() * brickColumnCount);
-  const randRow = Math.floor(Math.random() * brickRowCount);
+  const randRow = Math.floor(Math.random() * brickRowCount); 
+  const totalBricksWidth = brickColumnCount * brickWidth;
+  const offsetX = (canvas.width - totalBricksWidth) / 2;
+
   powerBlock2Col = randCol;
   powerBlock2Row = randRow;
-  powerBlock2.x = randCol * brickWidth;
+  powerBlock2.x = offsetX + randCol * brickWidth;
   powerBlock2.y = randRow * brickHeight;
   powerBlock2.active = true;
   powerBlock2.visible = true;
