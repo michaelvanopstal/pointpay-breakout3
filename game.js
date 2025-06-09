@@ -41,11 +41,14 @@ let explosions = [];
 let bonusBlocks = [];
 
 
-
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
 const customBrickWidth = 70;   // pas aan zoals jij wilt
 const customBrickHeight = 25;  // pas aan zoals jij wilt
 const brickRowCount = 15;
 const brickColumnCount = 9;
+const brickWidth = customBrickWidth;
+const brickHeight = customBrickHeight;
 
 
 const bricks = [];
@@ -703,14 +706,11 @@ requestAnimationFrame(draw);
   
 smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 
-}
-
-
-let imagesLoaded = 0; 
+let imagesLoaded = 0;
 
 function onImageLoad() {
   imagesLoaded++;
-  console.log("Afbeelding geladen:", imagesLoaded); // ← mag hier
+  console.log("Afbeelding geladen:", imagesLoaded);
 
   if (imagesLoaded === 5) {
     x = paddleX + paddleWidth / 2 - ballRadius;
