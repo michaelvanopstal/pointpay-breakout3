@@ -164,9 +164,8 @@ function drawBricks() {
         bricks[c][r].y = brickY;
 
         // tijdelijke rode blokken (vervangen voor je afbeelding als je wilt)
-        ctx.fillStyle = "red";
-        ctx.fillRect(brickX, brickY, brickWidth, brickHeight);
-        // ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight); ← gebruik deze als je klaar bent
+        ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
+
       }
     }
   }
