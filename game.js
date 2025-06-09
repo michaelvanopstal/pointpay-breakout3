@@ -355,16 +355,17 @@ function collisionDetection() {
       score += 20;
       rocketActive = true;
       document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-    }
-  }
-}
-
-  function saveHighscore() {
+    
+     }
+   }
+ }
+ 
+function saveHighscore() {
   const timeText = document.getElementById("timeDisplay").textContent.replace("time ", "");
   const highscore = {
     name: window.currentPlayer || "Unknown",
     score: score,
-   time: timeText
+    time: timeText
     
   };
 
