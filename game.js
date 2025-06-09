@@ -718,11 +718,13 @@ requestAnimationFrame(draw);
 
 let imagesLoaded = 0; 
 
-function onImageLoad() {
+ffunction onImageLoad() {
   imagesLoaded++;
-  console.log("Afbeelding geladen:", imagesLoaded); // ← mag hier
+  console.log("Afbeelding geladen:", imagesLoaded);
 
   if (imagesLoaded === 5) {
+    startLevel(1); // ✅ voeg deze regel toe
+
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
     startPowerBlockJumping();
@@ -730,6 +732,7 @@ function onImageLoad() {
     draw();
   }
 }
+
 
 
 // Koppel alle images aan onImageLoad
