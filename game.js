@@ -43,7 +43,7 @@ let explosions = [];
 const customBrickWidth = 80;   // pas aan zoals jij wilt
 const customBrickHeight = 20;  // pas aan zoals jij wilt
 const brickRowCount = 5;
-const brickColumnCount = 9;
+const brickColumnCount = 10;
 const brickWidth = customBrickWidth;
 const brickHeight = customBrickHeight;
 
