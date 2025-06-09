@@ -184,8 +184,8 @@ function startLevel(levelNum) {
     brickRowCount = 15;
   }
 
-  // Geen tussenruimte – alle blokken moeten passen
-  brickHeight = canvas.height / brickRowCount;
+ const availableHeight = canvas.height - paddleHeight - 100; // 100 is marge voor onder/boven
+ brickHeight = availableHeight / brickRowCount;
 
   // Bricks opnieuw genereren
   bricks.length = 0;
