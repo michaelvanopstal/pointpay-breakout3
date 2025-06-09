@@ -179,14 +179,13 @@ function startLevel(levelNum) {
   currentLevel = levelNum;
 
   if (levelNum === 1) {
-    brickRowCount = 5;
-  } else if (levelNum === 2) {
-    brickRowCount = 15;
-  }
+  brickRowCount = 5;
+  brickHeight = (canvas.height - paddleHeight - 100) / brickRowCount; // marge voor de paddle
+} else if (levelNum === 2) {
+  brickRowCount = 15;
+  brickHeight = canvas.height / brickRowCount; // volle hoogte benutten
 
- const availableHeight = canvas.height - paddleHeight - 100; // 100 is marge voor onder/boven
- brickHeight = availableHeight / brickRowCount;
-
+ }
   // Bricks opnieuw genereren
   bricks.length = 0;
   for (let c = 0; c < brickColumnCount; c++) {
