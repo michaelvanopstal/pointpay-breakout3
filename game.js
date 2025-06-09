@@ -159,35 +159,35 @@ function drawBricks() {
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
       if (bricks[c][r].status === 1) {
-  const brickX = offsetX + c * brickWidth;
-  const brickY = r * brickHeight;
-  bricks[c][r].x = brickX;
-  bricks[c][r].y = brickY;
+        const brickX = offsetX + c * brickWidth;
+        const brickY = r * brickHeight;
+        bricks[c][r].x = brickX;
+        bricks[c][r].y = brickY;
 
-  switch (bricks[c][r].type) {
-  case "power":
-    if (blinkingBlocks["power"]) {
-      ctx.drawImage(powerBlockImg, brickX, brickY, brickWidth, brickHeight);
+        switch (bricks[c][r].type) {
+          case "power":
+            if (blinkingBlocks["power"]) {
+              ctx.drawImage(powerBlockImg, brickX, brickY, brickWidth, brickHeight);
+            }
+            break;
+          case "rocket":
+            if (blinkingBlocks["rocket"]) {
+              ctx.drawImage(powerBlock2Img, brickX + brickWidth * 0.05, brickY + brickHeight * 0.05, brickWidth * 0.9, brickHeight * 0.9);
+            }
+            break;
+          case "freeze":
+            if (blinkingBlocks["freeze"]) {
+              ctx.fillStyle = "#00FFFF";
+              ctx.fillRect(brickX, brickY, brickWidth, brickHeight);
+            }
+            break;
+          default:
+            ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
+        }
+      }
     }
-    break;
-  case "rocket":
-    if (blinkingBlocks["rocket"]) {
-      ctx.drawImage(powerBlock2Img, brickX + brickWidth * 0.05, brickY + brickHeight * 0.05, brickWidth * 0.9, brickHeight * 0.9);
-    }
-    break;
-  case "freeze":
-    if (blinkingBlocks["freeze"]) {
-      ctx.fillStyle = "#00FFFF";
-      ctx.fillRect(brickX, brickY, brickWidth, brickHeight);
-    }
-    break;
-  default:
-    ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
-
   }
-
 }
-
 
 
 function drawBall() {
