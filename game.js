@@ -41,10 +41,10 @@ let explosions = [];
 
 
 
-const brickRowCount = 5;
-const brickColumnCount = 9;
-const brickWidth = canvas.width / brickColumnCount;
-const brickHeight = 60;
+let brickRowCount = 5;
+let brickColumnCount = 9;
+let brickWidth = canvas.width / brickColumnCount;
+let brickHeight = 60;
 
 const bricks = [];
 for (let c = 0; c < brickColumnCount; c++) {
