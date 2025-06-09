@@ -40,11 +40,13 @@ let smokeParticles = [];
 let explosions = [];
 
 
-
+const customBrickWidth = 60;   // pas aan zoals jij wilt
+const customBrickHeight = 40;  // pas aan zoals jij wilt
 const brickRowCount = 5;
 const brickColumnCount = 9;
-const brickWidth = canvas.width / brickColumnCount;
-const brickHeight = 60;
+const brickWidth = customBrickWidth;
+const brickHeight = customBrickHeight;
+
 
 const bricks = [];
 for (let c = 0; c < brickColumnCount; c++) {
@@ -150,20 +152,26 @@ function mouseMoveHandler(e) {
 }
 
 function drawBricks() {
+  const totalBricksWidth = brickColumnCount * brickWidth;
+  const offsetX = (canvas.width - totalBricksWidth) / 2; // midden uitlijnen
+
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
       if (bricks[c][r].status === 1) {
-        const brickX = c * brickWidth;
+        const brickX = offsetX + c * brickWidth;  // gecentreerd
         const brickY = r * brickHeight;
         bricks[c][r].x = brickX;
         bricks[c][r].y = brickY;
+
+        // tijdelijke rode blokken (vervangen voor je afbeelding als je wilt)
         ctx.fillStyle = "red";
         ctx.fillRect(brickX, brickY, brickWidth, brickHeight);
-
+        // ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight); ← gebruik deze als je klaar bent
       }
     }
   }
 }
+
 
 function drawBall() {
   ctx.drawImage(ballImg, x, y, ballRadius * 2, ballRadius * 2);
