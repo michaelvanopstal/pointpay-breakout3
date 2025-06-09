@@ -44,7 +44,7 @@ let currentLevel = 1;
 let brickRowCount = 5;
 let brickColumnCount = 9;
 let brickWidth = canvas.width / brickColumnCount;
-let brickHeight = 20;
+let brickHeight = 0;
 
 const bricks = [];
 for (let c = 0; c < brickColumnCount; c++) {
@@ -621,7 +621,7 @@ function draw() {
     
   } else {
     x = paddleX + paddleWidth / 2 - ballRadius;
-   
+    resetBricks();
     y = canvas.height - paddleHeight - ballRadius * 2;
   }
 
@@ -718,13 +718,11 @@ requestAnimationFrame(draw);
 
 let imagesLoaded = 0; 
 
- function onImageLoad() {
+function onImageLoad() {
   imagesLoaded++;
-  console.log("Afbeelding geladen:", imagesLoaded);
+  console.log("Afbeelding geladen:", imagesLoaded); // ← mag hier
 
   if (imagesLoaded === 5) {
-    startLevel(1); // ✅ voeg deze regel toe
-
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
     startPowerBlockJumping();
@@ -732,7 +730,6 @@ let imagesLoaded = 0;
     draw();
   }
 }
-
 
 
 // Koppel alle images aan onImageLoad
