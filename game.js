@@ -705,12 +705,7 @@ function draw() {
     spawnPowerBlock2();
     powerBlock2HitTime = null;
   }
-  const blinkingBlocks = {}; // Houd bij of het blok zichtbaar is per type
-const blinkSpeeds = {
-  power: 300,   // ms
-  rocket: 500,  // ms
-  freeze: 700   // ms
-};
+  
 
 // Initialiseer knipperstatus per type
 for (const type of bonusTypes) {
