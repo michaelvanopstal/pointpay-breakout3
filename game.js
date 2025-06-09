@@ -157,7 +157,9 @@ function drawBricks() {
         const brickY = r * brickHeight;
         bricks[c][r].x = brickX;
         bricks[c][r].y = brickY;
-        ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
+        ctx.fillStyle = "red";
+        ctx.fillRect(brickX, brickY, brickWidth, brickHeight);
+
       }
     }
   }
