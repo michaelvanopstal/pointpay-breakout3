@@ -43,6 +43,7 @@ let bonusBlocks = [];
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
+
 const customBrickWidth = 70;   // pas aan zoals jij wilt
 const customBrickHeight = 25;  // pas aan zoals jij wilt
 const brickRowCount = 15;
