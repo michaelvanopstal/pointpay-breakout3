@@ -13,8 +13,8 @@ body {
   position: absolute;
   top: 0px;
   left: 0px;
-  background-color: transparent;
-  border: 3px solid transparent;
+  background-color: #ffffff; /* wit */
+  border: 3px solid #000000; /* zwart */
 }
 
 
