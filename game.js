@@ -239,6 +239,7 @@ function shootFromFlags() {
     active: true
   });
 }
+
 function checkFlyingCoinHits() {
   flyingCoins.forEach((coin) => {
     if (!coin.active) return;
@@ -298,7 +299,7 @@ function collisionDetection() {
               break;
             case "freeze":
               dx = 0;
-              setTimeout(() => { dx = 4; }, 1000); // bal 1 sec stil (voor demo)
+              setTimeout(() => { dx = 4; }, 1000);
               break;
           }
 
@@ -311,7 +312,6 @@ function collisionDetection() {
       }
     }
   }
-}
 
   if (powerBlock.active && powerBlock.visible) {
     if (
@@ -338,7 +338,6 @@ function collisionDetection() {
     }
   }
 
-  
   if (powerBlock2.active && powerBlock2.visible) {
     if (
       x > powerBlock2.x &&
@@ -355,10 +354,10 @@ function collisionDetection() {
       score += 20;
       rocketActive = true;
       document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-    
-     }
-   }
- }
+    }
+  }
+} // ✅ ENKEL HIER wordt de functie afgesloten — niet eerder, niet later
+
  
 function saveHighscore() {
   const timeText = document.getElementById("timeDisplay").textContent.replace("time ", "");
