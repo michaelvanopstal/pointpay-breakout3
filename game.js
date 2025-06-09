@@ -56,25 +56,39 @@ for (let c = 0; c < brickColumnCount; c++) {
   }
 }
 
-
+// 🔄 Afbeeldingen laden
 const blockImg = new Image();
 blockImg.src = "block_logo.png";
+blockImg.onload = onImageLoad;
+
 const ballImg = new Image();
 ballImg.src = "ball_logo.png";
+ballImg.onload = onImageLoad;
+
 const vlagImgLeft = new Image();
 vlagImgLeft.src = "vlaggetje1.png";
+vlagImgLeft.onload = onImageLoad;
 
 const vlagImgRight = new Image();
 vlagImgRight.src = "vlaggetje2.png";
+vlagImgRight.onload = onImageLoad;
+
 const shootCoinImg = new Image();
-shootCoinImg.src = "3.png"; 
+shootCoinImg.src = "3.png";
+shootCoinImg.onload = onImageLoad;
+
 const powerBlock2Img = new Image();
 powerBlock2Img.src = "signalblock2.png";
 powerBlock2Img.onload = onImageLoad;
+
 const rocketImg = new Image();
 rocketImg.src = "raket1.png";
+rocketImg.onload = onImageLoad;
+
 const doubleBallImg = new Image();
 doubleBallImg.src = "2 balls.png";
+doubleBallImg.onload = onImageLoad;
+
 
 let rocketActive = false; // Voor nu altijd zichtbaar om te testen
 let rocketX = 0;
