@@ -546,8 +546,8 @@ function draw() {
   checkFlyingCoinHits();
 
   
-  if (rightPressed && paddleX < canvas.width - paddleWidth) paddleX += 7;
-  else if (leftPressed && paddleX > 0) paddleX -= 7;
+  if (rightPressed && paddleX < canvas.width - paddleWidth) paddleX += 9;
+  else if (leftPressed && paddleX > 0) paddleX -= 9;
 
   if (ballLaunched) {
     x += dx;
