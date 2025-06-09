@@ -490,22 +490,6 @@ function resetBricks() {
 }
 
 
-let powerBlock = {
-  x: 0,
-  y: 0,
-  width: brickWidth,
-  height: brickHeight,
-  active: false,
-  visible: true
-};
-
-let powerBlockTimer = 0;
-let powerBlockInterval = 10000;
-let powerBlockHit = false;
-let blinkInterval;
-let powerBlockRow = 0;
-let powerBlockCol = 0;
-
 
 function spawnPowerBlock() {
   const randCol = Math.floor(Math.random() * brickColumnCount);
