@@ -38,7 +38,7 @@ let rocketFired = false;
 let rocketSpeed = 10;
 let smokeParticles = [];
 let explosions = [];
-
+let currentLevel = 1;
 
 
 let brickRowCount = 5;
@@ -174,6 +174,43 @@ function drawPaddle() {
   ctx.fill();
   ctx.closePath();
 } 
+
+function startLevel(levelNum) {
+  currentLevel = levelNum;
+
+  if (levelNum === 1) {
+    brickRowCount = 5;
+  } else if (levelNum === 2) {
+    brickRowCount = 15;
+  }
+
+  // Geen tussenruimte – alle blokken moeten passen
+  brickHeight = canvas.height / brickRowCount;
+
+  // Bricks opnieuw genereren
+  bricks.length = 0;
+  for (let c = 0; c < brickColumnCount; c++) {
+    bricks[c] = [];
+    for (let r = 0; r < brickRowCount; r++) {
+      bricks[c][r] = { x: 0, y: 0, status: 1 };
+    }
+  }
+
+  resetBall();
+  resetPaddle();
+  ballLaunched = false;
+  ballMoving = false;
+
+  // Reset powerblokken
+  powerBlockUsed = false;
+  powerBlock.active = false;
+  powerBlock.visible = false;
+  powerBlockHitTime = null;
+
+  powerBlock2.active = false;
+  powerBlock2.visible = false;
+  powerBlock2HitTime = null;
+}
 
 function resetBall() {
   x = paddleX + paddleWidth / 2 - ballRadius;
@@ -648,6 +685,22 @@ explosions.forEach(e => {
 });
 
 explosions = explosions.filter(e => e.alpha > 0); // alleen zichtbare explosies blijven
+ // Als alle blokjes zijn weggespeeld → start nieuw level
+
+}
+  
+  let allBricksGone = true;
+for (let c = 0; c < brickColumnCount; c++) {
+  for (let r = 0; r < brickRowCount; r++) {
+    if (bricks[c][r].status === 1) {
+      allBricksGone = false;
+      break;
+    }
+  }
+}
+if (allBricksGone && currentLevel === 1) {
+  startLevel(2);
+}
 
 // 🚀 Nieuwe frame tekenen
 requestAnimationFrame(draw);
