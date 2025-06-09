@@ -683,13 +683,22 @@ explosions.forEach(e => {
   e.radius += 2;       // explosie wordt groter
   e.alpha -= 0.05;     // en vervaagt
 });
-
 explosions = explosions.filter(e => e.alpha > 0); // alleen zichtbare explosies blijven
- // Als alle blokjes zijn weggespeeld → start nieuw level
 
-}
-  
-  let allBricksGone = true;
+// 💨 Rookdeeltjes tekenen
+smokeParticles.forEach(p => {
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(150, 150, 150, ${p.alpha})`;
+  ctx.fill();
+  p.y += 1;
+  p.radius += 0.3;
+  p.alpha -= 0.02;
+});
+smokeParticles = smokeParticles.filter(p => p.alpha > 0);
+
+// ✅ Check: zijn alle blokjes weg?
+let allBricksGone = true;
 for (let c = 0; c < brickColumnCount; c++) {
   for (let r = 0; r < brickRowCount; r++) {
     if (bricks[c][r].status === 1) {
@@ -704,20 +713,6 @@ if (allBricksGone && currentLevel === 1) {
 
 // 🚀 Nieuwe frame tekenen
 requestAnimationFrame(draw);
-
-  
-  smokeParticles.forEach(p => {
-  ctx.beginPath();
-  ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-  ctx.fillStyle = `rgba(150, 150, 150, ${p.alpha})`;
-  ctx.fill();
-  p.y += 1;
-  p.radius += 0.3;
-  p.alpha -= 0.02;
-});
-  
-smokeParticles = smokeParticles.filter(p => p.alpha > 0);
-
 }
 
 
