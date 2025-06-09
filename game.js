@@ -48,15 +48,19 @@ const brickRowCount = 15;
 const brickColumnCount = 9;
 const brickWidth = customBrickWidth;
 const brickHeight = customBrickHeight;
-const brickRowCount = 15;
-const brickColumnCount = 9;
 
 
 const bricks = [];
 for (let c = 0; c < brickColumnCount; c++) {
   bricks[c] = [];
   for (let r = 0; r < brickRowCount; r++) {
-    bricks[c][r] = { x: 0, y: 0, status: 1 };
+    bricks[c][r] = {
+      x: 0,
+      y: 0,
+      status: 0,      // 0 = inactief, 1 = normaal, 2 = bonus
+      type: "empty",  // "normal", "bonus", "rocket", etc.
+      id: null        // optioneel, voor bonus-identificatie
+    };
   }
 }
 
@@ -76,6 +80,17 @@ powerBlock2Img.src = "signalblock2.png";
 powerBlock2Img.onload = onImageLoad;
 const rocketImg = new Image();
 rocketImg.src = "raket1.png";
+const powerBlockImg = new Image();
+powerBlockImg.src = "power_block_logo.png";
+
+let powerBlock = {
+  x: 0,
+  y: 0,
+  width: brickWidth,
+  height: brickHeight,
+  active: false,
+  visible: true
+};
 
 let rocketActive = false; // Voor nu altijd zichtbaar om te testen
 let rocketX = 0;
