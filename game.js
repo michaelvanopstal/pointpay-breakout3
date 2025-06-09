@@ -789,10 +789,10 @@ smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 const blinkingBlocks = {};
 
 const blinkSpeeds = {
-  power: 50,
-  rocket: 50,
-  freeze: 50,
-  doubleball: 50
+  power: 3,
+  rocket: 3,
+  freeze: 3,
+  doubleball: 3
 };
 
 for (const type of bonusTypes) {
