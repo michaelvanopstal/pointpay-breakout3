@@ -157,24 +157,30 @@ function mouseMoveHandler(e) {
 
 function drawBricks() {
   const totalBricksWidth = brickColumnCount * brickWidth;
-  const offsetX = (canvas.width - totalBricksWidth) / 2; // midden uitlijnen
+  const offsetX = (canvas.width - totalBricksWidth) / 2;
 
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
-      if (bricks[c][r].status === 1) {
-        const brickX = offsetX + c * brickWidth;  // gecentreerd
+      if (bricks[c][r].status > 0) {
+        const brickX = offsetX + c * brickWidth;
         const brickY = r * brickHeight;
         bricks[c][r].x = brickX;
         bricks[c][r].y = brickY;
 
-        // tijdelijke rode blokken (vervangen voor je afbeelding als je wilt)
-        ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
-
+        if (bricks[c][r].status === 2) {
+          // BONUS blok (gebruik ander plaatje of kleur)
+          ctx.fillStyle = "gold";
+          ctx.fillRect(brickX, brickY, brickWidth, brickHeight);
+          ctx.strokeStyle = "orange";
+          ctx.strokeRect(brickX, brickY, brickWidth, brickHeight);
+        } else {
+          // NORMAAL blok
+          ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
+        }
       }
     }
   }
 }
-
 
 function drawBall() {
   ctx.drawImage(ballImg, x, y, ballRadius * 2, ballRadius * 2);
