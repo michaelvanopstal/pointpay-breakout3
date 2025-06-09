@@ -796,7 +796,7 @@ function onImageLoad() {
   imagesLoaded++;
   console.log("Afbeelding geladen:", imagesLoaded);
 
-  if (imagesLoaded === 5) {
+  if (imagesLoaded === 8) {
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
     startPowerBlockJumping();
