@@ -460,7 +460,6 @@ function collisionDetection() {
       document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
     }
   }
-}
 
  
 function saveHighscore() {
@@ -476,6 +475,7 @@ function saveHighscore() {
   if (!highscores.some(h => h.name === highscore.name && h.score === highscore.score && h.time === highscore.time)) {
     highscores.push(highscore);
   }
+ 
   highscores.sort((a, b) => b.score - a.score || a.time.localeCompare(b.time));
   highscores = highscores.slice(0, 10);
   localStorage.setItem("highscores", JSON.stringify(highscores));
