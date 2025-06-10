@@ -38,6 +38,11 @@ let explosions = [];
 let placingStarted = false; // blokjes zijn al geplaatst?
 let bonusSearching = false;
 let bonusSearchInterval = null;
+let x2 = null;
+let y2 = null;
+let dx2 = 0;
+let dy2 = 0;
+let doubleBallActive = false;
 
 
 const customBrickWidth = 70;   // pas aan zoals jij wilt
@@ -240,9 +245,14 @@ function drawBricks() {
   }
 }
 
-
 function drawBall() {
+  // Eerste bal tekenen
   ctx.drawImage(ballImg, x, y, ballRadius * 2, ballRadius * 2);
+
+  // Tweede bal tekenen (alleen als actief)
+  if (doubleBallActive && x2 !== null && y2 !== null) {
+    ctx.drawImage(ballImg, x2, y2, ballRadius * 2, ballRadius * 2);
+  }
 }
 
 function drawPaddle() {
@@ -356,9 +366,16 @@ function collisionDetection() {
               break;
 
             case "doubleball":
-              console.log("Doubleball geraakt!");
-              // TODO: later 2 ballen genereren
-              break;
+  if (!doubleBallActive) {
+    doubleBallActive = true;
+    x2 = x; // tweede bal start op plek van eerste
+    y2 = y;
+    dx2 = dx * 0.9; // iets andere richting
+    dy2 = dy * 0.9;
+    console.log("🎯 Doubleball geactiveerd!");
+  }
+  break;
+
           }
 
           b.status = 0;
