@@ -19,10 +19,7 @@ let rightPressed = false;
 let leftPressed = false;
 let flagsOnPaddle = false;
 let flagTimer = 0;
-let powerBlockUsed = false;
 let flyingCoins = [];
-let powerBlockRespawnTime = 100000; // 3 minuten in ms
-let powerBlockHitTime = null;
 let lives = 3;
 let level = 1;
 let gameOver = false;
@@ -609,50 +606,6 @@ function resetBonusBlocks() {
 }
 
 
-
-const powerBlockImg = new Image();
-powerBlockImg.src = "power_block_logo.png";
-
-let powerBlock = {
-  x: 0,
-  y: 0,
-  width: brickWidth,
-  height: brickHeight,
-  active: false,
-  visible: true
-};
-
-let powerBlockTimer = 0;
-let powerBlockInterval = 10000;
-let powerBlockHit = false;
-let blinkInterval;
-let powerBlockRow = 0;
-let powerBlockCol = 0;
-
-
-function spawnPowerBlock() {
-  const randCol = Math.floor(Math.random() * brickColumnCount);
-  const randRow = Math.floor(Math.random() * brickRowCount);
-  powerBlockCol = randCol;
-  powerBlockRow = randRow;
-
-  const totalBricksWidth = brickColumnCount * brickWidth;
-  const offsetX = (canvas.width - totalBricksWidth) / 2;
-
-  powerBlock.x = offsetX + randCol * brickWidth;
-  powerBlock.y = randRow * brickHeight;
-  powerBlock.active = true;
-  powerBlock.visible = true;
-
-  clearInterval(blinkInterval);
-  blinkInterval = setInterval(() => {
-    if (powerBlock.active) {
-      powerBlock.visible = !powerBlock.visible;
-    } else {
-      clearInterval(blinkInterval);
-    }
-  }, 150); 
-}
 
 
 function spawnPowerBlock2() {
