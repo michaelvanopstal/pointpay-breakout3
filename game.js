@@ -804,7 +804,6 @@ if (
   powerBlock2HitTime = null;
 }
 
-// 🚀 Raketbeheer
 if (rocketActive && !rocketFired) {
   rocketX = paddleX + paddleWidth / 2 - 12;
   rocketY = canvas.height - paddleHeight - 48;
@@ -817,17 +816,14 @@ if (rocketActive && !rocketFired) {
     y: rocketY + 65,
     radius: Math.random() * 6 + 4,
     alpha: 1
- 
-}
+  }); 
 
-
-if (rocketY < -48) {
-  rocketFired = false;
-  rocketActive = false; // éénmalige raket
-} else {
-   ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
-  checkRocketCollision(); // botst met blokjes  
-  
+  if (rocketY < -48) {
+    rocketFired = false;
+    rocketActive = false; // éénmalige raket
+  } else {
+    ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
+    checkRocketCollision(); // botst met blokjes  
   }
 }
 
