@@ -195,51 +195,43 @@ function mouseMoveHandler(e) {
   const relativeX = e.clientX - canvas.offsetLeft;
   if (relativeX > 0 && relativeX < canvas.width) paddleX = relativeX - paddleWidth / 2;
 }
-
 function drawBricks() {
   const totalBricksWidth = brickColumnCount * brickWidth;
   const offsetX = (canvas.width - totalBricksWidth) / 2;
 
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
-      if (bricks[c][r].status === 1) {
+      const b = bricks[c][r];
+      if (b.status === 1) {
         const brickX = offsetX + c * brickWidth;
         const brickY = r * brickHeight;
 
-        bricks[c][r].x = brickX;
-        bricks[c][r].y = brickY;
+        b.x = brickX;
+        b.y = brickY;
 
-        switch (bricks[c][r].type) {
+        switch (b.type) {
           case "power":
-            if (blinkingBlocks["power"]) {
-              ctx.drawImage(powerBlockImg, brickX, brickY, brickWidth, brickHeight);
-            }
+            ctx.drawImage(powerBlockImg, brickX, brickY, brickWidth, brickHeight);
             break;
 
           case "rocket":
-            if (blinkingBlocks["rocket"]) {
-              ctx.drawImage(powerBlock2Img, brickX + brickWidth * 0.05, brickY + brickHeight * 0.05, brickWidth * 0.9, brickHeight * 0.9);
-            }
+            ctx.drawImage(powerBlock2Img, brickX + brickWidth * 0.05, brickY + brickHeight * 0.05, brickWidth * 0.9, brickHeight * 0.9);
             break;
 
           case "freeze":
-            if (blinkingBlocks["freeze"]) {
-              ctx.fillStyle = "#00FFFF";
-              ctx.fillRect(brickX, brickY, brickWidth, brickHeight);
-            }
+            ctx.fillStyle = "#00FFFF";
+            ctx.fillRect(brickX, brickY, brickWidth, brickHeight);
             break;
 
           case "doubleball":
-            if (blinkingBlocks["doubleball"]) {
-              ctx.drawImage(doubleBallImg, brickX, brickY, brickWidth, brickHeight);
-            }
+            ctx.drawImage(doubleBallImg, brickX, brickY, brickWidth, brickHeight);
             break;
 
           default:
             if (blockImg.complete) {
               ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
             } else {
-              ctx.fillStyle = "#333"; // donker fallback-blokje
+              ctx.fillStyle = "#444"; // fallback-kleur
               ctx.fillRect(brickX, brickY, brickWidth, brickHeight);
             }
         }
@@ -247,6 +239,7 @@ function drawBricks() {
     }
   }
 }
+
 
 function drawBall() {
   // Eerste bal tekenen
