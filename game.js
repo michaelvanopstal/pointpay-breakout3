@@ -39,6 +39,8 @@ let rocketSpeed = 10;
 let smokeParticles = [];
 let explosions = [];
 let placingStarted = false; // blokjes zijn al geplaatst?
+let bonusSearching = false;
+let bonusSearchInterval = null;
 
 
 const customBrickWidth = 70;   // pas aan zoals jij wilt
@@ -116,19 +118,27 @@ function keyDownHandler(e) {
 
   
   if ((e.code === "ArrowUp" || e.code === "Space") && !placingStarted) {
-    placingStarted = true;
-    placeBonusBlocks(level); // of je eigen bonuslogica
-    console.log("🔁 Blokken geplaatst");
-    return; // wacht op volgende druk om te starten
-  }
+  placingStarted = true;
+  bonusSearching = true;
+  startBonusSearchAnimation(); // laat bonusplaatjes knipperend door het veld zoeken
+  console.log("🔍 Bonus zoekfase gestart");
+  return; // wacht op tweede druk voor definitieve plaatsing
+}
 
-  if (!ballLaunched && placingStarted) {
+
+  if (!ballLaunched && placingStarted && bonusSearching) {
+  stopBonusSearchAnimation();      // ⛔ animatie stoppen
+  placeBonusBlocks(level);         // ✅ definitieve blokken plaatsen
+  bonusSearching = false;
+
   ballLaunched = true;
   dx = 0;
   dy = -4;
   if (!timerRunning) startTimer();
   score = 0;
   document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
+  console.log("🚀 Bonus bevestigd + spel gestart");
+  return;
 }
 
   if ((e.code === "ArrowUp" || e.code === "Space") && rocketActive && !rocketFired) {
@@ -530,6 +540,8 @@ function checkCoinCollision() {
 
 const bonusTypes = ["power", "rocket", "freeze", "doubleball"];
 const bonusBlockCount = 3; // Aantal bonusblokken per level (schaalbaar)
+let bonusSearchInterval = null;  // Zorg dat deze bovenin staat
+let bonusSearching = false;      // Zet ook bovenin bij andere flags
 
 function placeBonusBlocks(level) {
   let placed = 0;
@@ -537,7 +549,6 @@ function placeBonusBlocks(level) {
   while (placed < bonusBlockCount) {
     const col = Math.floor(Math.random() * brickColumnCount);
     const row = Math.floor(Math.random() * brickRowCount);
-
     const brick = bricks[col][row];
 
     if (brick.status === 1 && brick.type === "normal") {
@@ -547,6 +558,57 @@ function placeBonusBlocks(level) {
   }
 }
 
+function startBonusSearchAnimation() {
+  bonusSearchInterval = setInterval(() => {
+    // Verwijder tijdelijke bonus types
+    for (let c = 0; c < brickColumnCount; c++) {
+      for (let r = 0; r < brickRowCount; r++) {
+        if (bricks[c][r].status === 1 && bonusTypes.includes(bricks[c][r].type)) {
+          bricks[c][r].type = "normal";
+        }
+      }
+    }
+
+    // Plaats tijdelijk nieuwe bonussen op random plekken
+    let placed = 0;
+    while (placed < bonusBlockCount) {
+      const col = Math.floor(Math.random() * brickColumnCount);
+      const row = Math.floor(Math.random() * brickRowCount);
+      const brick = bricks[col][row];
+
+      if (brick.status === 1 && brick.type === "normal") {
+        brick.type = bonusTypes[Math.floor(Math.random() * bonusTypes.length)];
+        placed++;
+      }
+    }
+  }, 400);
+}
+
+function stopBonusSearchAnimation() {
+  clearInterval(bonusSearchInterval);
+  bonusSearchInterval = null;
+
+  // Reset alle tijdelijke bonusblokken
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      const brick = bricks[c][r];
+      if (brick.status === 1 && bonusTypes.includes(brick.type)) {
+        brick.type = "normal";
+      }
+    }
+  }
+}
+
+function resetBonusBlocks() {
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      const brick = bricks[c][r];
+      if (brick.status === 1 && bonusTypes.includes(brick.type)) {
+        brick.type = "normal";
+      }
+    }
+  }
+}
 
 
 
@@ -662,56 +724,72 @@ function draw() {
   drawFlyingCoins();
   checkFlyingCoinHits();
 
+
+
   
-  if (rightPressed && paddleX < canvas.width - paddleWidth) paddleX += 7;
-  else if (leftPressed && paddleX > 0) paddleX -= 7;
+ if (rightPressed && paddleX < canvas.width - paddleWidth) paddleX += 7;
+else if (leftPressed && paddleX > 0) paddleX -= 7;
 
-  if (ballLaunched) {
-    x += dx;
-    y += dy;
+if (ballLaunched) {
+  x += dx;
+  y += dy;
 
-    if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) dx = -dx;
-    if (y + dy < ballRadius) dy = -dy;
+  if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) dx = -dx;
+  if (y + dy < ballRadius) dy = -dy;
 
-    if (y + dy > canvas.height - paddleHeight - ballRadius && x > paddleX && x < paddleX + paddleWidth) {
-      const hitPos = (x - paddleX) / paddleWidth; // 0 = links, 1 = rechts
-      const angle = (hitPos - 0.5) * Math.PI / 2; // van -45° tot 45°
-      const speed = Math.sqrt(dx * dx + dy * dy);
-      dx = speed * Math.sin(angle);
-      dy = -Math.abs(speed * Math.cos(angle)); // omhoog
+  // 🎯 Paddle-botsing
+  if (
+    y + dy > canvas.height - paddleHeight - ballRadius &&
+    x > paddleX &&
+    x < paddleX + paddleWidth
+  ) {
+    const hitPos = (x - paddleX) / paddleWidth;
+    const angle = (hitPos - 0.5) * Math.PI / 2;
+    const speed = Math.sqrt(dx * dx + dy * dy);
+    dx = speed * Math.sin(angle);
+    dy = -Math.abs(speed * Math.cos(angle));
+
     if (powerBlockHit) {
       spawnPowerBlock();
       powerBlockHit = false;
     }
+  } // 🧩 Einde paddle-botsing
 
-}
+  // 💥 Bal mist paddle → reset spel
+  if (y + dy > canvas.height - ballRadius) {
+    saveHighscore();
+    ballLaunched = false;
+    dx = 4;
+    dy = -4;
+    elapsedTime = 0;
+    timerRunning = false;
+    clearInterval(timerInterval);
+    flagsOnPaddle = false;
+    flyingCoins = [];
 
-    if (y + dy > canvas.height - ballRadius) {
-      saveHighscore();
-      ballLaunched = false;
-      dx = 4;
-      dy = -4;
-      elapsedTime = 0;
-      timerRunning = false;
-      clearInterval(timerInterval);
-      flagsOnPaddle = false;    // vlaggetjes verdwijnen
-      flyingCoins = []; 
-    }
-
-    
-  } else {
-    x = paddleX + paddleWidth / 2 - ballRadius;
-    resetBricks();
-    y = canvas.height - paddleHeight - ballRadius * 2;
+    placingStarted = false;
+    bonusSearching = false;
+    resetBonusBlocks();
   }
 
-  
-  if (Date.now() - powerBlockTimer > powerBlockInterval && !powerBlock.active && ballLaunched && !powerBlockUsed) {
+} else {
+  x = paddleX + paddleWidth / 2 - ballRadius;
+  resetBricks();
+  y = canvas.height - paddleHeight - ballRadius * 2;
+}
+
+// ⏱️ Powerblock timers
+if (
+  Date.now() - powerBlockTimer > powerBlockInterval &&
+  !powerBlock.active &&
+  ballLaunched &&
+  !powerBlockUsed
+) {
   spawnPowerBlock();
   powerBlockTimer = Date.now();
 }
 
-  if (
+if (
   powerBlockHitTime &&
   Date.now() - powerBlockHitTime > powerBlockRespawnTime
 ) {
@@ -719,30 +797,31 @@ function draw() {
   powerBlockUsed = false;
   powerBlockHitTime = null;
 }
-  
-  if (
-    powerBlock2HitTime &&
-    Date.now() - powerBlock2HitTime > powerBlock2RespawnDelay
-  ) {
-    spawnPowerBlock2();
-    powerBlock2HitTime = null;
-  }
 
- if (rocketActive && !rocketFired) {
-  // Volgt paddle, nog niet afgevuurd
+if (
+  powerBlock2HitTime &&
+  Date.now() - powerBlock2HitTime > powerBlock2RespawnDelay
+) {
+  spawnPowerBlock2();
+  powerBlock2HitTime = null;
+}
+
+// 🚀 Raketbeheer
+if (rocketActive && !rocketFired) {
   rocketX = paddleX + paddleWidth / 2 - 12;
   rocketY = canvas.height - paddleHeight - 48;
   ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
 } else if (rocketFired) {
   rocketY -= rocketSpeed;
 
-  // Voeg rookdeeltje toe
   smokeParticles.push({
-    x: rocketX + 15, // iets onder midden raket
-    y: rocketY + 65, // onderkant raket
+    x: rocketX + 15,
+    y: rocketY + 65,
     radius: Math.random() * 6 + 4,
     alpha: 1
   });
+}
+
 
 if (rocketY < -48) {
   rocketFired = false;
@@ -754,7 +833,7 @@ if (rocketY < -48) {
   }
 }
 
-// 🔥 Explosies tekenen
+
 explosions.forEach(e => {
   ctx.beginPath();
   ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
@@ -764,11 +843,11 @@ explosions.forEach(e => {
   e.alpha -= 0.05;     // en vervaagt
 });
 
-explosions = explosions.filter(e => e.alpha > 0); // alleen zichtbare explosies blijven
+ explosions = explosions.filter(e => e.alpha > 0); // alleen zichtbare explosies blijven
 
-// 🚀 Nieuwe frame tekenen
-requestAnimationFrame(draw);
-
+  
+ requestAnimationFrame(draw);
+}
   
   smokeParticles.forEach(p => {
   ctx.beginPath();
