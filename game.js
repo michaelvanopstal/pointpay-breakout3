@@ -788,15 +788,18 @@ smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 // 🔁 Knipperlogica voor bonusblokken
 const blinkingBlocks = {};
 
+// 🔧 Pas hier per bloktype de knippersnelheid aan (in milliseconden)
 const blinkSpeeds = {
-  power: 3,
-  rocket: 3,
-  freeze: 3,
-  doubleball: 3
+  power: 600,
+  rocket: 600,
+  freeze: 700,
+  doubleball: 800
 };
 
+// Initialiseer knipperstatus & start individuele knippering per type
 for (const type of bonusTypes) {
   blinkingBlocks[type] = true;
+
   setInterval(() => {
     blinkingBlocks[type] = !blinkingBlocks[type];
   }, blinkSpeeds[type]);
