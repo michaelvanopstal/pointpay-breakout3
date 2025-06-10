@@ -540,8 +540,6 @@ function checkCoinCollision() {
 
 const bonusTypes = ["power", "rocket", "freeze", "doubleball"];
 const bonusBlockCount = 3; // Aantal bonusblokken per level (schaalbaar)
-let bonusSearchInterval = null;  // Zorg dat deze bovenin staat
-let bonusSearching = false;      // Zet ook bovenin bij andere flags
 
 function placeBonusBlocks(level) {
   let placed = 0;
