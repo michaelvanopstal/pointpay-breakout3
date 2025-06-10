@@ -38,6 +38,7 @@ let rocketFired = false;
 let rocketSpeed = 10;
 let smokeParticles = [];
 let explosions = [];
+let placingStarted = false; // blokjes zijn al geplaatst?
 
 
 const customBrickWidth = 70;   // pas aan zoals jij wilt
@@ -113,14 +114,14 @@ function keyDownHandler(e) {
   if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
   else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
  
-  if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched) {
-    ballLaunched = true;
-    dx = 0;
-    dy = -4;
-    if (!timerRunning) startTimer();
-    score = 0;
-    document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
-  }
+  if (!ballLaunched && placingStarted) {
+  ballLaunched = true;
+  dx = 0;
+  dy = -4;
+  if (!timerRunning) startTimer();
+  score = 0;
+  document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
+}
 
   if ((e.code === "ArrowUp" || e.code === "Space") && rocketActive && !rocketFired) {
   rocketFired = true;
@@ -508,16 +509,15 @@ function checkCoinCollision() {
   
     }
   });
-}
 
-function resetBricks() {
+  function resetBricks() {
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
       bricks[c][r] = { x: 0, y: 0, status: 1, type: "normal" };
     }
   }
-  placeBonusBlocks(level);
 }
+
 
 
 const bonusTypes = ["power", "rocket", "freeze", "doubleball"];
