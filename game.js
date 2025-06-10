@@ -509,7 +509,7 @@ function checkCoinCollision() {
   
     }
   });
-
+}
   function resetBricks() {
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
