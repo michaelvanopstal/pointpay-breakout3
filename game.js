@@ -655,15 +655,6 @@ function spawnPowerBlock() {
 }
 
 
-   function startPowerBlockJumping() {
-  setInterval(() => {
-    if (powerBlock.active) {
-      spawnPowerBlock(); // Verspring elke 15 seconden
-    }
-  }, 25000);
-}
-
-
 function spawnPowerBlock2() {
   const randCol = Math.floor(Math.random() * brickColumnCount);
   const randRow = Math.floor(Math.random() * brickRowCount); 
@@ -747,10 +738,7 @@ if (ballLaunched) {
     dx = speed * Math.sin(angle);
     dy = -Math.abs(speed * Math.cos(angle));
 
-    if (powerBlockHit) {
-      spawnPowerBlock();
-      powerBlockHit = false;
-    }
+    
   } // 🧩 Einde paddle-botsing
 
   // 💥 Bal mist paddle → reset spel
@@ -776,25 +764,6 @@ if (ballLaunched) {
   y = canvas.height - paddleHeight - ballRadius * 2;
 }
 
-// ⏱️ Powerblock timers
-if (
-  Date.now() - powerBlockTimer > powerBlockInterval &&
-  !powerBlock.active &&
-  ballLaunched &&
-  !powerBlockUsed
-) {
-  spawnPowerBlock();
-  powerBlockTimer = Date.now();
-}
-
-if (
-  powerBlockHitTime &&
-  Date.now() - powerBlockHitTime > powerBlockRespawnTime
-) {
-  spawnPowerBlock();
-  powerBlockUsed = false;
-  powerBlockHitTime = null;
-}
 
 if (
   powerBlock2HitTime &&
@@ -887,7 +856,6 @@ function onImageLoad() {
   if (imagesLoaded === 9) {
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
-    startPowerBlockJumping();
     spawnPowerBlock2();
     draw();
   }
