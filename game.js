@@ -336,7 +336,10 @@ function startTimer() {
   }, 1000);
 }
 
+
+
 function collisionDetection() {
+  // 🟠 Botsing eerste bal
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
       let b = bricks[c][r];
@@ -362,20 +365,19 @@ function collisionDetection() {
 
             case "freeze":
               dx = 0;
-              setTimeout(() => { dx = 4; }, 2000); // tijdelijk effect
+              setTimeout(() => { dx = 4; }, 2000);
               break;
 
             case "doubleball":
-  if (!doubleBallActive) {
-    doubleBallActive = true;
-    x2 = x; // tweede bal start op plek van eerste
-    y2 = y;
-    dx2 = dx * 0.9; // iets andere richting
-    dy2 = dy * 0.9;
-    console.log("🎯 Doubleball geactiveerd!");
-  }
-  break;
-
+              if (!doubleBallActive) {
+                doubleBallActive = true;
+                x2 = x;
+                y2 = y;
+                dx2 = dx * 0.9;
+                dy2 = dy * 0.9;
+                console.log("🎯 Doubleball geactiveerd!");
+              }
+              break;
           }
 
           b.status = 0;
@@ -387,6 +389,53 @@ function collisionDetection() {
       }
     }
   }
+
+  // 🟣 Botsing tweede bal
+  if (doubleBallActive && x2 !== null && y2 !== null) {
+    for (let c = 0; c < brickColumnCount; c++) {
+      for (let r = 0; r < brickRowCount; r++) {
+        let b = bricks[c][r];
+        if (b.status === 1) {
+          if (
+            x2 > b.x &&
+            x2 < b.x + brickWidth &&
+            y2 > b.y &&
+            y2 < b.y + brickHeight
+          ) {
+            dy2 = -dy2;
+
+            switch (b.type) {
+              case "power":
+                flagsOnPaddle = true;
+                flagTimer = Date.now();
+                break;
+
+              case "rocket":
+                rocketActive = true;
+                break;
+
+              case "freeze":
+                dx2 = 0;
+                setTimeout(() => { dx2 = 4; }, 1000);
+                break;
+
+              case "doubleball":
+                break;
+            }
+
+            b.status = 0;
+            b.type = "normal";
+            score += 10;
+            spawnCoin(b.x, b.y);
+            document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+            return; // Eén blokje tegelijk
+          }
+        }
+      }
+    }
+  }
+}
+
 
 
   // powerBlock2-botsing
