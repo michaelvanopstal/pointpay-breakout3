@@ -844,9 +844,6 @@ explosions.forEach(e => {
  explosions = explosions.filter(e => e.alpha > 0); // alleen zichtbare explosies blijven
 
   
- requestAnimationFrame(draw);
-}
-  
   smokeParticles.forEach(p => {
   ctx.beginPath();
   ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
@@ -858,7 +855,9 @@ explosions.forEach(e => {
 });
   
 smokeParticles = smokeParticles.filter(p => p.alpha > 0);
+ 
 
+requestAnimationFrame(draw);
 }
 
 // 🔁 Knipperlogica voor bonusblokken
