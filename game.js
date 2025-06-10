@@ -469,7 +469,7 @@ function saveHighscore() {
     score: score,
     time: timeText
     
-  };
+  }
 
   let highscores = JSON.parse(localStorage.getItem("highscores")) || [];
   if (!highscores.some(h => h.name === highscore.name && h.score === highscore.score && h.time === highscore.time)) {
