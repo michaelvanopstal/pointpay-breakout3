@@ -61,7 +61,7 @@ for (let c = 0; c < brickColumnCount; c++) {
   }
 }
 
-// 🔄 Afbeeldingen laden
+
 const blockImg = new Image();
 blockImg.src = "block_logo.png";
 blockImg.onload = onImageLoad;
@@ -133,8 +133,8 @@ function keyDownHandler(e) {
 
 
   if (!ballLaunched && placingStarted && bonusSearching) {
-  stopBonusSearchAnimation();      // ⛔ animatie stoppen
-  placeBonusBlocks(level);         // ✅ definitieve blokken plaatsen
+  stopBonusSearchAnimation();      
+  placeBonusBlocks(level);         
   bonusSearching = false;
 
   ballLaunched = true;
@@ -177,7 +177,10 @@ function keyDownHandler(e) {
       flagsOnPaddle = false;
       flyingCoins = [];
     }
+   
+    ballLaunched = true;
     ballMoving = true;
+
   }
 }
  
@@ -734,9 +737,9 @@ if (ballLaunched) {
     dy = -Math.abs(speed * Math.cos(angle));
 
     
-  } // 🧩 Einde paddle-botsing
+  } 
 
-  // 💥 Bal mist paddle → reset spel
+
   if (y + dy > canvas.height - ballRadius) {
     saveHighscore();
     ballLaunched = false;
@@ -820,10 +823,8 @@ smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 requestAnimationFrame(draw);
 }
 
-// 🔁 Knipperlogica voor bonusblokken
 const blinkingBlocks = {};
 
-// 🔧 Pas hier per bloktype de knippersnelheid aan (in milliseconden)
 const blinkSpeeds = {
   power: 1000,
   rocket: 1000,
@@ -831,7 +832,7 @@ const blinkSpeeds = {
   doubleball: 1000
 };
 
-// Initialiseer knipperstatus & start individuele knippering per type
+
 for (const type of bonusTypes) {
   blinkingBlocks[type] = true;
 
@@ -841,7 +842,7 @@ for (const type of bonusTypes) {
 }
 
 
-// 📥 Laden van afbeeldingen en spel starten
+
 let imagesLoaded = 0;
 
 function onImageLoad() {
@@ -857,7 +858,6 @@ function onImageLoad() {
 
 
 
-// Koppel alle images aan onImageLoad
 blockImg.onload = onImageLoad;
 ballImg.onload = onImageLoad;
 powerBlockImg.onload = onImageLoad;
