@@ -583,7 +583,7 @@ function spawnPowerBlock() {
     } else {
       clearInterval(blinkInterval);
     }
-  }, 300); 
+  }, 150); 
 }
 
 
