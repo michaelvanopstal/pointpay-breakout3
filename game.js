@@ -89,6 +89,10 @@ const doubleBallImg = new Image();
 doubleBallImg.src = "2 balls.png";
 doubleBallImg.onload = onImageLoad;
 
+const powerBlockImg = new Image();
+powerBlockImg.src = "power_block_logo.png";
+powerBlockImg.onload = onImageLoad;
+
 
 let rocketActive = false; // Voor nu altijd zichtbaar om te testen
 let rocketX = 0;
