@@ -150,8 +150,8 @@ function keyDownHandler(e) {
     shootFromFlags();
   }
 
-  if (!ballMoving && (e.code === "ArrowUp" || e.code === "Space")) {
-   if (lives <= 0) {
+  if (!ballMoving && !bonusSearching && placingStarted && (e.code === "ArrowUp" || e.code === "Space")) {
+  if (lives <= 0) {
       lives = 3;
       score = 0;
       level = 1;
@@ -228,7 +228,12 @@ function drawBricks() {
             break;
 
           default:
-            ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
+            if (blockImg.complete) {
+              ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
+            } else {
+              ctx.fillStyle = "#333"; // donker fallback-blokje
+              ctx.fillRect(brickX, brickY, brickWidth, brickHeight);
+            }
         }
       }
     }
