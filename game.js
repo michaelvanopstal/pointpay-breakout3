@@ -817,7 +817,7 @@ if (rocketActive && !rocketFired) {
     y: rocketY + 65,
     radius: Math.random() * 6 + 4,
     alpha: 1
-  });
+ 
 }
 
 
