@@ -813,26 +813,8 @@ smokeParticles = smokeParticles.filter(p => p.alpha > 0);
  
 
 requestAnimationFrame(draw);
+
 }
-
-const blinkingBlocks = {};
-
-const blinkSpeeds = {
-  power: 1000,
-  rocket: 1000,
-  freeze: 1000,
-  doubleball: 1000
-};
-
-
-for (const type of bonusTypes) {
-  blinkingBlocks[type] = true;
-
-  setInterval(() => {
-    blinkingBlocks[type] = !blinkingBlocks[type];
-  }, blinkSpeeds[type]);
-}
-
 
 
 let imagesLoaded = 0;
