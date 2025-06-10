@@ -195,43 +195,51 @@ function mouseMoveHandler(e) {
   const relativeX = e.clientX - canvas.offsetLeft;
   if (relativeX > 0 && relativeX < canvas.width) paddleX = relativeX - paddleWidth / 2;
 }
+
 function drawBricks() {
   const totalBricksWidth = brickColumnCount * brickWidth;
   const offsetX = (canvas.width - totalBricksWidth) / 2;
 
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
-      const b = bricks[c][r];
-      if (b.status === 1) {
+      if (bricks[c][r].status === 1) {
         const brickX = offsetX + c * brickWidth;
         const brickY = r * brickHeight;
 
-        b.x = brickX;
-        b.y = brickY;
+        bricks[c][r].x = brickX;
+        bricks[c][r].y = brickY;
 
-        switch (b.type) {
+        switch (bricks[c][r].type) {
           case "power":
-            ctx.drawImage(powerBlockImg, brickX, brickY, brickWidth, brickHeight);
+            if (blinkingBlocks["power"]) {
+              ctx.drawImage(powerBlockImg, brickX, brickY, brickWidth, brickHeight);
+            }
             break;
 
           case "rocket":
-            ctx.drawImage(powerBlock2Img, brickX + brickWidth * 0.05, brickY + brickHeight * 0.05, brickWidth * 0.9, brickHeight * 0.9);
+            if (blinkingBlocks["rocket"]) {
+              ctx.drawImage(powerBlock2Img, brickX + brickWidth * 0.05, brickY + brickHeight * 0.05, brickWidth * 0.9, brickHeight * 0.9);
+            }
             break;
 
           case "freeze":
-            ctx.fillStyle = "#00FFFF";
-            ctx.fillRect(brickX, brickY, brickWidth, brickHeight);
+            if (blinkingBlocks["freeze"]) {
+              ctx.fillStyle = "#00FFFF";
+              ctx.fillRect(brickX, brickY, brickWidth, brickHeight);
+            }
             break;
 
           case "doubleball":
-            ctx.drawImage(doubleBallImg, brickX, brickY, brickWidth, brickHeight);
+            if (blinkingBlocks["doubleball"]) {
+              ctx.drawImage(doubleBallImg, brickX, brickY, brickWidth, brickHeight);
+            }
             break;
 
           default:
             if (blockImg.complete) {
               ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
             } else {
-              ctx.fillStyle = "#444"; // fallback-kleur
+              ctx.fillStyle = "#333"; // donker fallback-blokje
               ctx.fillRect(brickX, brickY, brickWidth, brickHeight);
             }
         }
@@ -239,7 +247,6 @@ function drawBricks() {
     }
   }
 }
-
 
 function drawBall() {
   // Eerste bal tekenen
@@ -347,8 +354,8 @@ function collisionDetection() {
           y < b.y + brickHeight
         ) {
           dy = -dy;
-          y += dy; 
 
+          // Check type en activeer gedrag
           switch (b.type) {
             case "power":
               flagsOnPaddle = true;
@@ -386,7 +393,7 @@ function collisionDetection() {
     }
   }
 
- 
+  // 🟣 Botsing tweede bal
   if (doubleBallActive && x2 !== null && y2 !== null) {
     for (let c = 0; c < brickColumnCount; c++) {
       for (let r = 0; r < brickRowCount; r++) {
@@ -399,7 +406,6 @@ function collisionDetection() {
             y2 < b.y + brickHeight
           ) {
             dy2 = -dy2;
-            y2 += dy2; 
 
             switch (b.type) {
               case "power":
@@ -425,13 +431,14 @@ function collisionDetection() {
             score += 10;
             spawnCoin(b.x, b.y);
             document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-            return;
+            return; // Eén blokje tegelijk
           }
         }
       }
     }
   }
 }
+
 
 
   // powerBlock2-botsing
@@ -751,6 +758,7 @@ if (ballLaunched) {
 
 } else {
   x = paddleX + paddleWidth / 2 - ballRadius;
+  resetBricks();
   y = canvas.height - paddleHeight - ballRadius * 2;
 }
 
@@ -813,8 +821,26 @@ smokeParticles = smokeParticles.filter(p => p.alpha > 0);
  
 
 requestAnimationFrame(draw);
-
 }
+
+const blinkingBlocks = {};
+
+const blinkSpeeds = {
+  power: 1000,
+  rocket: 1000,
+  freeze: 1000,
+  doubleball: 1000
+};
+
+
+for (const type of bonusTypes) {
+  blinkingBlocks[type] = true;
+
+  setInterval(() => {
+    blinkingBlocks[type] = !blinkingBlocks[type];
+  }, blinkSpeeds[type]);
+}
+
 
 
 let imagesLoaded = 0;
