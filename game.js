@@ -354,8 +354,8 @@ function collisionDetection() {
           y < b.y + brickHeight
         ) {
           dy = -dy;
+          y += dy; 
 
-          // Check type en activeer gedrag
           switch (b.type) {
             case "power":
               flagsOnPaddle = true;
@@ -393,7 +393,7 @@ function collisionDetection() {
     }
   }
 
-  // 🟣 Botsing tweede bal
+ 
   if (doubleBallActive && x2 !== null && y2 !== null) {
     for (let c = 0; c < brickColumnCount; c++) {
       for (let r = 0; r < brickRowCount; r++) {
@@ -406,6 +406,7 @@ function collisionDetection() {
             y2 < b.y + brickHeight
           ) {
             dy2 = -dy2;
+            y2 += dy2; 
 
             switch (b.type) {
               case "power":
@@ -431,14 +432,13 @@ function collisionDetection() {
             score += 10;
             spawnCoin(b.x, b.y);
             document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-            return; // Eén blokje tegelijk
+            return;
           }
         }
       }
     }
   }
 }
-
 
 
   // powerBlock2-botsing
