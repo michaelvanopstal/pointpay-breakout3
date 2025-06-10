@@ -113,7 +113,15 @@ document.addEventListener("mousemove", mouseMoveHandler);
 function keyDownHandler(e) {
   if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
   else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
- 
+
+  
+  if ((e.code === "ArrowUp" || e.code === "Space") && !placingStarted) {
+    placingStarted = true;
+    placeBonusBlocks(level); // of je eigen bonuslogica
+    console.log("🔁 Blokken geplaatst");
+    return; // wacht op volgende druk om te starten
+  }
+
   if (!ballLaunched && placingStarted) {
   ballLaunched = true;
   dx = 0;
