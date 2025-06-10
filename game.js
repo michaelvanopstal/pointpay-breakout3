@@ -790,10 +790,10 @@ const blinkingBlocks = {};
 
 // 🔧 Pas hier per bloktype de knippersnelheid aan (in milliseconden)
 const blinkSpeeds = {
-  power: 600,
-  rocket: 600,
-  freeze: 700,
-  doubleball: 800
+  power: 1000,
+  rocket: 1000,
+  freeze: 1000,
+  doubleball: 1000
 };
 
 // Initialiseer knipperstatus & start individuele knippering per type
