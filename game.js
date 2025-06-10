@@ -719,15 +719,6 @@ function draw() {
     spawnPowerBlock2();
     powerBlock2HitTime = null;
   }
-  
-
-// Initialiseer knipperstatus per type
-for (const type of bonusTypes) {
-  blinkingBlocks[type] = true;
-  setInterval(() => {
-    blinkingBlocks[type] = !blinkingBlocks[type];
-  }, blinkSpeeds[type]);
-}
 
  if (rocketActive && !rocketFired) {
   // Volgt paddle, nog niet afgevuurd
