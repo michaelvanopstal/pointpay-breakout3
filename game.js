@@ -362,31 +362,6 @@ function collisionDetection() {
     }
   }
 
-  // powerBlock-botsing
-  if (powerBlock.active && powerBlock.visible) {
-    if (
-      x > powerBlock.x &&
-      x < powerBlock.x + powerBlock.width &&
-      y > powerBlock.y &&
-      y < powerBlock.y + powerBlock.height
-    ) {
-      dy = -dy;
-      powerBlock.active = false;
-      powerBlock.visible = false;
-      clearInterval(blinkInterval);
-      powerBlockUsed = true;
-      flagsOnPaddle = true;
-      flagTimer = Date.now();
-      powerBlockHitTime = Date.now();
-
-      if (bricks[powerBlockCol] && bricks[powerBlockCol][powerBlockRow]) {
-        bricks[powerBlockCol][powerBlockRow].status = 0;
-      }
-
-      score += 10;
-      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-    }
-  }
 
   // powerBlock2-botsing
   if (powerBlock2.active && powerBlock2.visible) {
@@ -632,13 +607,6 @@ function spawnPowerBlock2() {
 }
 
 
-
-function drawPowerBlock() {
-  if (powerBlock.active && powerBlock.visible) {
-    ctx.drawImage(powerBlockImg, powerBlock.x, powerBlock.y, powerBlock.width, powerBlock.height);
-  }
-}
-
 function drawPowerBlock2() {
   if (powerBlock2.active && powerBlock2.visible) {
     ctx.drawImage(
@@ -658,7 +626,6 @@ function draw() {
   drawCoins();
   checkCoinCollision();
   drawBricks();
-  drawPowerBlock();
   drawPowerBlock2();
   drawBall();
   drawPaddle();
@@ -809,7 +776,6 @@ function onImageLoad() {
   if (imagesLoaded === 9) {
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
-    spawnPowerBlock2();
     draw();
   }
 }
