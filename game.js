@@ -327,7 +327,7 @@ function collisionDetection() {
 
             case "freeze":
               dx = 0;
-              setTimeout(() => { dx = 4; }, 1000); // tijdelijk effect
+              setTimeout(() => { dx = 4; }, 2000); // tijdelijk effect
               break;
 
             case "doubleball":
