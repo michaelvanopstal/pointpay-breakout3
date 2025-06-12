@@ -1,4 +1,3 @@
-
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -24,25 +23,23 @@ let lives = 3;
 let level = 1;
 let gameOver = false;
 let ballMoving = false;
-let powerBlock2Timer = 0;
-let powerBlock2Interval = 15000; // verschijnt om de 15 seconden
-let blinkInterval2;
-let powerBlock2Row = 0;
-let powerBlock2Col = 0;
-let powerBlock2RespawnDelay = 20000; // 20 seconden na raken terug
-let powerBlock2HitTime = null;
 let rocketFired = false;
 let rocketSpeed = 10;
 let smokeParticles = [];
 let explosions = [];
-let placingStarted = false; // blokjes zijn al geplaatst?
-let bonusSearching = false;
-let bonusSearchInterval = null;
-let x2 = null;
-let y2 = null;
-let dx2 = 0;
-let dy2 = 0;
-let doubleBallActive = false;
+let secondBallActive = false;
+let secondBall = { x: 0, y: 0, dx: 0, dy: 0 };
+let secondBallDuration = 60000; // 1 minuut in ms
+let rocketAmmo = 0; // aantal raketten dat nog afgevuurd mag worden
+
+
+
+const bonusBricks = [
+  { col: 6, row: 8, type: "rocket" },
+  { col: 8, row: 6, type: "power" },
+  { col: 2, row: 9, type: "doubleball" },
+
+];
 
 
 const customBrickWidth = 70;   // pas aan zoals jij wilt
@@ -57,143 +54,129 @@ const bricks = [];
 for (let c = 0; c < brickColumnCount; c++) {
   bricks[c] = [];
   for (let r = 0; r < brickRowCount; r++) {
-    bricks[c][r] = { x: 0, y: 0, status: 1 }; // ← deze regel vervangen
+    // standaardtype
+    let type = "normal";
+
+    // check of deze positie een bonusblok is
+    const bonus = bonusBricks.find(b => b.col === c && b.row === r);
+    if (bonus) type = bonus.type;
+
+    // blok aanmaken met extra gegevens
+    bricks[c][r] = {
+      x: 0,
+      y: 0,
+      col: c,    // ← kolompositie (voor gedrag of debug)
+      row: r,    // ← rijpositie
+      status: 1,
+      type: type
+    };
   }
 }
 
 
+const doubleBallImg = new Image();
+doubleBallImg.src = "2 balls.png";  // upload dit naar dezelfde map
+
+
 const blockImg = new Image();
 blockImg.src = "block_logo.png";
-blockImg.onload = onImageLoad;
 
 const ballImg = new Image();
 ballImg.src = "ball_logo.png";
-ballImg.onload = onImageLoad;
 
 const vlagImgLeft = new Image();
 vlagImgLeft.src = "vlaggetje1.png";
-vlagImgLeft.onload = onImageLoad;
 
 const vlagImgRight = new Image();
 vlagImgRight.src = "vlaggetje2.png";
-vlagImgRight.onload = onImageLoad;
 
 const shootCoinImg = new Image();
 shootCoinImg.src = "3.png";
-shootCoinImg.onload = onImageLoad;
 
-const powerBlock2Img = new Image();
+const powerBlockImg = new Image(); // Voor bonusblok type 'power'
+powerBlockImg.src = "power_block_logo.png";
+
+const powerBlock2Img = new Image(); // Voor bonusblok type 'rocket'
 powerBlock2Img.src = "signalblock2.png";
-powerBlock2Img.onload = onImageLoad;
 
 const rocketImg = new Image();
 rocketImg.src = "raket1.png";
-rocketImg.onload = onImageLoad;
-
-const doubleBallImg = new Image();
-doubleBallImg.src = "2 balls.png";
-doubleBallImg.onload = onImageLoad;
-
-const powerBlockImg = new Image();
-powerBlockImg.src = "power_block_logo.png";
-powerBlockImg.onload = onImageLoad;
-
 
 let rocketActive = false; // Voor nu altijd zichtbaar om te testen
 let rocketX = 0;
 let rocketY = 0;
 
   
-let powerBlock2 = {
-  x: 0,
-  y: 0,
-  width: brickWidth,
-  height: brickHeight,
-  active: false,
-  visible: true
-};
 
+console.log("keydown-handler wordt nu actief");
 
 document.addEventListener("keydown", keyDownHandler);
 document.addEventListener("keyup", keyUpHandler);
 document.addEventListener("mousemove", mouseMoveHandler);
 
 function keyDownHandler(e) {
+  console.log("Toets ingedrukt:", e.key);
+
   if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
   else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
 
-  
-  if ((e.code === "ArrowUp" || e.code === "Space") && !placingStarted) {
-  placingStarted = true;
-  bonusSearching = true;
-  startBonusSearchAnimation(); // laat bonusplaatjes knipperend door het veld zoeken
-  console.log("🔍 Bonus zoekfase gestart");
-  return; // wacht op tweede druk voor definitieve plaatsing
-}
+  if ((e.key === "ArrowUp" || e.key === "Up") && !ballLaunched) {
+    ballLaunched = true;
+    ballMoving = true;
+    dx = 0;
+    dy = -4;
+    if (!timerRunning) startTimer();
+    score = 0;
+    document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
+  }
 
-
-  if (!ballLaunched && placingStarted && bonusSearching) {
-  stopBonusSearchAnimation();      
-  placeBonusBlocks(level);         
-  bonusSearching = false;
-
-  ballLaunched = true;
-  dx = 0;
-  dy = -4;
-  if (!timerRunning) startTimer();
-  score = 0;
-  document.getElementById("scoreDisplay").textContent = "score 0 pxp.";
-  console.log("🚀 Bonus bevestigd + spel gestart");
-  return;
-}
-
-  if ((e.code === "ArrowUp" || e.code === "Space") && rocketActive && !rocketFired) {
+  if ((e.code === "ArrowUp" || e.code === "Space") && rocketActive && rocketAmmo > 0 && !rocketFired) {
   rocketFired = true;
+  rocketAmmo--;
 }
 
   if (flagsOnPaddle && (e.code === "Space" || e.code === "ArrowUp")) {
     shootFromFlags();
   }
 
-  if (!ballMoving && !bonusSearching && placingStarted && (e.code === "ArrowUp" || e.code === "Space")) {
+  if (!ballMoving && (e.code === "ArrowUp" || e.code === "Space")) {
   if (lives <= 0) {
-      lives = 3;
-      score = 0;
-      level = 1;
-      resetBricks();
-      resetBall();
-      resetPaddle();
-      startTime = new Date();
-      gameOver = false;
-      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-      document.getElementById("timeDisplay").textContent = "time 00:00";
+    lives = 3;
+    score = 0;
+    level = 1;
+    resetBricks();
+    resetBall();    // ✅ Zorg dat dit hier staat
+    resetPaddle();
+    startTime = new Date();
+    gameOver = false;
+    document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+    document.getElementById("timeDisplay").textContent = "time 00:00";
 
-      powerBlockUsed = false;
-      powerBlockHitTime = null;
-      powerBlock.active = false;
-      powerBlock.visible = false;
-      clearInterval(blinkInterval);
-
-      flagsOnPaddle = false;
-      flyingCoins = [];
-    }
-   
-    ballLaunched = true;
-    ballMoving = true;
-
+    flagsOnPaddle = false;
+    flyingCoins = [];
   }
+  ballMoving = true;
 }
- 
+}
+
 function keyUpHandler(e) {
   if (e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
   else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = false;
 }
 
-
+function spawnSecondBall() {
+  secondBall.x = x;
+  secondBall.y = y;
+  secondBall.dx = dx;
+  secondBall.dy = dy;
+  secondBallActive = true;
+}
 
 function mouseMoveHandler(e) {
   const relativeX = e.clientX - canvas.offsetLeft;
-  if (relativeX > 0 && relativeX < canvas.width) paddleX = relativeX - paddleWidth / 2;
+  if (relativeX > 0 && relativeX < canvas.width) {
+    paddleX = relativeX - paddleWidth / 2;
+  }
 }
 
 function drawBricks() {
@@ -202,46 +185,31 @@ function drawBricks() {
 
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
-      if (bricks[c][r].status === 1) {
+      const b = bricks[c][r];
+      if (b.status === 1) {
         const brickX = offsetX + c * brickWidth;
         const brickY = r * brickHeight;
 
-        bricks[c][r].x = brickX;
-        bricks[c][r].y = brickY;
-
-        switch (bricks[c][r].type) {
-          case "power":
-            if (blinkingBlocks["power"]) {
-              ctx.drawImage(powerBlockImg, brickX, brickY, brickWidth, brickHeight);
-            }
-            break;
-
-          case "rocket":
-            if (blinkingBlocks["rocket"]) {
-              ctx.drawImage(powerBlock2Img, brickX + brickWidth * 0.05, brickY + brickHeight * 0.05, brickWidth * 0.9, brickHeight * 0.9);
-            }
-            break;
-
-          case "freeze":
-            if (blinkingBlocks["freeze"]) {
-              ctx.fillStyle = "#00FFFF";
-              ctx.fillRect(brickX, brickY, brickWidth, brickHeight);
-            }
-            break;
-
-          case "doubleball":
-            if (blinkingBlocks["doubleball"]) {
-              ctx.drawImage(doubleBallImg, brickX, brickY, brickWidth, brickHeight);
-            }
-            break;
-
-          default:
-            if (blockImg.complete) {
-              ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
-            } else {
-              ctx.fillStyle = "#333"; // donker fallback-blokje
-              ctx.fillRect(brickX, brickY, brickWidth, brickHeight);
-            }
+        b.x = brickX;
+        b.y = brickY;
+                
+         switch (b.type) {
+         case "rocket":
+         ctx.drawImage(rocketImg, brickX, brickY, brickWidth, brickHeight);
+         break;
+         case "power":
+         ctx.drawImage(powerBlockImg, brickX, brickY, brickWidth, brickHeight);
+         break;
+         case "doubleball":
+         ctx.drawImage(doubleBallImg, brickX, brickY, brickWidth, brickHeight);
+         break;
+         case "signal":
+         ctx.drawImage(signalBlockImg, brickX, brickY, brickWidth, brickHeight);
+         break;
+         default:
+         ctx.drawImage(blockImg, brickX, brickY, brickWidth, brickHeight);
+         break;
+        
         }
       }
     }
@@ -249,13 +217,7 @@ function drawBricks() {
 }
 
 function drawBall() {
-  // Eerste bal tekenen
   ctx.drawImage(ballImg, x, y, ballRadius * 2, ballRadius * 2);
-
-  // Tweede bal tekenen (alleen als actief)
-  if (doubleBallActive && x2 !== null && y2 !== null) {
-    ctx.drawImage(ballImg, x2, y2, ballRadius * 2, ballRadius * 2);
-  }
 }
 
 function drawPaddle() {
@@ -303,7 +265,6 @@ function shootFromFlags() {
     active: true
   });
 }
-
 function checkFlyingCoinHits() {
   flyingCoins.forEach((coin) => {
     if (!coin.active) return;
@@ -339,10 +300,7 @@ function startTimer() {
   }, 1000);
 }
 
-
-
 function collisionDetection() {
-  // 🟠 Botsing eerste bal
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
       let b = bricks[c][r];
@@ -355,36 +313,31 @@ function collisionDetection() {
         ) {
           dy = -dy;
 
-          // Check type en activeer gedrag
+          // Activeer bonuseffect op basis van type
           switch (b.type) {
             case "power":
               flagsOnPaddle = true;
               flagTimer = Date.now();
               break;
-
             case "rocket":
               rocketActive = true;
+              rocketAmmo = 3; // geef 3 raketten
               break;
-
-            case "freeze":
+              case "freeze":
               dx = 0;
-              setTimeout(() => { dx = 4; }, 2000);
+              setTimeout(() => { dx = 4; }, 1000);
+              break;
+              case "doubleball":
+              spawnSecondBall();
+              setTimeout(() => {
+              secondBallActive = false;
+           }, secondBallDuration);
               break;
 
-            case "doubleball":
-              if (!doubleBallActive) {
-                doubleBallActive = true;
-                x2 = x;
-                y2 = y;
-                dx2 = dx * 0.9;
-                dy2 = dy * 0.9;
-                console.log("🎯 Doubleball geactiveerd!");
-              }
-              break;
           }
 
           b.status = 0;
-          b.type = "normal";
+          b.type = "normal"; // terug naar normaal type na raken
           score += 10;
           spawnCoin(b.x, b.y);
           document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
@@ -392,90 +345,23 @@ function collisionDetection() {
       }
     }
   }
-
-  // 🟣 Botsing tweede bal
-  if (doubleBallActive && x2 !== null && y2 !== null) {
-    for (let c = 0; c < brickColumnCount; c++) {
-      for (let r = 0; r < brickRowCount; r++) {
-        let b = bricks[c][r];
-        if (b.status === 1) {
-          if (
-            x2 > b.x &&
-            x2 < b.x + brickWidth &&
-            y2 > b.y &&
-            y2 < b.y + brickHeight
-          ) {
-            dy2 = -dy2;
-
-            switch (b.type) {
-              case "power":
-                flagsOnPaddle = true;
-                flagTimer = Date.now();
-                break;
-
-              case "rocket":
-                rocketActive = true;
-                break;
-
-              case "freeze":
-                dx2 = 0;
-                setTimeout(() => { dx2 = 4; }, 1000);
-                break;
-
-              case "doubleball":
-                break;
-            }
-
-            b.status = 0;
-            b.type = "normal";
-            score += 10;
-            spawnCoin(b.x, b.y);
-            document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-            return; // Eén blokje tegelijk
-          }
-        }
-      }
-    }
-  }
 }
 
+  
 
-
-  // powerBlock2-botsing
-  if (powerBlock2.active && powerBlock2.visible) {
-    if (
-      x > powerBlock2.x &&
-      x < powerBlock2.x + powerBlock2.width &&
-      y > powerBlock2.y &&
-      y < powerBlock2.y + powerBlock2.height
-    ) {
-      dy = -dy;
-      powerBlock2.active = false;
-      powerBlock2.visible = false;
-      clearInterval(blinkInterval2);
-      powerBlock2HitTime = Date.now();
-
-      score += 20;
-      rocketActive = true;
-      document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
-    }
-  }
-
- 
-function saveHighscore() {
+  function saveHighscore() {
   const timeText = document.getElementById("timeDisplay").textContent.replace("time ", "");
   const highscore = {
     name: window.currentPlayer || "Unknown",
     score: score,
-    time: timeText
+   time: timeText
     
-  }
+  };
 
   let highscores = JSON.parse(localStorage.getItem("highscores")) || [];
   if (!highscores.some(h => h.name === highscore.name && h.score === highscore.score && h.time === highscore.time)) {
     highscores.push(highscore);
   }
- 
   highscores.sort((a, b) => b.score - a.score || a.time.localeCompare(b.time));
   highscores = highscores.slice(0, 10);
   localStorage.setItem("highscores", JSON.stringify(highscores));
@@ -535,15 +421,19 @@ function checkRocketCollision() {
         ];
 
         targets.forEach(([col, row]) => {
-          if (
-            col >= 0 && col < brickColumnCount &&
-            row >= 0 && row < brickRowCount &&
-            bricks[col][row].status === 1
-          ) {
-            bricks[col][row].status = 0;
-            score += 10;
-          }
-        });
+  if (
+    col >= 0 && col < brickColumnCount &&
+    row >= 0 && row < brickRowCount &&
+    bricks[col][row].status === 1
+  ) {
+    bricks[col][row].status = 0;
+    score += 10;
+
+    if (rocketAmmo <= 0) {
+      rocketActive = false;
+    }
+  }
+});
 
         document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
         rocketFired = false;
@@ -578,268 +468,209 @@ function checkCoinCollision() {
     }
   });
 }
-  function resetBricks() {
+
+function resetBricks() {
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
-      bricks[c][r] = { x: 0, y: 0, status: 1, type: "normal" };
+      bricks[c][r].status = 1;
+
+      // Bonusblok opnieuw instellen
+      const bonus = bonusBricks.find(b => b.col === c && b.row === r);
+      bricks[c][r].type = bonus ? bonus.type : "normal";
     }
-  }
-}
-
-
-
-const bonusTypes = ["power", "rocket", "freeze", "doubleball"];
-const bonusBlockCount = 3; // Aantal bonusblokken per level (schaalbaar)
-
-function placeBonusBlocks(level) {
-  let placed = 0;
-
-  while (placed < bonusBlockCount) {
-    const col = Math.floor(Math.random() * brickColumnCount);
-    const row = Math.floor(Math.random() * brickRowCount);
-    const brick = bricks[col][row];
-
-    if (brick.status === 1 && brick.type === "normal") {
-      brick.type = bonusTypes[Math.floor(Math.random() * bonusTypes.length)];
-      placed++;
-    }
-  }
-}
-
-function startBonusSearchAnimation() {
-  bonusSearchInterval = setInterval(() => {
-    // Verwijder tijdelijke bonus types
-    for (let c = 0; c < brickColumnCount; c++) {
-      for (let r = 0; r < brickRowCount; r++) {
-        if (bricks[c][r].status === 1 && bonusTypes.includes(bricks[c][r].type)) {
-          bricks[c][r].type = "normal";
-        }
-      }
-    }
-
-    // Plaats tijdelijk nieuwe bonussen op random plekken
-    let placed = 0;
-    while (placed < bonusBlockCount) {
-      const col = Math.floor(Math.random() * brickColumnCount);
-      const row = Math.floor(Math.random() * brickRowCount);
-      const brick = bricks[col][row];
-
-      if (brick.status === 1 && brick.type === "normal") {
-        brick.type = bonusTypes[Math.floor(Math.random() * bonusTypes.length)];
-        placed++;
-      }
-    }
-  }, 400);
-}
-
-function stopBonusSearchAnimation() {
-  clearInterval(bonusSearchInterval);
-  bonusSearchInterval = null;
-
-  // Reset alle tijdelijke bonusblokken
-  for (let c = 0; c < brickColumnCount; c++) {
-    for (let r = 0; r < brickRowCount; r++) {
-      const brick = bricks[c][r];
-      if (brick.status === 1 && bonusTypes.includes(brick.type)) {
-        brick.type = "normal";
-      }
-    }
-  }
-}
-
-function resetBonusBlocks() {
-  for (let c = 0; c < brickColumnCount; c++) {
-    for (let r = 0; r < brickRowCount; r++) {
-      const brick = bricks[c][r];
-      if (brick.status === 1 && bonusTypes.includes(brick.type)) {
-        brick.type = "normal";
-      }
-    }
-  }
-}
-
-
-
-
-function spawnPowerBlock2() {
-  const randCol = Math.floor(Math.random() * brickColumnCount);
-  const randRow = Math.floor(Math.random() * brickRowCount); 
-  const totalBricksWidth = brickColumnCount * brickWidth;
-  const offsetX = (canvas.width - totalBricksWidth) / 2;
-
-  powerBlock2Col = randCol;
-  powerBlock2Row = randRow;
-  powerBlock2.x = offsetX + randCol * brickWidth;
-  powerBlock2.y = randRow * brickHeight;
-  powerBlock2.active = true;
-  powerBlock2.visible = true;
-
-  clearInterval(blinkInterval2);
-  blinkInterval2 = setInterval(() => {
-    if (powerBlock2.active) {
-      powerBlock2.visible = !powerBlock2.visible;
-    } else {
-      clearInterval(blinkInterval2);
-    }
-  }, 500); // knipper elke 500ms
-}
-
-
-function drawPowerBlock2() {
-  if (powerBlock2.active && powerBlock2.visible) {
-    ctx.drawImage(
-      powerBlock2Img,
-      powerBlock2.x + brickWidth * 0.05,
-      powerBlock2.y + brickHeight * 0.05,
-      brickWidth * 0.9,
-      brickHeight * 0.9
-    );
   }
 }
 
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
   collisionDetection();
   drawCoins();
   checkCoinCollision();
   drawBricks();
-  drawPowerBlock2();
   drawBall();
   drawPaddle();
   drawPaddleFlags();
   drawFlyingCoins();
   checkFlyingCoinHits();
 
-
-
-  
- if (rightPressed && paddleX < canvas.width - paddleWidth) paddleX += 7;
-else if (leftPressed && paddleX > 0) paddleX -= 7;
-
-if (ballLaunched) {
-  x += dx;
-  y += dy;
-
-  if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) dx = -dx;
-  if (y + dy < ballRadius) dy = -dy;
-
-  // 🎯 Paddle-botsing
-  if (
-    y + dy > canvas.height - paddleHeight - ballRadius &&
-    x > paddleX &&
-    x < paddleX + paddleWidth
-  ) {
-    const hitPos = (x - paddleX) / paddleWidth;
-    const angle = (hitPos - 0.5) * Math.PI / 2;
-    const speed = Math.sqrt(dx * dx + dy * dy);
-    dx = speed * Math.sin(angle);
-    dy = -Math.abs(speed * Math.cos(angle));
-
-    
-  } 
-
-
-  if (y + dy > canvas.height - ballRadius) {
-    saveHighscore();
-    ballLaunched = false;
-    dx = 4;
-    dy = -4;
-    elapsedTime = 0;
-    timerRunning = false;
-    clearInterval(timerInterval);
-    flagsOnPaddle = false;
-    flyingCoins = [];
-
-    placingStarted = false;
-    bonusSearching = false;
-    resetBonusBlocks();
+  if (rightPressed && paddleX < canvas.width - paddleWidth) {
+    paddleX += 7;
+  } else if (leftPressed && paddleX > 0) {
+    paddleX -= 7;
   }
 
+  if (ballLaunched) {
+  x += dx;
+  y += dy;
 } else {
   x = paddleX + paddleWidth / 2 - ballRadius;
-  resetBricks();
   y = canvas.height - paddleHeight - ballRadius * 2;
 }
 
 
-if (
-  powerBlock2HitTime &&
-  Date.now() - powerBlock2HitTime > powerBlock2RespawnDelay
-) {
-  spawnPowerBlock2();
-  powerBlock2HitTime = null;
-}
-
-if (rocketActive && !rocketFired) {
-  rocketX = paddleX + paddleWidth / 2 - 12;
-  rocketY = canvas.height - paddleHeight - 48;
-  ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
-} else if (rocketFired) {
-  rocketY -= rocketSpeed;
-
-  smokeParticles.push({
-    x: rocketX + 15,
-    y: rocketY + 65,
-    radius: Math.random() * 6 + 4,
-    alpha: 1
-  }); 
-
-  if (rocketY < -48) {
-    rocketFired = false;
-    rocketActive = false; // éénmalige raket
-  } else {
-    ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
-    checkRocketCollision(); // botst met blokjes  
+  if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+    dx = -dx;
   }
+
+  if (y + dy < ballRadius) {
+    dy = -dy;
+  }
+
+ if (
+  y + dy > canvas.height - paddleHeight - ballRadius &&
+  y + dy < canvas.height + 2 && // iets meer speling
+  x > paddleX &&
+  x < paddleX + paddleWidth
+) {
+  const hitPos = (x - paddleX) / paddleWidth;
+  const angle = (hitPos - 0.5) * Math.PI / 2;
+  const speed = Math.sqrt(dx * dx + dy * dy);
+  dx = speed * Math.sin(angle);
+  dy = -Math.abs(speed * Math.cos(angle));
 }
 
 
-explosions.forEach(e => {
-  ctx.beginPath();
-  ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
-  ctx.fillStyle = `rgba(255, 165, 0, ${e.alpha})`; // oranje explosie
-  ctx.fill();
-  e.radius += 2;       // explosie wordt groter
-  e.alpha -= 0.05;     // en vervaagt
-});
+  if (y + dy > canvas.height - ballRadius) {
+  saveHighscore();
+  ballLaunched = false;
+  ballMoving = false;
+  dx = 4;
+  dy = -4;
+  elapsedTime = 0;
+  resetBall();
+  resetBricks();
+}
 
- explosions = explosions.filter(e => e.alpha > 0); // alleen zichtbare explosies blijven
+
+
+if (secondBallActive) {
+  secondBall.x += secondBall.dx;
+  secondBall.y += secondBall.dy;
+
+  // Randen
+  if (secondBall.x + secondBall.dx > canvas.width - ballRadius || secondBall.x + secondBall.dx < ballRadius) {
+    secondBall.dx = -secondBall.dx;
+  }
+
+  if (secondBall.y + secondBall.dy < ballRadius) {
+    secondBall.dy = -secondBall.dy;
+  }
 
   
+  if (
+    secondBall.y + secondBall.dy > canvas.height - paddleHeight - ballRadius &&
+    secondBall.y + secondBall.dy < canvas.height - ballRadius &&
+    secondBall.x > paddleX &&
+    secondBall.x < paddleX + paddleWidth
+  ) {
+    const hitPos = (secondBall.x - paddleX) / paddleWidth;
+    const angle = (hitPos - 0.5) * Math.PI / 2;
+    const speed = Math.sqrt(secondBall.dx * secondBall.dx + secondBall.dy * secondBall.dy);
+    secondBall.dx = speed * Math.sin(angle);
+    secondBall.dy = -Math.abs(speed * Math.cos(angle));
+  }
+
+  // Onderaan geraakt
+  if (secondBall.y + secondBall.dy > canvas.height - ballRadius) {
+    secondBallActive = false;
+  }
+
+  // Blokken-botsing
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      const b = bricks[c][r];
+      if (
+        b.status === 1 &&
+        secondBall.x > b.x &&
+        secondBall.x < b.x + brickWidth &&
+        secondBall.y > b.y &&
+        secondBall.y < b.y + brickHeight
+      ) {
+        secondBall.dy = -secondBall.dy;
+        b.status = 0;
+        b.type = "normal";
+        score += 10;
+        spawnCoin(b.x, b.y);
+        document.getElementById("scoreDisplay").textContent = "score " + score + " pxp.";
+      }
+    }
+  }
+
+  // Teken tweede bal
+  ctx.drawImage(ballImg, secondBall.x, secondBall.y, ballRadius * 2, ballRadius * 2);
+}
+
+
+
+  if (rocketActive && !rocketFired) {
+    rocketX = paddleX + paddleWidth / 2 - 12;
+    rocketY = canvas.height - paddleHeight - 48;
+    ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
+  } else if (rocketFired) {
+    rocketY -= rocketSpeed;
+    smokeParticles.push({
+      x: rocketX + 15,
+      y: rocketY + 65,
+      radius: Math.random() * 6 + 4,
+      alpha: 1
+    });
+
+    if (rocketY < -48) {
+      rocketFired = false;
+      rocketActive = false;
+    } else {
+      ctx.drawImage(rocketImg, rocketX, rocketY, 30, 65);
+      checkRocketCollision();
+    }
+  }
+
+  explosions.forEach(e => {
+    ctx.beginPath();
+    ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255, 165, 0, ${e.alpha})`;
+    ctx.fill();
+    e.radius += 2;
+    e.alpha -= 0.05;
+  });
+  explosions = explosions.filter(e => e.alpha > 0);
+
   smokeParticles.forEach(p => {
-  ctx.beginPath();
-  ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-  ctx.fillStyle = `rgba(150, 150, 150, ${p.alpha})`;
-  ctx.fill();
-  p.y += 1;
-  p.radius += 0.3;
-  p.alpha -= 0.02;
-});
-  
-smokeParticles = smokeParticles.filter(p => p.alpha > 0);
- 
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(150, 150, 150, ${p.alpha})`;
+    ctx.fill();
+    p.y += 1;
+    p.radius += 0.3;
+    p.alpha -= 0.02;
+  });
+  smokeParticles = smokeParticles.filter(p => p.alpha > 0);
 
-requestAnimationFrame(draw);
+  requestAnimationFrame(draw);
 }
 
-const blinkingBlocks = {};
 
-const blinkSpeeds = {
-  power: 1000,
-  rocket: 1000,
-  freeze: 1000,
-  doubleball: 1000
-};
+function startFlybyAnimation() {
+  const bike = document.getElementById("bikeFlyby");
+  bike.style.display = "block";
 
+  let x = window.innerWidth;
+  let y = window.innerHeight;
+  const interval = setInterval(() => {
+    x -= 4;
+    y -= 2;
 
-for (const type of bonusTypes) {
-  blinkingBlocks[type] = true;
+    bike.style.left = x + "px";
+    bike.style.top = y + "px";
 
-  setInterval(() => {
-    blinkingBlocks[type] = !blinkingBlocks[type];
-  }, blinkSpeeds[type]);
+    if (x < -150 || y < -100) {
+      clearInterval(interval);
+      bike.style.display = "none";
+    }
+  }, 30);
 }
+
 
 
 
@@ -849,31 +680,73 @@ function onImageLoad() {
   imagesLoaded++;
   console.log("Afbeelding geladen:", imagesLoaded);
 
-  if (imagesLoaded === 9) {
+  if (imagesLoaded === 5) {
     x = paddleX + paddleWidth / 2 - ballRadius;
     y = canvas.height - paddleHeight - ballRadius * 2;
     draw();
   }
 }
 
-
-
+// Koppel alle images aan onImageLoad
 blockImg.onload = onImageLoad;
 ballImg.onload = onImageLoad;
 powerBlockImg.onload = onImageLoad;
 powerBlock2Img.onload = onImageLoad;
 rocketImg.onload = onImageLoad;
-vlagImgLeft.onload = onImageLoad;
-vlagImgRight.onload = onImageLoad;
-shootCoinImg.onload = onImageLoad;
-doubleBallImg.onload = onImageLoad;
-
 
 document.addEventListener("mousedown", function () {
-  if (rocketActive && !rocketFired) {
+  if (rocketActive && rocketAmmo > 0 && !rocketFired) {
     rocketFired = true;
+    rocketAmmo--;
   } else if (flagsOnPaddle) {
     shootFromFlags();
   }
-});
+}); 
+
+function startBikeAnimation() {
+  const bike = document.getElementById("bikeFlyer");
+  bike.style.display = "block";
+
+  const startX = window.innerWidth + 100;   // rechts uit beeld
+  const endX = -200;                        // links uit beeld
+  const startY = window.innerHeight + 100;  // onder uit beeld
+  const endY = -150;                        // boven uit beeld
+  const duration = 20000;                   // 20 seconden
+  let startTime = null;
+
+  function animateBike(timestamp) {
+    if (!startTime) startTime = timestamp;
+    const elapsed = timestamp - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+
+    const step = elapsed / 16;
+
+    const baseX = startX + (endX - startX) * progress;
+    const baseY = startY + (endY - startY) * progress;
+
+    const wobbleX = Math.sin(step / 10) * 3;
+    const wobbleY = Math.cos(step / 15) * 3;
+
+    const x = baseX + wobbleX;
+    const y = baseY + wobbleY;
+
+    bike.style.left = `${x}px`;
+    bike.style.top = `${y}px`;
+
+
+      if (progress < 1) {
+      requestAnimationFrame(animateBike);
+    } else {
+      bike.style.display = "none";
+    }
+  }
+
+  requestAnimationFrame(animateBike);
+}
+
+// Start direct na laden
+setTimeout(startBikeAnimation, 1000);
+
+// Start daarna elke 2 minuten
+setInterval(startBikeAnimation, 20000);
 
