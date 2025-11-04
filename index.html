@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Animated Sir - canvas</title>
+  <style>
+    body { background:#000; color:#fff; font-family: system-ui, sans-serif; display:flex; flex-direction:column; align-items:center; gap:12px; padding:18px; }
+    canvas { background:transparent; display:block; border-radius:6px; box-shadow:0 6px 24px rgba(0,0,0,0.6); }
+    .controls { display:flex; gap:8px; }
+    button { padding:8px 12px; font-size:14px; cursor:pointer; border-radius:6px; border:none; background:#1f7; color:#000; }
+    button.secondary { background:#3a3a3a; color:#fff; }
+    small { opacity:0.8; }
+  </style>
+</head>
+<body>
+  <h2>Sir animated — kijkt naar zwaard, swingt en houdt zwaard hoog</h2>
+  <canvas id="c" width="800" height="800"></canvas>
+  <div class="controls">
+    <button id="play">Speel animatie</button>
+    <button id="stop" class="secondary">Stop</button>
+    <button id="gif" class="secondary">Export GIF (kan even duren)</button>
+  </div>
+  <small>Als iets niet precies uitlijnt: open script en pas de coördinaten/offsets bovenaan aan.</small>
+
+<script>
+const imgSrc = './sir (4).png';
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d', { alpha: true });
+const config = {
+  leftEye: { x: 320, y: 360, whiteR: 24, pupilR: 8 },
+  rightEye:{ x: 392, y: 360, whiteR: 24, pupilR: 8 },
+  swordTip: { x: 710, y: 20 },
+  swordCrop: { x: 540, y: 0, w: 380, h: 300 },
+  swordPivotInCrop: { x: 60, y: 165 },
+  timings: { lookDuration: 700, holdAfterLook: 300, swingCount: 3, swingDurationEach: 260, restDuration: 600 }
+};
+let img = new Image(), imgLoaded=false, offSwordCanvas=null, animRequest=null, playing=false, startTime=0, sequence=[];
+let pupilOffsets={L:{x:0,y:0},R:{x:0,y:0}}, currentSwordAngle=0, coverSwordBBox=null;
+img.onload=()=>{imgLoaded=true;setupSwordCrop();drawStaticFrame();};
+img.src=imgSrc;
+function setupSwordCrop(){const c=document.createElement('canvas');c.width=config.swordCrop.w;c.height=config.swordCrop.h;const cx=c.getContext('2d');cx.drawImage(img,config.swordCrop.x,config.swordCrop.y,config.swordCrop.w,config.swordCrop.h,0,0,config.swordCrop.w,config.swordCrop.h);offSwordCanvas=c;coverSwordBBox={x:config.swordCrop.x-6,y:config.swordCrop.y-6,w:config.swordCrop.w+12,h:config.swordCrop.h+12};}
+function drawBase(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);}
+function sourceToCanvasScale(){return{sx:canvas.width/img.width,sy:canvas.height/img.height};}
+function drawEyes(p){const{sx,sy}=sourceToCanvasScale();const L=config.leftEye,R=config.rightEye;ctx.save();ctx.beginPath();ctx.fillStyle='#000';ctx.arc(L.x*sx+p.L.x,L.y*sy+p.L.y,L.pupilR*((sx+sy)/2),0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.fillStyle='rgba(255,255,255,0.7)';ctx.arc(L.x*sx+p.L.x-2,L.y*sy+p.L.y-2,Math.max(1,(L.pupilR/3)),0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.fillStyle='#000';ctx.arc(R.x*sx+p.R.x,R.y*sy+p.R.y,R.pupilR*((sx+sy)/2),0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.fillStyle='rgba(255,255,255,0.7)';ctx.arc(R.x*sx+p.R.x-2,R.y*sy+p.R.y-2,Math.max(1,(R.pupilR/3)),0,Math.PI*2);ctx.fill();ctx.restore();}
+function drawRotatedSword(a){if(!offSwordCanvas)return;const{sx,sy}=sourceToCanvasScale();const pivot={x:(config.swordCrop.x+config.swordPivotInCrop.x)*sx,y:(config.swordCrop.y+config.swordPivotInCrop.y)*sy};const swordW=offSwordCanvas.width*sx,swordH=offSwordCanvas.height*sy;ctx.save();ctx.translate(pivot.x,pivot.y);ctx.rotate(a);ctx.drawImage(offSwordCanvas,0,0,offSwordCanvas.width,offSwordCanvas.height,-config.swordPivotInCrop.x*sx,-config.swordPivotInCrop.y*sy,swordW,swordH);ctx.restore();}
+function drawStaticFrame(){if(!imgLoaded)return;drawBase();pupilOffsets={L:{x:0,y:0},R:{x:0,y:0}};drawEyes(pupilOffsets);}
+function lerp(a,b,t){return a+(b-a)*t;}
+function degToRad(d){return d*Math.PI/180;}
+function easeOutCubic(t){return 1-Math.pow(1-t,3);}
+function computePupilOffsetsForTarget(x,y,m=6){const{sx,sy}=sourceToCanvasScale();const Lc={x:config.leftEye.x*sx,y:config.leftEye.y*sy},Rc={x:config.rightEye.x*sx,y:config.rightEye.y*sy};function f(e){const dx=x-e.x,dy=y-e.y,ang=Math.atan2(dy,dx);return{x:Math.cos(ang)*m,y:Math.sin(ang)*m};}return{L:f(Lc),R:f(Rc)};}
+function buildSequence(now){const t=config.timings;sequence=[];let time=0;sequence.push({name:'look',t0:time,t1:time+t.lookDuration});time+=t.lookDuration;sequence.push({name:'holdLook',t0:time,t1:time+t.holdAfterLook});time+=t.holdAfterLook;for(let i=0;i<t.swingCount;i++){sequence.push({name:'swing',idx:i,t0:time,t1:time+t.swingDurationEach});time+=t.swingDurationEach;}sequence.push({name:'rest',t0:time,t1:time+t.restDuration});sequence.totalDuration=time;sequence.startAt=now;}
+function animate(now){if(!playing)return;if(!animRequest)startTime=now;animRequest=now;const local=now-sequence.startAt;if(local>sequence.totalDuration){drawBase();const{sx,sy}=sourceToCanvasScale();ctx.fillStyle='#000';ctx.fillRect(coverSwordBBox.x*sx,coverSwordBBox.y*sy,coverSwordBBox.w*sx,coverSwordBBox.h*sy);drawRotatedSword(0);drawEyes({L:{x:0,y:0},R:{x:0,y:0}});playing=false;animRequest=null;return;}drawBase();const{sx,sy}=sourceToCanvasScale();const swordTipCanvas={x:config.swordTip.x*sx,y:config.swordTip.y*sy};let phase=null,prog=0;for(const ph of sequence){if(local>=ph.t0&&local<ph.t1){phase=ph;prog=(local-ph.t0)/(ph.t1-ph.t0);break;}}if(!phase){drawEyes(pupilOffsets);requestAnimationFrame(animate);return;}if(phase.name==='look'){const tOff=computePupilOffsetsForTarget(swordTipCanvas.x,swordTipCanvas.y,8);pupilOffsets.L.x=lerp(0,tOff.L.x,easeOutCubic(prog));pupilOffsets.L.y=lerp(0,tOff.L.y,easeOutCubic(prog));pupilOffsets.R.x=lerp(0,tOff.R.x,easeOutCubic(prog));pupilOffsets.R.y=lerp(0,tOff.R.y,easeOutCubic(prog));drawEyes(pupilOffsets);}else if(phase.name==='holdLook'){pupilOffsets=computePupilOffsetsForTarget(swordTipCanvas.x,swordTipCanvas.y,8);drawEyes(pupilOffsets);}else if(phase.name==='swing'){const i=phase.idx,maxA=degToRad(28)*(1-(i*0.12)),ang=Math.sin(prog*Math.PI)*((i%2===0)?-maxA:maxA);currentSwordAngle=ang;ctx.fillStyle='#000';ctx.fillRect(coverSwordBBox.x*sx,coverSwordBBox.y*sy,coverSwordBBox.w*sx,coverSwordBBox.h*sy);drawRotatedSword(currentSwordAngle);const pivot={x:(config.swordCrop.x+config.swordPivotInCrop.x)*sx,y:(config.swordCrop.y+config.swordPivotInCrop.y)*sy};const tipRel={x:(config.swordCrop.w-config.swordPivotInCrop.x)*sx,y:(0-config.swordPivotInCrop.y)*sy};const rotTip={x:pivot.x+(tipRel.x*Math.cos(ang)-tipRel.y*Math.sin(ang)),y:pivot.y+(tipRel.x*Math.sin(ang)+tipRel.y*Math.cos(ang))};pupilOffsets=computePupilOffsetsForTarget(rotTip.x,rotTip.y,9);drawEyes(pupilOffsets);}else if(phase.name==='rest'){currentSwordAngle=lerp(currentSwordAngle,0,easeOutCubic(prog));ctx.fillStyle='#000';ctx.fillRect(coverSwordBBox.x*sx,coverSwordBBox.y*sy,coverSwordBBox.w*sx,coverSwordBBox.h*sy);drawRotatedSword(currentSwordAngle);pupilOffsets.L.x=lerp(pupilOffsets.L.x,0,prog);pupilOffsets.L.y=lerp(pupilOffsets.L.y,0,prog);pupilOffsets.R.x=lerp(pupilOffsets.R.x,0,prog);pupilOffsets.R.y=lerp(pupilOffsets.R.y,0,prog);drawEyes(pupilOffsets);}requestAnimationFrame(animate);}
+document.getElementById('play').onclick=()=>{if(!imgLoaded){alert('Afbeelding laadt nog');return;}if(playing)return;playing=true;buildSequence(performance.now());sequence.startAt=performance.now();animRequest=null;requestAnimationFrame(animate);};
+document.getElementById('stop').onclick=()=>{playing=false;animRequest=null;drawStaticFrame();};
+</script>
+</body>
+</html>
