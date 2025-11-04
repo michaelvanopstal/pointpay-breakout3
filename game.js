@@ -5,10 +5,9 @@ const ctx = canvas.getContext('2d');
 // ⚠️ dit miste je: we moeten het Image-object eerst maken
 const img = new Image();
 
-// zodra de pagina klaar is: afbeelding instellen
-window.onload = () => {
-  img.src = 'knight.png';   // zorg dat dit bestand naast index.html staat
-};
+const img = new Image();
+window.onload = () => { img.src = 'knight.png'; };
+
 
 // configuratie voor jouw poppetje
 const config = {
