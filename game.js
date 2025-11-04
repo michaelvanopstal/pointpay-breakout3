@@ -3,9 +3,10 @@
 const canvas = document.getElementById('c');
 const ctx = canvas.getContext('2d');
 
-const img = new Image();
-// Hernoem jouw plaatje óf pas dit aan:
-img.src = 'knight.png';
+window.onload = () => {
+  img.src = 'knight.png';
+};
+
 
 // configuratie voor jouw poppetje
 const config = {
