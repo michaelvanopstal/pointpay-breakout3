@@ -6,99 +6,80 @@
   <title>Bitcoin Knight Animatie</title>
   <style>
     body {
-      background: #000;
-      color: #fff;
-      font-family: system-ui, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-      padding: 18px;
+      background:#000;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:10px;
+      padding:16px;
+      color:#fff;
+      font-family:sans-serif;
     }
     canvas {
-      background: transparent;
-      display: block;
-      border-radius: 6px;
-      box-shadow: 0 6px 24px rgba(0,0,0,0.6);
-    }
-    .controls {
-      display: flex;
-      gap: 8px;
-    }
-    button {
-      padding: 8px 12px;
-      font-size: 14px;
-      cursor: pointer;
-      border-radius: 6px;
-      border: none;
-      background: #1f7;
-      color: #000;
-    }
-    button.secondary {
-      background: #3a3a3a;
-      color: #fff;
+      background:transparent;
+      box-shadow:0 6px 20px rgba(0,0,0,0.4);
     }
   </style>
 </head>
 <body>
-  <h2>Bitcoin Knight Animatie</h2>
+  <h3>Bitcoin Knight (autoplay in draw)</h3>
   <canvas id="c" width="800" height="800"></canvas>
-  <div class="controls">
-    <button id="play">Speel animatie</button>
-    <button id="stop" class="secondary">Stop</button>
-  </div>
-  <p>Tip: zet de afbeelding <strong>knight.png</strong> naast deze index.html.</p>
+  <p>Let op: zet <code>knight.png</code> naast dit bestand.</p>
 
 <script>
-// ====== INSTELLINGEN ======
-const imgSrc = 'knight.png'; // <-- zorg dat jouw plaatje zo heet en in dezelfde map staat
+// -------------------- BASIS --------------------
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
 
-// geschatte posities (je kunt later fine tunen)
+const img = new Image();
+// Hernoem jouw plaatje óf pas dit aan:
+img.src = 'knight.png';
+
+// configuratie voor jouw poppetje
 const config = {
+  // ogen (positie uit jouw plaatje, moet je evt. finetunen)
   leftEye:  { x: 320, y: 360, pupilR: 8 },
   rightEye: { x: 392, y: 360, pupilR: 8 },
+
+  // waar hij naar moet kijken (punt van zwaard)
   swordTip: { x: 700, y: 40 },
 
-  // stuk waar het zwaard in zit in de originele afbeelding
+  // uitsnede van zwaard in de originele afbeelding
   swordCrop: { x: 540, y: 0, w: 220, h: 280 },
-  // rotatiepunt van het zwaard (waar de hand is) binnen die crop
+
+  // pivot van zwaard binnen die uitsnede (hand)
   swordPivotInCrop: { x: 30, y: 180 },
 
+  // tijden van de animatie
   timings: {
     lookDuration: 700,
     holdAfterLook: 300,
     swingCount: 3,
     swingDurationEach: 280,
-    restDuration: 600
+    restDuration: 500
   }
 };
-// ===========================
 
-const canvas = document.getElementById('c');
-const ctx = canvas.getContext('2d');
-
-let img = new Image();
 let imgLoaded = false;
 let offSwordCanvas = null;
-let playing = false;
+let coverSwordBBox = null;
+
+// animatie-state
+let startTime = 0;
 let sequence = [];
 let currentSwordAngle = 0;
 let pupilOffsets = { L:{x:0,y:0}, R:{x:0,y:0} };
-let coverSwordBBox = null;
 
-// afbeelding laden
-img.onload = () => {
+// -------------------- INIT --------------------
+img.onload = function() {
   imgLoaded = true;
-  setupSwordCrop();
-  drawStatic();
+  prepareSword();
+  buildSequence(0);
+  startTime = performance.now();
+  requestAnimationFrame(draw);
 };
-img.onerror = () => {
-  console.error('Kon knight.png niet laden. Staat hij wel naast index.html?');
-};
-img.src = imgSrc;
 
-// zwaard uitknippen
-function setupSwordCrop() {
+function prepareSword() {
   const sc = config.swordCrop;
   const c = document.createElement('canvas');
   c.width = sc.w;
@@ -107,7 +88,7 @@ function setupSwordCrop() {
   cx.drawImage(img, sc.x, sc.y, sc.w, sc.h, 0, 0, sc.w, sc.h);
   offSwordCanvas = c;
 
-  // iets ruimer vlak om het originele zwaard te bedekken
+  // vlak dat we over het originele zwaard tekenen
   coverSwordBBox = {
     x: sc.x - 6,
     y: sc.y - 6,
@@ -116,26 +97,134 @@ function setupSwordCrop() {
   };
 }
 
-function drawStatic() {
-  if (!imgLoaded) return;
+function buildSequence(start) {
+  const t = config.timings;
+  sequence = [];
+  let time = 0;
+
+  // 1. kijken naar zwaard
+  sequence.push({ name: 'look', t0: time, t1: time + t.lookDuration });
+  time += t.lookDuration;
+
+  // 2. blik even vasthouden
+  sequence.push({ name: 'holdLook', t0: time, t1: time + t.holdAfterLook });
+  time += t.holdAfterLook;
+
+  // 3. aantal slagen
+  for (let i = 0; i < t.swingCount; i++) {
+    sequence.push({ name: 'swing', idx: i, t0: time, t1: time + t.swingDurationEach });
+    time += t.swingDurationEach;
+  }
+
+  // 4. terug omhoog
+  sequence.push({ name: 'rest', t0: time, t1: time + t.restDuration });
+  time += t.restDuration;
+
+  sequence.total = time;
+  sequence.start = start;
+}
+
+// -------------------- DRAW LOOP --------------------
+function draw(timestamp) {
+  if (!imgLoaded) {
+    requestAnimationFrame(draw);
+    return;
+  }
+
+  const elapsed = timestamp - startTime;
+  const loopTime = elapsed % sequence.total; // zodat hij blijft loopen
+
+  // basis tekenen
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-  drawEyes({L:{x:0,y:0},R:{x:0,y:0}});
+
+  const { phase, prog } = getPhase(loopTime);
+
+  // schaal van bron naar canvas (we schalen de hele afbeelding naar 800x800)
+  const sx = canvas.width / img.width;
+  const sy = canvas.height / img.height;
+
+  const swordTipCanvas = { x: config.swordTip.x * sx, y: config.swordTip.y * sy };
+
+  if (phase) {
+    if (phase.name === 'look') {
+      // ogen bewegen naar zwaard
+      const targetOff = computePupilOffsetsForTarget(swordTipCanvas.x, swordTipCanvas.y, 8, sx, sy);
+      pupilOffsets.L.x = lerp(0, targetOff.L.x, easeOutCubic(prog));
+      pupilOffsets.L.y = lerp(0, targetOff.L.y, easeOutCubic(prog));
+      pupilOffsets.R.x = lerp(0, targetOff.R.x, easeOutCubic(prog));
+      pupilOffsets.R.y = lerp(0, targetOff.R.y, easeOutCubic(prog));
+      drawEyes(pupilOffsets, sx, sy);
+    }
+    else if (phase.name === 'holdLook') {
+      pupilOffsets = computePupilOffsetsForTarget(swordTipCanvas.x, swordTipCanvas.y, 8, sx, sy);
+      drawEyes(pupilOffsets, sx, sy);
+    }
+    else if (phase.name === 'swing') {
+      // originele zwaard wegwerken
+      ctx.fillStyle = '#000';
+      ctx.fillRect(
+        coverSwordBBox.x * sx,
+        coverSwordBBox.y * sy,
+        coverSwordBBox.w * sx,
+        coverSwordBBox.h * sy
+      );
+
+      // hoek van het zwaard berekenen
+      const swingIndex = phase.idx;
+      const maxAngle = degToRad(28) * (1 - swingIndex * 0.12);
+      const angle = Math.sin(prog * Math.PI) * ( (swingIndex % 2 === 0) ? -maxAngle : maxAngle );
+      currentSwordAngle = angle;
+
+      // zwaard tekenen
+      drawRotatedSword(currentSwordAngle, sx, sy);
+
+      // ogen laten volgen
+      const tipRot = getRotatedSwordTip(currentSwordAngle, sx, sy);
+      const pOff = computePupilOffsetsForTarget(tipRot.x, tipRot.y, 9, sx, sy);
+      drawEyes(pOff, sx, sy);
+    }
+    else if (phase.name === 'rest') {
+      // originele zwaard weg
+      ctx.fillStyle = '#000';
+      ctx.fillRect(
+        coverSwordBBox.x * sx,
+        coverSwordBBox.y * sy,
+        coverSwordBBox.w * sx,
+        coverSwordBBox.h * sy
+      );
+      // zwaard terug naar 0
+      const angle = lerp(currentSwordAngle, 0, easeOutCubic(prog));
+      drawRotatedSword(angle, sx, sy);
+
+      // ogen terug naar neutraal
+      pupilOffsets.L.x = lerp(pupilOffsets.L.x, 0, prog);
+      pupilOffsets.L.y = lerp(pupilOffsets.L.y, 0, prog);
+      pupilOffsets.R.x = lerp(pupilOffsets.R.x, 0, prog);
+      pupilOffsets.R.y = lerp(pupilOffsets.R.y, 0, prog);
+      drawEyes(pupilOffsets, sx, sy);
+    }
+  } else {
+    // fallback
+    drawEyes({L:{x:0,y:0},R:{x:0,y:0}}, sx, sy);
+  }
+
+  requestAnimationFrame(draw);
 }
 
-function sourceToCanvasScale() {
-  return {
-    sx: canvas.width / img.width,
-    sy: canvas.height / img.height
-  };
+// -------------------- HELPERS --------------------
+function getPhase(localTime) {
+  for (const ph of sequence) {
+    if (localTime >= ph.t0 && localTime < ph.t1) {
+      return { phase: ph, prog: (localTime - ph.t0) / (ph.t1 - ph.t0) };
+    }
+  }
+  return { phase: null, prog: 0 };
 }
 
-function drawEyes(p) {
-  const { sx, sy } = sourceToCanvasScale();
+function drawEyes(p, sx, sy) {
   const L = config.leftEye;
   const R = config.rightEye;
-
-  ctx.save();
   // linker pupil
   ctx.beginPath();
   ctx.fillStyle = '#000';
@@ -146,18 +235,14 @@ function drawEyes(p) {
   ctx.fillStyle = '#000';
   ctx.arc(R.x * sx + p.R.x, R.y * sy + p.R.y, R.pupilR * ((sx+sy)/2), 0, Math.PI*2);
   ctx.fill();
-  ctx.restore();
 }
 
-function drawRotatedSword(angle) {
+function drawRotatedSword(angle, sx, sy) {
   if (!offSwordCanvas) return;
-  const { sx, sy } = sourceToCanvasScale();
-
   const pivot = {
     x: (config.swordCrop.x + config.swordPivotInCrop.x) * sx,
     y: (config.swordCrop.y + config.swordPivotInCrop.y) * sy
   };
-
   const w = offSwordCanvas.width * sx;
   const h = offSwordCanvas.height * sy;
 
@@ -174,162 +259,41 @@ function drawRotatedSword(angle) {
   ctx.restore();
 }
 
+function getRotatedSwordTip(angle, sx, sy) {
+  const pivot = {
+    x: (config.swordCrop.x + config.swordPivotInCrop.x) * sx,
+    y: (config.swordCrop.y + config.swordPivotInCrop.y) * sy
+  };
+  const tipRel = {
+    x: (config.swordCrop.w - config.swordPivotInCrop.x) * sx,
+    y: (0 - config.swordPivotInCrop.y) * sy
+  };
+  return {
+    x: pivot.x + (tipRel.x * Math.cos(angle) - tipRel.y * Math.sin(angle)),
+    y: pivot.y + (tipRel.x * Math.sin(angle) + tipRel.y * Math.cos(angle))
+  };
+}
+
+function computePupilOffsetsForTarget(tx, ty, max, sx, sy) {
+  const Lc = { x: config.leftEye.x * sx, y: config.leftEye.y * sy };
+  const Rc = { x: config.rightEye.x * sx, y: config.rightEye.y * sy };
+
+  function off(eye) {
+    const dx = tx - eye.x;
+    const dy = ty - eye.y;
+    const ang = Math.atan2(dy, dx);
+    return { x: Math.cos(ang)*max, y: Math.sin(ang)*max };
+  }
+
+  return { L: off(Lc), R: off(Rc) };
+}
+
 function lerp(a,b,t){ return a + (b-a)*t; }
 function degToRad(d){ return d * Math.PI / 180; }
 function easeOutCubic(t){ return 1 - Math.pow(1 - t, 3); }
 
-function computePupilOffsetsForTarget(tx, ty, max=7) {
-  const { sx, sy } = sourceToCanvasScale();
-  const Lc = { x: config.leftEye.x * sx, y: config.leftEye.y * sy };
-  const Rc = { x: config.rightEye.x * sx, y: config.rightEye.y * sy };
-
-  function offs(eye) {
-    const dx = tx - eye.x;
-    const dy = ty - eye.y;
-    const a = Math.atan2(dy, dx);
-    return { x: Math.cos(a)*max, y: Math.sin(a)*max };
-  }
-  return { L: offs(Lc), R: offs(Rc) };
-}
-
-function buildSequence(start) {
-  const t = config.timings;
-  sequence = [];
-  let time = 0;
-
-  sequence.push({ name:'look', t0:time, t1: time + t.lookDuration });
-  time += t.lookDuration;
-  sequence.push({ name:'holdLook', t0:time, t1: time + t.holdAfterLook });
-  time += t.holdAfterLook;
-  for (let i=0; i<t.swingCount; i++) {
-    sequence.push({ name:'swing', idx:i, t0:time, t1: time + t.swingDurationEach });
-    time += t.swingDurationEach;
-  }
-  sequence.push({ name:'rest', t0:time, t1: time + t.restDuration });
-  time += t.restDuration;
-
-  sequence.total = time;
-  sequence.start = start;
-}
-
-function animate(now) {
-  if (!playing) return;
-  const local = now - sequence.start;
-
-  if (local > sequence.total) {
-    // klaar
-    drawStatic();
-    playing = false;
-    return;
-  }
-
-  // basis tekenen
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-  const { sx, sy } = sourceToCanvasScale();
-  const swordTipCanvas = { x: config.swordTip.x * sx, y: config.swordTip.y * sy };
-
-  // welke fase?
-  let phase = null;
-  for (const ph of sequence) {
-    if (local >= ph.t0 && local < ph.t1) {
-      phase = ph;
-      phase.progress = (local - ph.t0) / (ph.t1 - ph.t0);
-      break;
-    }
-  }
-
-  if (!phase) {
-    drawEyes({L:{x:0,y:0}, R:{x:0,y:0}});
-    requestAnimationFrame(animate);
-    return;
-  }
-
-  if (phase.name === 'look') {
-    const targ = computePupilOffsetsForTarget(swordTipCanvas.x, swordTipCanvas.y, 8);
-    pupilOffsets.L.x = lerp(0, targ.L.x, easeOutCubic(phase.progress));
-    pupilOffsets.L.y = lerp(0, targ.L.y, easeOutCubic(phase.progress));
-    pupilOffsets.R.x = lerp(0, targ.R.x, easeOutCubic(phase.progress));
-    pupilOffsets.R.y = lerp(0, targ.R.y, easeOutCubic(phase.progress));
-    drawEyes(pupilOffsets);
-  }
-  else if (phase.name === 'holdLook') {
-    pupilOffsets = computePupilOffsetsForTarget(swordTipCanvas.x, swordTipCanvas.y, 8);
-    drawEyes(pupilOffsets);
-  }
-  else if (phase.name === 'swing') {
-    // zwaardgebied bedekken
-    ctx.fillStyle = '#000';
-    ctx.fillRect(
-      coverSwordBBox.x * sx,
-      coverSwordBBox.y * sy,
-      coverSwordBBox.w * sx,
-      coverSwordBBox.h * sy
-    );
-
-    const swingIndex = phase.idx;
-    const maxAngle = degToRad(28) * (1 - swingIndex * 0.12);
-    const angle = Math.sin(phase.progress * Math.PI) * ((swingIndex % 2 === 0) ? -maxAngle : maxAngle);
-    currentSwordAngle = angle;
-    drawRotatedSword(currentSwordAngle);
-
-    // ogen volgen zwaardpunt
-    const pivot = {
-      x: (config.swordCrop.x + config.swordPivotInCrop.x) * sx,
-      y: (config.swordCrop.y + config.swordPivotInCrop.y) * sy
-    };
-    const tipRel = {
-      x: (config.swordCrop.w - config.swordPivotInCrop.x) * sx,
-      y: (0 - config.swordPivotInCrop.y) * sy
-    };
-    const tipRot = {
-      x: pivot.x + (tipRel.x * Math.cos(currentSwordAngle) - tipRel.y * Math.sin(currentSwordAngle)),
-      y: pivot.y + (tipRel.x * Math.sin(currentSwordAngle) + tipRel.y * Math.cos(currentSwordAngle))
-    };
-    const pOff = computePupilOffsetsForTarget(tipRot.x, tipRot.y, 9);
-    drawEyes(pOff);
-  }
-  else if (phase.name === 'rest') {
-    // zwaard terug naar boven
-    ctx.fillStyle = '#000';
-    ctx.fillRect(
-      coverSwordBBox.x * sx,
-      coverSwordBBox.y * sy,
-      coverSwordBBox.w * sx,
-      coverSwordBBox.h * sy
-    );
-    const ang = lerp(currentSwordAngle, 0, easeOutCubic(phase.progress));
-    drawRotatedSword(ang);
-
-    // ogen naar neutraal
-    pupilOffsets.L.x = lerp(pupilOffsets.L.x, 0, phase.progress);
-    pupilOffsets.L.y = lerp(pupilOffsets.L.y, 0, phase.progress);
-    pupilOffsets.R.x = lerp(pupilOffsets.R.x, 0, phase.progress);
-    pupilOffsets.R.y = lerp(pupilOffsets.R.y, 0, phase.progress);
-    drawEyes(pupilOffsets);
-  }
-
-  requestAnimationFrame(animate);
-}
-
-// knoppen
-document.getElementById('play').addEventListener('click', () => {
-  if (!imgLoaded) {
-    alert('Afbeelding (knight.png) is nog niet geladen.');
-    return;
-  }
-  if (playing) return;
-  playing = true;
-  buildSequence(performance.now());
-  requestAnimationFrame(animate);
-});
-
-document.getElementById('stop').addEventListener('click', () => {
-  playing = false;
-  drawStatic();
-});
 </script>
 </body>
 </html>
+
 
