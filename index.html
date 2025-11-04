@@ -3,517 +3,332 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Animated Sir - canvas</title>
+  <title>Bitcoin Knight Animatie</title>
   <style>
-    body { background:#000; color:#fff; font-family: system-ui, sans-serif; display:flex; flex-direction:column; align-items:center; gap:12px; padding:18px; }
-    canvas { background:transparent; display:block; border-radius:6px; box-shadow:0 6px 24px rgba(0,0,0,0.6); }
-    .controls { display:flex; gap:8px; }
-    button { padding:8px 12px; font-size:14px; cursor:pointer; border-radius:6px; border:none; background:#1f7; color:#000; }
-    button.secondary { background:#3a3a3a; color:#fff; }
-    small { opacity:0.8; }
+    body {
+      background: #000;
+      color: #fff;
+      font-family: system-ui, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 18px;
+    }
+    canvas {
+      background: transparent;
+      display: block;
+      border-radius: 6px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.6);
+    }
+    .controls {
+      display: flex;
+      gap: 8px;
+    }
+    button {
+      padding: 8px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 6px;
+      border: none;
+      background: #1f7;
+      color: #000;
+    }
+    button.secondary {
+      background: #3a3a3a;
+      color: #fff;
+    }
   </style>
 </head>
 <body>
-  <h2>Sir animated — kijkt naar zwaard, swingt en houdt zwaard hoog</h2>
+  <h2>Bitcoin Knight Animatie</h2>
   <canvas id="c" width="800" height="800"></canvas>
   <div class="controls">
     <button id="play">Speel animatie</button>
     <button id="stop" class="secondary">Stop</button>
-    <button id="gif" class="secondary">Export GIF (kan even duren)</button>
   </div>
-  <small>Als iets niet precies uitlijnt: open script en pas de coördinaten/offsets bovenaan aan.</small>
+  <p>Tip: zet de afbeelding <strong>knight.png</strong> naast deze index.html.</p>
 
 <script>
-/*
-  Plaats de afbeelding (exacte bestandsnaam hieronder) in dezelfde map als deze index.html.
-  Als je een andere naam gebruikt: pas imgSrc aan.
-*/
-const imgSrc = './sir (4).png'; // <--- pas aan als jouw bestandsnaam anders is
+// ====== INSTELLINGEN ======
+const imgSrc = 'knight.png'; // <-- zorg dat jouw plaatje zo heet en in dezelfde map staat
 
-const canvas = document.getElementById('c');
-const ctx = canvas.getContext('2d', { alpha: true });
-
-// ----- PAS HIER AAN TOT HET PERFECT UITLIJNT -----
-// (waarden geschat op basis van de geuploade afbeelding)
+// geschatte posities (je kunt later fine tunen)
 const config = {
-  // coordinaten van de ogen (relatief aan canvas)
-  leftEye: { x: 320, y: 360, whiteR: 24, pupilR: 8 },
-  rightEye:{ x: 392, y: 360, whiteR: 24, pupilR: 8 },
+  leftEye:  { x: 320, y: 360, pupilR: 8 },
+  rightEye: { x: 392, y: 360, pupilR: 8 },
+  swordTip: { x: 700, y: 40 },
 
-  // waar ongeveer de punt van het zwaard zit (target voor kijken)
-  swordTip: { x: 710, y: 20 },
+  // stuk waar het zwaard in zit in de originele afbeelding
+  swordCrop: { x: 540, y: 0, w: 220, h: 280 },
+  // rotatiepunt van het zwaard (waar de hand is) binnen die crop
+  swordPivotInCrop: { x: 30, y: 180 },
 
-  // bounding box van het zwaard in de bronafbeelding: [x,y,w,h]
-  // (we gebruiken dit gebied om het zwaard uit te knippen en te roteren)
-  swordCrop: { x: 540, y: 0, w: 380, h: 300 },
-
-  // pivot (rotatie) punt van het zwaard, in bron-coördinaten RELATIEF aan cropped box
-  // (bv. schouder/hand waar het zwaard draait) -> relatief binnen crop
-  swordPivotInCrop: { x: 60, y: 165 },
-
-  // animatie timing
   timings: {
     lookDuration: 700,
     holdAfterLook: 300,
     swingCount: 3,
-    swingDurationEach: 260,
+    swingDurationEach: 280,
     restDuration: 600
   }
 };
-// ----- einde tuning sectie -----
+// ===========================
 
-// state
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+
 let img = new Image();
 let imgLoaded = false;
 let offSwordCanvas = null;
-let animRequest = null;
 let playing = false;
-let startTime = 0;
-let sequence = []; // array of animation phases with time ranges
+let sequence = [];
+let currentSwordAngle = 0;
+let pupilOffsets = { L:{x:0,y:0}, R:{x:0,y:0} };
+let coverSwordBBox = null;
 
-// current dynamic values
-let pupilOffsets = { L: {x:0,y:0}, R: {x:0,y:0} };
-let currentSwordAngle = 0; // radians (0 = upright as in source)
-let coverSwordBBox = null; // rectangle to overpaint original sword
-
-// load image
+// afbeelding laden
 img.onload = () => {
   imgLoaded = true;
   setupSwordCrop();
-  drawStaticFrame();
+  drawStatic();
 };
-img.onerror = (e) => {
-  console.error('Kon afbeelding niet laden:', e);
-  alert('Afbeelding kon niet geladen worden. Controleer imgSrc en bestandslocatie.');
+img.onerror = () => {
+  console.error('Kon knight.png niet laden. Staat hij wel naast index.html?');
 };
 img.src = imgSrc;
 
-// prepare offscreen cropped sword image
+// zwaard uitknippen
 function setupSwordCrop() {
+  const sc = config.swordCrop;
   const c = document.createElement('canvas');
-  c.width = config.swordCrop.w;
-  c.height = config.swordCrop.h;
+  c.width = sc.w;
+  c.height = sc.h;
   const cx = c.getContext('2d');
-  cx.drawImage(img,
-    config.swordCrop.x, config.swordCrop.y, config.swordCrop.w, config.swordCrop.h,
-    0,0, config.swordCrop.w, config.swordCrop.h
-  );
+  cx.drawImage(img, sc.x, sc.y, sc.w, sc.h, 0, 0, sc.w, sc.h);
   offSwordCanvas = c;
 
-  // bounding box for covering original sword on main image:
-  // expand a bit to avoid seams
+  // iets ruimer vlak om het originele zwaard te bedekken
   coverSwordBBox = {
-    x: config.swordCrop.x - 6,
-    y: config.swordCrop.y - 6,
-    w: config.swordCrop.w + 12,
-    h: config.swordCrop.h + 12
+    x: sc.x - 6,
+    y: sc.y - 6,
+    w: sc.w + 12,
+    h: sc.h + 12
   };
 }
 
-// helper: clear and draw base image
-function drawBase() {
-  ctx.clearRect(0,0,canvas.width, canvas.height);
-  // draw original image scaled to fit canvas width if necessary.
-  // We assume image is square-ish and size similar to canvas.
+function drawStatic() {
+  if (!imgLoaded) return;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  drawEyes({L:{x:0,y:0},R:{x:0,y:0}});
 }
 
-// compute scaling factors if source image size differs from canvas
 function sourceToCanvasScale() {
-  // we assume img stretched to canvas full size. So scale factors:
-  return { sx: canvas.width / img.width, sy: canvas.height / img.height };
+  return {
+    sx: canvas.width / img.width,
+    sy: canvas.height / img.height
+  };
 }
 
-// draw pupils on top of base image (we draw white + pupil)
-function drawEyes(pupilOffsetsLocal) {
+function drawEyes(p) {
   const { sx, sy } = sourceToCanvasScale();
-  // left eye white
-  const L = config.leftEye, R = config.rightEye;
-  // whites (optional - if original has whites we can skip drawing whites and draw only pupils)
-  // Draw pupils as black circles with small glossy highlight
+  const L = config.leftEye;
+  const R = config.rightEye;
+
   ctx.save();
-  // Left pupil
+  // linker pupil
   ctx.beginPath();
   ctx.fillStyle = '#000';
-  ctx.arc(L.x * sx + pupilOffsetsLocal.L.x, L.y * sy + pupilOffsetsLocal.L.y, (L.pupilR) * ((sx+sy)/2), 0, Math.PI*2);
+  ctx.arc(L.x * sx + p.L.x, L.y * sy + p.L.y, L.pupilR * ((sx+sy)/2), 0, Math.PI*2);
   ctx.fill();
-
-  // small highlight
-  ctx.beginPath();
-  ctx.fillStyle = 'rgba(255,255,255,0.7)';
-  ctx.arc(L.x * sx + pupilOffsetsLocal.L.x - 2, L.y * sy + pupilOffsetsLocal.L.y - 2, Math.max(1, (L.pupilR/3)), 0, Math.PI*2);
-  ctx.fill();
-
-  // Right pupil
+  // rechter pupil
   ctx.beginPath();
   ctx.fillStyle = '#000';
-  ctx.arc(R.x * sx + pupilOffsetsLocal.R.x, R.y * sy + pupilOffsetsLocal.R.y, (R.pupilR) * ((sx+sy)/2), 0, Math.PI*2);
+  ctx.arc(R.x * sx + p.R.x, R.y * sy + p.R.y, R.pupilR * ((sx+sy)/2), 0, Math.PI*2);
   ctx.fill();
-
-  ctx.beginPath();
-  ctx.fillStyle = 'rgba(255,255,255,0.7)';
-  ctx.arc(R.x * sx + pupilOffsetsLocal.R.x - 2, R.y * sy + pupilOffsetsLocal.R.y - 2, Math.max(1, (R.pupilR/3)), 0, Math.PI*2);
-  ctx.fill();
-
   ctx.restore();
 }
 
-// draw the (rotated) sword extracted from offscreen canvas
-function drawRotatedSword(angleRad) {
+function drawRotatedSword(angle) {
   if (!offSwordCanvas) return;
   const { sx, sy } = sourceToCanvasScale();
 
-  // compute pivot point in canvas coords
   const pivot = {
     x: (config.swordCrop.x + config.swordPivotInCrop.x) * sx,
     y: (config.swordCrop.y + config.swordPivotInCrop.y) * sy
   };
 
-  // scale sword to canvas
-  const swordW = offSwordCanvas.width * sx;
-  const swordH = offSwordCanvas.height * sy;
+  const w = offSwordCanvas.width * sx;
+  const h = offSwordCanvas.height * sy;
 
-  // draw: translate to pivot, rotate, draw image so that pivot aligns
   ctx.save();
   ctx.translate(pivot.x, pivot.y);
-  ctx.rotate(angleRad);
-  // draw the offscreen sword with its pivot at ( -pivotInCrop * scale )
-  ctx.drawImage(offSwordCanvas,
-    0,0, offSwordCanvas.width, offSwordCanvas.height,
-    -config.swordPivotInCrop.x * sx, -config.swordPivotInCrop.y * sy,
-    swordW, swordH
+  ctx.rotate(angle);
+  ctx.drawImage(
+    offSwordCanvas,
+    0, 0, offSwordCanvas.width, offSwordCanvas.height,
+    -config.swordPivotInCrop.x * sx,
+    -config.swordPivotInCrop.y * sy,
+    w, h
   );
   ctx.restore();
 }
 
-// draw a static frame (no animation) — useful as initial preview
-function drawStaticFrame() {
-  if (!imgLoaded) return;
-  drawBase();
-  // no cover, original sword visible
-  // draw pupils centered as default
-  pupilOffsets = { L:{x:0,y:0}, R:{x:0,y:0} };
-  drawEyes(pupilOffsets);
-}
-
-// helper: linear interpolate
 function lerp(a,b,t){ return a + (b-a)*t; }
+function degToRad(d){ return d * Math.PI / 180; }
+function easeOutCubic(t){ return 1 - Math.pow(1 - t, 3); }
 
-// compute pupil offsets to look at a target (px,py) in canvas coords
-function computePupilOffsetsForTarget(targetCanvasX, targetCanvasY, maxOffset=6) {
+function computePupilOffsetsForTarget(tx, ty, max=7) {
   const { sx, sy } = sourceToCanvasScale();
   const Lc = { x: config.leftEye.x * sx, y: config.leftEye.y * sy };
   const Rc = { x: config.rightEye.x * sx, y: config.rightEye.y * sy };
 
   function offs(eye) {
-    const dx = targetCanvasX - eye.x;
-    const dy = targetCanvasY - eye.y;
-    const ang = Math.atan2(dy, dx);
-    return { x: Math.cos(ang) * maxOffset, y: Math.sin(ang) * maxOffset };
+    const dx = tx - eye.x;
+    const dy = ty - eye.y;
+    const a = Math.atan2(dy, dx);
+    return { x: Math.cos(a)*max, y: Math.sin(a)*max };
   }
   return { L: offs(Lc), R: offs(Rc) };
 }
 
-// build animation sequence (timeline in ms)
-function buildSequence(now) {
+function buildSequence(start) {
   const t = config.timings;
   sequence = [];
   let time = 0;
-  // phase: look towards sword
+
   sequence.push({ name:'look', t0:time, t1: time + t.lookDuration });
-  time = sequence.at(-1).t1;
+  time += t.lookDuration;
   sequence.push({ name:'holdLook', t0:time, t1: time + t.holdAfterLook });
-  time = sequence.at(-1).t1;
-
-  // swings: each swing is swingDurationEach; we'll alternate angles
-  const swings = t.swingCount;
-  for (let i=0;i<swings;i++) {
+  time += t.holdAfterLook;
+  for (let i=0; i<t.swingCount; i++) {
     sequence.push({ name:'swing', idx:i, t0:time, t1: time + t.swingDurationEach });
-    time = time + t.swingDurationEach;
+    time += t.swingDurationEach;
   }
-  // rest: bring back to upright
   sequence.push({ name:'rest', t0:time, t1: time + t.restDuration });
-  time = time + t.restDuration;
+  time += t.restDuration;
 
-  // totalDuration stored
-  sequence.totalDuration = time;
-  sequence.startAt = now;
+  sequence.total = time;
+  sequence.start = start;
 }
 
-// compute current local time (ms since animation start)
-function getLocalTime(now) {
-  return now - sequence.startAt;
-}
-
-// evaluate which phase we are in and return normalized progress
-function phaseAt(localT) {
-  for (const ph of sequence) {
-    if (localT >= ph.t0 && localT < ph.t1) {
-      const prog = (localT - ph.t0) / (ph.t1 - ph.t0);
-      return { phase: ph, prog };
-    }
-  }
-  // finished
-  return { phase: null, prog:0 };
-}
-
-// main animation loop
 function animate(now) {
   if (!playing) return;
-  if (!animRequest) startTime = now;
-  animRequest = now;
+  const local = now - sequence.start;
 
-  const local = getLocalTime(now);
-  // handle loop or end
-  if (local > sequence.totalDuration) {
-    // finish: draw final upright pose and stop
-    drawBase();
-    // cover original sword and draw rotated sword at upright angle 0
-    ctx.fillStyle = '#000'; // background color same as page
-    const { sx, sy } = sourceToCanvasScale();
-    ctx.fillRect(coverSwordBBox.x * sx, coverSwordBBox.y * sy, coverSwordBBox.w * sx, coverSwordBBox.h * sy);
-    drawRotatedSword(0);
-    // pupils back to neutral
-    pupilOffsets = { L:{x:0,y:0}, R:{x:0,y:0} };
-    drawEyes(pupilOffsets);
+  if (local > sequence.total) {
+    // klaar
+    drawStatic();
     playing = false;
-    animRequest = null;
     return;
   }
 
-  // draw base
-  drawBase();
+  // basis tekenen
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-  // compute current phase and animate accordingly
-  const { phase, prog } = phaseAt(local);
-
-  // target for gaze is generally sword tip; get canvas coords
   const { sx, sy } = sourceToCanvasScale();
   const swordTipCanvas = { x: config.swordTip.x * sx, y: config.swordTip.y * sy };
 
+  // welke fase?
+  let phase = null;
+  for (const ph of sequence) {
+    if (local >= ph.t0 && local < ph.t1) {
+      phase = ph;
+      phase.progress = (local - ph.t0) / (ph.t1 - ph.t0);
+      break;
+    }
+  }
+
   if (!phase) {
-    // fallback
-    drawEyes(pupilOffsets);
+    drawEyes({L:{x:0,y:0}, R:{x:0,y:0}});
     requestAnimationFrame(animate);
     return;
   }
 
   if (phase.name === 'look') {
-    // pupils move smoothly toward swordTip
-    const targetOffsets = computePupilOffsetsForTarget(swordTipCanvas.x, swordTipCanvas.y, 8);
-    pupilOffsets.L.x = lerp(0, targetOffsets.L.x, easeOutCubic(prog));
-    pupilOffsets.L.y = lerp(0, targetOffsets.L.y, easeOutCubic(prog));
-    pupilOffsets.R.x = lerp(0, targetOffsets.R.x, easeOutCubic(prog));
-    pupilOffsets.R.y = lerp(0, targetOffsets.R.y, easeOutCubic(prog));
-
-    // sword remains upright during look; we simply draw original sword (no cover)
+    const targ = computePupilOffsetsForTarget(swordTipCanvas.x, swordTipCanvas.y, 8);
+    pupilOffsets.L.x = lerp(0, targ.L.x, easeOutCubic(phase.progress));
+    pupilOffsets.L.y = lerp(0, targ.L.y, easeOutCubic(phase.progress));
+    pupilOffsets.R.x = lerp(0, targ.R.x, easeOutCubic(phase.progress));
+    pupilOffsets.R.y = lerp(0, targ.R.y, easeOutCubic(phase.progress));
     drawEyes(pupilOffsets);
-  } else if (phase.name === 'holdLook') {
-    // hold looking: pupils fixed to target
+  }
+  else if (phase.name === 'holdLook') {
     pupilOffsets = computePupilOffsetsForTarget(swordTipCanvas.x, swordTipCanvas.y, 8);
     drawEyes(pupilOffsets);
-  } else if (phase.name === 'swing') {
-    // during swings: we will hide original sword area and draw rotated sword
-    // compute which swing index we are in:
+  }
+  else if (phase.name === 'swing') {
+    // zwaardgebied bedekken
+    ctx.fillStyle = '#000';
+    ctx.fillRect(
+      coverSwordBBox.x * sx,
+      coverSwordBBox.y * sy,
+      coverSwordBBox.w * sx,
+      coverSwordBBox.h * sy
+    );
+
     const swingIndex = phase.idx;
-    // swing direction alternates: even -> rightwards swing (negative angle), odd -> leftwards
-    // angle amplitude: start larger and decrease slowly
-    const maxAngle = degToRad(28) * (1 - (swingIndex * 0.12)); // decreasing amplitude
-    // progress: ease in-out, but we want a forward-and-back motion within one swing:
-    // Let prog 0->1 map to angle that goes from base (upright) to target and slightly past then back
-    // We'll use a sin-based wave for more natural motion
-    const angle = Math.sin(prog * Math.PI) * ( (swingIndex % 2 === 0) ? -maxAngle : maxAngle );
+    const maxAngle = degToRad(28) * (1 - swingIndex * 0.12);
+    const angle = Math.sin(phase.progress * Math.PI) * ((swingIndex % 2 === 0) ? -maxAngle : maxAngle);
     currentSwordAngle = angle;
-
-    // hide original sword by painting a rectangle (background color) over it
-    ctx.fillStyle = '#000';
-    ctx.fillRect(coverSwordBBox.x * sx, coverSwordBBox.y * sy, coverSwordBBox.w * sx, coverSwordBBox.h * sy);
-
-    // draw rotated sword
     drawRotatedSword(currentSwordAngle);
 
-    // make pupils follow the moving sword tip slightly (so eyes track the swinging blade)
-    // compute instantaneous sword tip position by transforming the original tip with rotation around pivot:
-    const tipLocal = { x: (config.swordCrop.x + config.swordCrop.w - 5) * (sx), y: (config.swordCrop.y + 10) * (sy) };
-    // simpler: compute tip position approximated from pivot plus rotated vector from pivot to original tip:
-    const pivotCanvas = { x: (config.swordCrop.x + config.swordPivotInCrop.x) * sx, y: (config.swordCrop.y + config.swordPivotInCrop.y) * sy };
-    const originalTipRel = { x: (config.swordCrop.w - config.swordPivotInCrop.x) * sx, y: (0 - config.swordPivotInCrop.y) * sy };
-    const rotatedTip = {
-      x: pivotCanvas.x + ( originalTipRel.x * Math.cos(currentSwordAngle) - originalTipRel.y * Math.sin(currentSwordAngle) ),
-      y: pivotCanvas.y + ( originalTipRel.x * Math.sin(currentSwordAngle) + originalTipRel.y * Math.cos(currentSwordAngle) )
+    // ogen volgen zwaardpunt
+    const pivot = {
+      x: (config.swordCrop.x + config.swordPivotInCrop.x) * sx,
+      y: (config.swordCrop.y + config.swordPivotInCrop.y) * sy
     };
-    const pOff = computePupilOffsetsForTarget(rotatedTip.x, rotatedTip.y, 9);
-    pupilOffsets = { L: pOff.L, R: pOff.R };
-
-    drawEyes(pupilOffsets);
-
-  } else if (phase.name === 'rest') {
-    // bring sword back to upright (angle -> 0)
-    // smoothly interpolate angle to 0
-    const tNormalized = prog;
-    currentSwordAngle = lerp(currentSwordAngle, 0, easeOutCubic(tNormalized));
-    // cover and draw rotated at that angle
+    const tipRel = {
+      x: (config.swordCrop.w - config.swordPivotInCrop.x) * sx,
+      y: (0 - config.swordPivotInCrop.y) * sy
+    };
+    const tipRot = {
+      x: pivot.x + (tipRel.x * Math.cos(currentSwordAngle) - tipRel.y * Math.sin(currentSwordAngle)),
+      y: pivot.y + (tipRel.x * Math.sin(currentSwordAngle) + tipRel.y * Math.cos(currentSwordAngle))
+    };
+    const pOff = computePupilOffsetsForTarget(tipRot.x, tipRot.y, 9);
+    drawEyes(pOff);
+  }
+  else if (phase.name === 'rest') {
+    // zwaard terug naar boven
     ctx.fillStyle = '#000';
-    ctx.fillRect(coverSwordBBox.x * sx, coverSwordBBox.y * sy, coverSwordBBox.w * sx, coverSwordBBox.h * sy);
-    drawRotatedSword(currentSwordAngle);
-    // pupils relax back to neutral
-    pupilOffsets.L.x = lerp(pupilOffsets.L.x, 0, tNormalized);
-    pupilOffsets.L.y = lerp(pupilOffsets.L.y, 0, tNormalized);
-    pupilOffsets.R.x = lerp(pupilOffsets.R.x, 0, tNormalized);
-    pupilOffsets.R.y = lerp(pupilOffsets.R.y, 0, tNormalized);
-    drawEyes(pupilOffsets);
-  } else {
-    // default fallback draw eyes
+    ctx.fillRect(
+      coverSwordBBox.x * sx,
+      coverSwordBBox.y * sy,
+      coverSwordBBox.w * sx,
+      coverSwordBBox.h * sy
+    );
+    const ang = lerp(currentSwordAngle, 0, easeOutCubic(phase.progress));
+    drawRotatedSword(ang);
+
+    // ogen naar neutraal
+    pupilOffsets.L.x = lerp(pupilOffsets.L.x, 0, phase.progress);
+    pupilOffsets.L.y = lerp(pupilOffsets.L.y, 0, phase.progress);
+    pupilOffsets.R.x = lerp(pupilOffsets.R.x, 0, phase.progress);
+    pupilOffsets.R.y = lerp(pupilOffsets.R.y, 0, phase.progress);
     drawEyes(pupilOffsets);
   }
 
   requestAnimationFrame(animate);
 }
 
-// small easing
-function easeOutCubic(t){ return 1 - Math.pow(1 - t, 3); }
-function degToRad(d){ return d * Math.PI / 180; }
-
-// controls
+// knoppen
 document.getElementById('play').addEventListener('click', () => {
-  if (!imgLoaded) { alert('Afbeelding laadt nog. Wacht even en probeer opnieuw.'); return; }
+  if (!imgLoaded) {
+    alert('Afbeelding (knight.png) is nog niet geladen.');
+    return;
+  }
   if (playing) return;
   playing = true;
   buildSequence(performance.now());
-  sequence.startAt = performance.now();
-  animRequest = null;
   requestAnimationFrame(animate);
 });
+
 document.getElementById('stop').addEventListener('click', () => {
   playing = false;
-  animRequest = null;
-  drawStaticFrame();
+  drawStatic();
 });
-
-// ---------- GIF export (optioneel) ----------
-// uses gif.js via CDN; if offline, deze knop werkt niet.
-// We'll dynamically load gif.js only when requested.
-document.getElementById('gif').addEventListener('click', async () => {
-  if (!imgLoaded) { alert('Afbeelding laadt nog.'); return; }
-  if (!confirm('GIF export: dit neemt enkele seconden tot minuten in beslag, afhankelijk van instellingen. OK?')) return;
-
-  // dynamically load gif.js worker and scripts
-  await loadScript('https://cdn.jsdelivr.net/npm/gif.js.optimized/dist/gif.js'); // uses a minified build
-  // start a new capture: replay the same animation and capture frames
-  const gif = new GIF({
-    workers: 2,
-    quality: 10,
-    workerScript: 'https://cdn.jsdelivr.net/npm/gif.js.optimized/dist/gif.worker.js'
-  });
-
-  // We'll replay the animation in a non-visual loop (but render to canvas) and capture frames at ~25fps
-  // Build new sequence and step through timeline.
-  buildSequence(0);
-  const total = sequence.totalDuration;
-  const fps = 25;
-  const frameInterval = 1000 / fps;
-  for (let t=0; t <= total; t += frameInterval) {
-    // render frame for time t
-    renderFrameAt(t);
-    gif.addFrame(canvas, {copy:true, delay: frameInterval});
-    // show small progress in title
-    document.title = `Exporting GIF ${Math.round((t/total)*100)}%`;
-    await sleep(20); // give browser breathing room
-  }
-
-  gif.on('finished', function(blob) {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'sir_animation.gif';
-    a.click();
-    document.title = 'GIF export klaar';
-  });
-
-  gif.render();
-});
-
-// helper: renders the same drawing logic for a requested local time (ms)
-function renderFrameAt(local) {
-  // same as animate's drawing but deterministic for given local
-  drawBase();
-
-  const { phase, prog } = (() => {
-    for (const ph of sequence) {
-      if (local >= ph.t0 && local < ph.t1) return { phase: ph, prog: (local - ph.t0) / (ph.t1 - ph.t0) };
-    }
-    return { phase: null, prog: 0 };
-  })();
-
-  const { sx, sy } = sourceToCanvasScale();
-  const swordTipCanvas = { x: config.swordTip.x * sx, y: config.swordTip.y * sy };
-
-  if (!phase) {
-    drawEyes({L:{x:0,y:0}, R:{x:0,y:0}});
-    return;
-  }
-
-  if (phase.name === 'look') {
-    const targetOffsets = computePupilOffsetsForTarget(swordTipCanvas.x, swordTipCanvas.y, 8);
-    const pOff = { L:{x:lerp(0,targetOffsets.L.x, easeOutCubic(prog)), y:lerp(0,targetOffsets.L.y,easeOutCubic(prog))}, R:{x:lerp(0,targetOffsets.R.x,easeOutCubic(prog)), y:lerp(0,targetOffsets.R.y,easeOutCubic(prog))} };
-    drawEyes(pOff);
-  } else if (phase.name === 'holdLook') {
-    const pOff = computePupilOffsetsForTarget(swordTipCanvas.x, swordTipCanvas.y, 8);
-    drawEyes(pOff);
-  } else if (phase.name === 'swing') {
-    const swingIndex = phase.idx;
-    const maxAngle = degToRad(28) * (1 - (swingIndex * 0.12));
-    const angle = Math.sin(prog * Math.PI) * ( (swingIndex % 2 === 0) ? -maxAngle : maxAngle );
-
-    ctx.fillStyle = '#000';
-    ctx.fillRect(coverSwordBBox.x * sx, coverSwordBBox.y * sy, coverSwordBBox.w * sx, coverSwordBBox.h * sy);
-    // draw rotated
-    drawRotatedSword(angle);
-
-    // pupils track rotated tip
-    const pivotCanvas = { x: (config.swordCrop.x + config.swordPivotInCrop.x) * sx, y: (config.swordCrop.y + config.swordPivotInCrop.y) * sy };
-    const originalTipRel = { x: (config.swordCrop.w - config.swordPivotInCrop.x) * sx, y: (0 - config.swordPivotInCrop.y) * sy };
-    const rotatedTip = {
-      x: pivotCanvas.x + ( originalTipRel.x * Math.cos(angle) - originalTipRel.y * Math.sin(angle) ),
-      y: pivotCanvas.y + ( originalTipRel.x * Math.sin(angle) + originalTipRel.y * Math.cos(angle) )
-    };
-    const pOff = computePupilOffsetsForTarget(rotatedTip.x, rotatedTip.y, 9);
-    drawEyes(pOff);
-  } else if (phase.name === 'rest') {
-    // interpolate angle to 0
-    // assume we reach here from previous angle ~ something; approximate angle -> multiply by (1-prog)
-    // for deterministic, just set small angle decaying to 0:
-    const angle = 0 * (prog); // practically 0 for GIF capture end
-    ctx.fillStyle = '#000';
-    ctx.fillRect(coverSwordBBox.x * sx, coverSwordBBox.y * sy, coverSwordBBox.w * sx, coverSwordBBox.h * sy);
-    drawRotatedSword(angle);
-    // pupils back to neutral
-    drawEyes({L:{x:lerp(0,0,prog), y:0}, R:{x:0,y:0}});
-  } else {
-    drawEyes({L:{x:0,y:0}, R:{x:0,y:0}});
-  }
-}
-
-// small util
-function sleep(ms){ return new Promise(res => setTimeout(res, ms)); }
-
-// dynamic script loader
-function loadScript(src) {
-  return new Promise((resolve,reject) => {
-    if (document.querySelector(`script[src="${src}"]`)) { resolve(); return; }
-    const s = document.createElement('script');
-    s.src = src;
-    s.onload = resolve;
-    s.onerror = reject;
-    document.head.appendChild(s);
-  });
-}
-
-// initial preview draw when image loads
-// if image already loaded
-if (img.complete && img.naturalWidth) {
-  img.onload(); // trigger setup if already cached
-}
 </script>
 </body>
 </html>
