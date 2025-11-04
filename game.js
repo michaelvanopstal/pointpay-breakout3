@@ -42,6 +42,14 @@ let startTime = 0;
 let sequence = [];
 let currentSwordAngle = 0;
 let pupilOffsets = { L:{x:0,y:0}, R:{x:0,y:0} };
+let animationRunning = false;
+
+function startKnightAnimation() {
+  if (animationRunning) return;
+  animationRunning = true;
+  startTime = performance.now();
+  requestAnimationFrame(draw);
+}
 
 // -------------------- INIT --------------------
 img.onload = function() {
@@ -49,7 +57,8 @@ img.onload = function() {
   prepareSword();
   buildSequence(0);
   startTime = performance.now();
-  requestAnimationFrame(draw);
+  startKnightAnimation();
+
 };
 
 function prepareSword() {
@@ -159,13 +168,13 @@ function draw(timestamp) {
     }
     else if (phase.name === 'rest') {
       // originele zwaard weg
-      ctx.fillStyle = '#000';
-      ctx.fillRect(
-        coverSwordBBox.x * sx,
-        coverSwordBBox.y * sy,
-        coverSwordBBox.w * sx,
-        coverSwordBBox.h * sy
-      );
+     ctx.clearRect(
+  coverSwordBBox.x * sx,
+  coverSwordBBox.y * sy,
+  coverSwordBBox.w * sx,
+  coverSwordBBox.h * sy
+);
+
       // zwaard terug naar 0
       const angle = lerp(currentSwordAngle, 0, easeOutCubic(prog));
       drawRotatedSword(angle, sx, sy);
